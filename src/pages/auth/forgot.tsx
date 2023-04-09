@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import appRoutes from "../../routes/routes";
+
 const Forgot = () => {
     return (
         <div className="auth-page forgot-page-img-background">
@@ -17,6 +20,7 @@ const Forgot = () => {
                             />
                         </div>
                         <div className="auth-btn-container">
+                        <Link to={appRoutes.LOGIN} className="auth-btn-empty">Annuler</Link>
                             <button type="submit" className="auth-btn-full">
                                 Valider
                             </button>

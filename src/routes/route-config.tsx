@@ -10,6 +10,10 @@ const routesConfig = [
         element: <Login />,
     },
     {
+        path: appRoutes.LOGIN,
+        element: <Login />,
+    },
+    {
         path: appRoutes.REGISTER,
         element: <Register />,
     },

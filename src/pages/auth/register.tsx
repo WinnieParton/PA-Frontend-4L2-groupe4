@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import appRoutes from "../../routes/routes";
 
 
 const Register = () => {
@@ -65,9 +67,8 @@ const Register = () => {
                     </div>
                 </div>
                 <div className="auth-btn-container">
-                    <button type="reset" className="auth-btn-empty">
-                        Annuler
-                    </button>
+                    
+                    <Link to={appRoutes.LOGIN} className="auth-btn-empty">Annuler</Link>
                     <button type="submit" className="auth-btn-full">
                         Valider
                     </button>
