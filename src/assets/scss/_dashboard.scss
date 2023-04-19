@@ -1,0 +1,32 @@
+.dashboard{
+    display: flex;
+
+   
+
+    .dashboard-container{
+        flex: 6;
+
+        .page-wrapper-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding:20px;
+
+            .btn-action{
+                background: $primaryColor;
+                color: #fff;
+                padding: 15px 25px;
+                border: 1px solid $primaryColor;
+                border-radius: 5px;
+                transition: all .3s;
+
+                &:hover{
+                    background: #fff;
+                    color: $primaryColor;
+                }
+            }
+        }
+    }
+
+    
+}
