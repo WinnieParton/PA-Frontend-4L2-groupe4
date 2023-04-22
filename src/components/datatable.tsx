@@ -1,8 +1,7 @@
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'nom', headerName: 'Nom', width: 130, renderCell: (params) =>{
+    { field: 'nom', headerName: 'Nom', width: 150, renderCell: (params) =>{
         return (
             <div className="cell-with-img">
                 <img className='cell-img' src={params.row.img} alt="" />
