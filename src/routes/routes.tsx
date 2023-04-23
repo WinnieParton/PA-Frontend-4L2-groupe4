@@ -8,6 +8,7 @@ const appRoutes = {
   JEUX: "/dashboard/jeux",
   AMIS: "/dashboard/amis",
   SALONS: "/dashboard/salons",
+  SALONS_SHOW: "/dashboard/salon",
 };
 
 export default appRoutes;

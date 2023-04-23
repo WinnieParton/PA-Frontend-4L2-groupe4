@@ -110,6 +110,9 @@
                                 flex-direction: column;
                                 margin-left: 10px;
     
+                               a{
+                                text-decoration: none;
+                                color: inherit;
                                 h3{
                                     font-style: 18px;
                                     font-weight: bold;
@@ -120,6 +123,7 @@
                                         text-decoration: underline;
                                     }
                                 }
+                               }
     
                                 p{
                                     font-size: 13px;

@@ -7,6 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import {
     Avatar,
     Button,
@@ -19,8 +20,7 @@ import {
     ListItemText,
     TextField,
 } from '@mui/material';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -37,6 +37,7 @@ const ListAmis = () => {
         setAnchorEl(null);
     };
 
+    //Retrouver un ami
     const [openDialogFindFriend, setOpenDialogFindFriend] =
         React.useState(false);
 
@@ -47,6 +48,19 @@ const ListAmis = () => {
     const handleCloseDialogFindFriend = () => {
         setOpenDialogFindFriend(false);
     };
+
+    //Accepter un invitation
+    const [openDialogInvidation, setOpenDialogInvidation] =
+    React.useState(false);
+
+const handleClickOpenDialogInvidation = () => {
+    setOpenDialogInvidation(true);
+};
+
+const handleCloseDialogInvidation = () => {
+    setOpenDialogInvidation(false);
+};
+
     return (
         <div className="page-wrapper">
             <div className="page-wrapper-header">
@@ -59,7 +73,7 @@ const ListAmis = () => {
                         <input type="text" placeholder="Rechercher" />
                     </div>
                     <div className="btn-friend-action">
-                        <button>Invitations</button>
+                        <button onClick={handleClickOpenDialogInvidation}>Invitations</button>
                         <button onClick={handleClickOpenDialogFindFriend}>
                             Retrouver des amis
                         </button>
@@ -98,61 +112,15 @@ const ListAmis = () => {
                             >
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
+                                        <GroupAddIcon fontSize="small" color='primary'/>
                                     </ListItemIcon>
                                     <ListItemText>
-                                        Ajouter à un salon
+                                        L'ajouter à un salon
                                     </ListItemText>
                                 </MenuItem>
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        Retirer des amis
-                                    </ListItemText>
-                                </MenuItem>
-                            </Menu>
-                        </div>
-                    </div>
-                    <div className="obj-card">
-                        <div className="obj-card-left">
-                            <div>
-                                <img
-                                    src="https://unsplash.com/photos/IF9TK5Uy-KI/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjgxOTA1NjMx&force=true&w=640"
-                                    alt=""
-                                />
-                            </div>
-                            <div className="obj-card-left-text">
-                                <h3>Pseudo</h3>
-                                <p>4 Salons en commun</p>
-                            </div>
-                        </div>
-                        <div className="obj-card-right">
-                            <button onClick={handleClick}>
-                                <MoreHorizIcon />
-                            </button>
-
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
-                            >
-                                <MenuItem>
-                                    <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        Ajouter à un salon
-                                    </ListItemText>
-                                </MenuItem>
-                                <MenuItem>
-                                    <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
+                                        <PersonRemoveIcon fontSize="small" color='error' />
                                     </ListItemIcon>
                                     <ListItemText>
                                         Retirer des amis
@@ -190,15 +158,61 @@ const ListAmis = () => {
                             >
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
+                                        <GroupAddIcon fontSize="small" color='primary' />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        Ajouter à un salon
+                                        L'ajouter à un salon
                                     </ListItemText>
                                 </MenuItem>
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
+                                        <PersonRemoveIcon fontSize="small" color='error' />
+                                    </ListItemIcon>
+                                    <ListItemText>
+                                        Retirer des amis
+                                    </ListItemText>
+                                </MenuItem>
+                            </Menu>
+                        </div>
+                    </div>
+                    <div className="obj-card">
+                        <div className="obj-card-left">
+                            <div>
+                                <img
+                                    src="https://unsplash.com/photos/IF9TK5Uy-KI/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjgxOTA1NjMx&force=true&w=640"
+                                    alt=""
+                                />
+                            </div>
+                            <div className="obj-card-left-text">
+                                <h3>Pseudo</h3>
+                                <p>4 Salons en commun</p>
+                            </div>
+                        </div>
+                        <div className="obj-card-right">
+                            <button onClick={handleClick}>
+                                <MoreHorizIcon />
+                            </button>
+
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem>
+                                    <ListItemIcon>
+                                        <GroupAddIcon fontSize="small" color='primary' />
+                                    </ListItemIcon>
+                                    <ListItemText>
+                                        L'ajouter à un salon
+                                    </ListItemText>
+                                </MenuItem>
+                                <MenuItem>
+                                    <ListItemIcon>
+                                        <PersonRemoveIcon fontSize="small" color='error' />
                                     </ListItemIcon>
                                     <ListItemText>
                                         Retirer des amis
@@ -260,7 +274,7 @@ const ListAmis = () => {
                                                 edge="end"
                                                 aria-label="delete"
                                             >
-                                                <TaskAltIcon color='success'/>
+                                                <TaskAltIcon color="success" />
                                             </IconButton>
                                         }
                                     >
@@ -278,7 +292,7 @@ const ListAmis = () => {
                                                 edge="end"
                                                 aria-label="delete"
                                             >
-                                                <HighlightOffIcon color='error' />
+                                                <HighlightOffIcon color="error" />
                                             </IconButton>
                                         }
                                     >
@@ -298,6 +312,59 @@ const ListAmis = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Modal invitation*/}
+
+            <Dialog
+                open={openDialogInvidation}
+                onClose={handleCloseDialogInvidation}
+                maxWidth="sm"
+                fullWidth
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Invitation
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                    <List>
+                                <ListItemButton dense>
+                                    <ListItem
+                                        className="list-item-hover"
+                                        secondaryAction={
+                                            <Button variant="outlined" color='primary'>Accepter</Button>
+                                        }
+                                    >
+                                        <ListItemAvatar>
+                                            <Avatar src="https://unsplash.com/photos/IF9TK5Uy-KI/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjgxOTA1NjMx&force=true&w=640" />
+                                        </ListItemAvatar>
+                                        <ListItemText primary="Pseudo" />
+                                    </ListItem>
+                                </ListItemButton>
+                                <ListItemButton dense>
+                                    <ListItem
+                                        className="list-item-hover"
+                                        secondaryAction={
+                                            <Button variant="outlined" color='error'>Supprimer</Button>
+                                        }
+                                    >
+                                        <ListItemAvatar>
+                                            <Avatar src="https://unsplash.com/photos/IF9TK5Uy-KI/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjgxOTA1NjMx&force=true&w=640" />
+                                        </ListItemAvatar>
+                                        <ListItemText primary="Pseudo" />
+                                    </ListItem>
+                                </ListItemButton>
+                            </List>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialogInvidation} autoFocus>
+                        Fermer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </div>
     );
 };

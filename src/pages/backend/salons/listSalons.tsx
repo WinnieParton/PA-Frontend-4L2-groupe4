@@ -5,12 +5,15 @@ import MenuItem from '@mui/material/MenuItem';
 import React from 'react';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { ListItemText } from '@mui/material';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import GroupsIcon from '@mui/icons-material/Groups';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { Link, useNavigate } from 'react-router-dom';
+import appRoutes from '../../../routes/routes';
 
 const ListSalon = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -46,7 +49,9 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <h3>Nom du salon</h3>
+                                <Link to={appRoutes.SALONS_SHOW}>
+                                    <h3>Nom du salon</h3>
+                                </Link>
                                 <p>3 Participants</p>
                             </div>
                         </div>
@@ -66,18 +71,22 @@ const ListSalon = () => {
                             >
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
+                                        <PersonAddIcon
+                                            fontSize="small"
+                                            color="primary"
+                                        />
                                     </ListItemIcon>
-                                    <ListItemText>
-                                        Ajouter à un groupe
-                                    </ListItemText>
+                                    <ListItemText>Ajouter un ami</ListItemText>
                                 </MenuItem>
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
+                                        <DeleteIcon
+                                            fontSize="small"
+                                            color="error"
+                                        />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        Retirer des amis
+                                        Supprimer le salon
                                     </ListItemText>
                                 </MenuItem>
                             </Menu>
@@ -92,8 +101,11 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <h3>Nom du salon</h3>
-                                <p>3 Participants</p>
+                                <Link to={appRoutes.SALONS_SHOW}>
+                                    <h3>Nom du salon</h3>
+                                </Link>
+
+                                <p>34 Participants</p>
                             </div>
                         </div>
                         <div className="obj-card-right">
@@ -112,18 +124,22 @@ const ListSalon = () => {
                             >
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
+                                        <PersonAddIcon
+                                            fontSize="small"
+                                            color="primary"
+                                        />
                                     </ListItemIcon>
-                                    <ListItemText>
-                                        Ajouter à un groupe
-                                    </ListItemText>
+                                    <ListItemText>Ajouter un ami</ListItemText>
                                 </MenuItem>
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
+                                        <DeleteIcon
+                                            fontSize="small"
+                                            color="error"
+                                        />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        Retirer des amis
+                                        Supprimer le salon
                                     </ListItemText>
                                 </MenuItem>
                             </Menu>
@@ -138,7 +154,9 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <h3>Nom du salon</h3>
+                                <Link to={appRoutes.SALONS_SHOW}>
+                                    <h3>Nom du salon</h3>
+                                </Link>
                                 <p>3 Participants</p>
                             </div>
                         </div>
@@ -158,18 +176,22 @@ const ListSalon = () => {
                             >
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <GroupsIcon fontSize="small" />
+                                        <PersonAddIcon
+                                            fontSize="small"
+                                            color="primary"
+                                        />
                                     </ListItemIcon>
-                                    <ListItemText>
-                                        Ajouter à un groupe
-                                    </ListItemText>
+                                    <ListItemText>Ajouter un ami</ListItemText>
                                 </MenuItem>
                                 <MenuItem>
                                     <ListItemIcon>
-                                        <NoAccountsIcon fontSize="small" />
+                                        <DeleteIcon
+                                            fontSize="small"
+                                            color="error"
+                                        />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        Retirer des amis
+                                        Supprimer le salon
                                     </ListItemText>
                                 </MenuItem>
                             </Menu>
