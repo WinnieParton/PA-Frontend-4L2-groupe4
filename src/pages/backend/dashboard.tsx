@@ -1,11 +1,19 @@
 import { Outlet } from 'react-router';
+import Sidebar from '../../components/sidebar';
+import Navbar from '../../components/navbar';
 
 const Dashboard = () => {
+
+    
     return (
-        <>
-            <h2>Dashboard</h2>
-            <Outlet />
-        </>
+        <div className='dashboard'>
+            <Sidebar/>
+            <div className="dashboard-container">
+                <Navbar/>
+                <Outlet />
+            </div>
+            
+        </div>
     );
 };
 

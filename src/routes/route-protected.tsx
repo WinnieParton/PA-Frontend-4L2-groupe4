@@ -5,7 +5,7 @@ type PropsRouteProtected = PropsWithChildren<{
     expectedRoles: Array<String>;
 }>;
 const RouteProtected = ({ expectedRoles, children }: PropsRouteProtected) => {
-    const auth = false;
+    const auth = true;
 
     if (!auth) {
         return <Navigate to="/" replace />;

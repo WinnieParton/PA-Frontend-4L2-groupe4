@@ -1,0 +1,79 @@
+.sidebar{
+    background: #ffffff;
+    flex: 1;
+    border: 0;
+    border-right: 0.100px solid $secondaryColor;
+    min-height: 100vh;
+
+    .logo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        color: #ffffff;
+
+        h1{
+            font : {
+                size: 1.5rem;
+                weight : bold;
+            }
+            color: $primaryColor;
+        }
+    }
+
+    hr{
+        height: 0;
+        border: 0;
+        border-bottom: 0.100px solid $secondaryColor;
+    }
+
+    .menu{
+        padding-left: 10px;
+
+        ul {
+            list-style: none;
+
+            li{
+                display: flex;
+                align-items: center;
+                padding: 5px;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-top: 20px;
+                width: 100%;
+
+                a{
+                    all: unset;
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                }
+
+                .icon{
+                    font-size: 18px;
+                    color: $primaryColor;
+                    transition: all 0.3s;
+                }
+
+                span {
+                    font : {
+                        size: .8rem;
+                        weight : 600;
+                    }
+                    color: $grey;
+                    margin-left: 10px;
+                }
+                &:hover{
+                    background: $primaryColor;
+
+                    span {
+                        color: #ffffff;
+                    }
+                    .icon {
+                        color: $secondaryColor;
+                    }
+                }
+            }
+        }
+    }
+ }

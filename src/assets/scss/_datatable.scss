@@ -1,0 +1,82 @@
+.datatable{
+    height: 320px;
+    padding: 20px;
+    width: 100%;
+
+    .cell-with-img{
+        display: flex;
+        align-items: center;
+
+        .cell-img{
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        
+    }
+
+    .cell-with-status{
+        padding: 5px;
+        border-radius: 5px;
+
+        &.pending{
+            color: #ffbb00;
+            background: #ffbb0040 ;
+        }
+        &.start{
+            color: #0077ff;
+            background: #0077ff40 ;
+        }
+        &.paused{
+            color: #ff0037;
+            background: #ff003740 ;
+        }
+    }
+
+    .cell-action{
+        display: flex;
+        align-items: center;
+         gap: 15px;
+
+         .showBtn, .editBtn, .deleteBtn{
+            border: none;
+            background: transparent;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+         }
+
+         .showBtn{
+            color: #0077ff;
+            border: 1px solid #0077ff;
+            transition: all .3s;
+            &:hover{
+                background: #0077ff ;
+                color: #fff;
+            }
+         }
+
+         .editBtn{
+            color: #ffbb00;
+            border: 1px solid #ffbb00;
+            transition: all .3s;
+            &:hover{
+                background: #ffbb00 ;
+                color: #fff;
+            }
+         }
+
+         .deleteBtn{
+            color: #ff0037;
+            border: 1px solid #ff0037;
+            transition: all .3s;
+            &:hover{
+                background: #ff0037 ;
+                color: #fff;
+            }
+         }
+    }
+}
