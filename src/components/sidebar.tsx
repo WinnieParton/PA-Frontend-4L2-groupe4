@@ -2,8 +2,6 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import PeopleIcon from '@mui/icons-material/People';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import appRoutes from '../routes/routes';
 
@@ -28,12 +26,14 @@ return (
                     <span>Jeux</span></Link>
                 </li>
                 <li>
+                    <Link to={appRoutes.SALONS}>
                     <MeetingRoomIcon className='icon'/>
-                    <span>Salons</span>
+                    <span>Salons</span></Link>
                 </li>
                 <li>
+                    <Link to={appRoutes.AMIS}>
                     <PeopleIcon className='icon'/>
-                    <span>Amis</span>
+                    <span>Amis</span></Link>
                 </li>
                
             </ul>

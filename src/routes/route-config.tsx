@@ -6,6 +6,8 @@ import RouteProtected from './route-protected';
 import appRoutes from './routes';
 import Home from '../pages/backend/home';
 import ListJeux from '../pages/backend/jeux/listJeux';
+import ListAmis from '../pages/backend/amis/listAmis';
+import ListSalon from '../pages/backend/salons/listSalons';
 const routesConfig = [
     {
         path: appRoutes.HOME,
@@ -37,6 +39,14 @@ const routesConfig = [
             {
                 path: appRoutes.JEUX,
                 element: <ListJeux/>,
+            },
+            {
+                path: appRoutes.AMIS,
+                element: <ListAmis/>,
+            },
+            {
+                path: appRoutes.SALONS,
+                element: <ListSalon/>,
             },
         ],
     },
