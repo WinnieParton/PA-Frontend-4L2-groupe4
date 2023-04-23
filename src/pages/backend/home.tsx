@@ -3,7 +3,7 @@ import Widget from "../../components/widget";
 
 const Home = () => {
     return (
-       <>
+       <div className="page-wrapper">
         <div className="widgets">
             <Widget type="jeux"/>
             <Widget type="amis"/>
@@ -15,7 +15,7 @@ const Home = () => {
             </div>
             <TableCustom/>
         </div>
-       </>
+       </div>
     )
 }
 
