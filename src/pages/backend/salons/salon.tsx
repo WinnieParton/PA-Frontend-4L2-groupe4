@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import React from "react";
+import appRoutes from '../../../routes/routes';
 
 const Salon = () => {
 
@@ -36,6 +37,10 @@ const Salon = () => {
                 <h3>Jeux : Nom du jeu</h3>
                 <p>3 Participants</p>
                 <Button variant="outlined" color='primary'>Ajouter un ami</Button>
+                
+                <br />
+
+                <Button variant="contained" href="/dashboard/salon/12" sx={{ marginTop : "10px" }} color='primary'>Jouer</Button>
             </div>
         </div>
 

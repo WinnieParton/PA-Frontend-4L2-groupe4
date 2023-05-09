@@ -19,7 +19,10 @@ const ListSalon = () => {
     };
     const handleClose = () => {
         setAnchorEl(null);
+       
     };
+  
+   
     return (
         <div className="page-wrapper">
             <div className="page-wrapper-header">
@@ -41,6 +44,7 @@ const ListSalon = () => {
             <div className="page-wrapper-content">
                 <div className="obj-grid">
                     <div className="obj-card">
+                    <Link to={appRoutes.SALONS_SHOW}>
                         <div className="obj-card-left">
                             <div>
                                 <img
@@ -49,12 +53,14 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <Link to={appRoutes.SALONS_SHOW}>
+                              
                                     <h3>Nom du salon</h3>
-                                </Link>
+                             
                                 <p>3 Participants</p>
                             </div>
+                           
                         </div>
+                        </Link>
                         <div className="obj-card-right">
                             <button onClick={handleClick}>
                                 <MoreHorizIcon />
@@ -93,6 +99,7 @@ const ListSalon = () => {
                         </div>
                     </div>
                     <div className="obj-card">
+                    <Link to={appRoutes.SALONS_SHOW}>
                         <div className="obj-card-left">
                             <div>
                                 <img
@@ -101,13 +108,14 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <Link to={appRoutes.SALONS_SHOW}>
+                              
                                     <h3>Nom du salon</h3>
-                                </Link>
-
-                                <p>34 Participants</p>
+                             
+                                <p>3 Participants</p>
                             </div>
+                           
                         </div>
+                        </Link>
                         <div className="obj-card-right">
                             <button onClick={handleClick}>
                                 <MoreHorizIcon />
@@ -146,6 +154,7 @@ const ListSalon = () => {
                         </div>
                     </div>
                     <div className="obj-card">
+                    <Link to={appRoutes.SALONS_SHOW}>
                         <div className="obj-card-left">
                             <div>
                                 <img
@@ -154,12 +163,14 @@ const ListSalon = () => {
                                 />
                             </div>
                             <div className="obj-card-left-text">
-                                <Link to={appRoutes.SALONS_SHOW}>
+                              
                                     <h3>Nom du salon</h3>
-                                </Link>
+                             
                                 <p>3 Participants</p>
                             </div>
+                           
                         </div>
+                        </Link>
                         <div className="obj-card-right">
                             <button onClick={handleClick}>
                                 <MoreHorizIcon />

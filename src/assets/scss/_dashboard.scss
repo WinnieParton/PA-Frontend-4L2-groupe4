@@ -81,10 +81,11 @@
 
             &-content {
 
-                .obj-grid{
+                .obj-grid {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
-                   gap: 10px;
+                    gap: 10px;
+
                     .obj-card {
                         display: flex;
                         align-items: center;
@@ -93,68 +94,72 @@
                         padding: 20px;
                         margin: 20px;
                         border-radius: 10px;
-    
-                        &-left{
+
+                        a {
+                            all: unset;
+                            cursor: pointer;
+                        }
+
+                        &-left {
                             display: flex;
                             align-items: center;
                             justify-content: flex-start;
-                            img{
+
+                            img {
                                 width: 80px;
                                 height: 80px;
                                 object-fit: cover;
                                 border-radius: 5px;
                             }
-    
-                            &-text{
+
+                            &-text {
                                 display: flex;
                                 flex-direction: column;
                                 margin-left: 10px;
-    
-                               a{
-                                text-decoration: none;
-                                color: inherit;
-                                h3{
+
+                                h3 {
                                     font-style: 18px;
                                     font-weight: bold;
                                     margin-bottom: 10px;
                                     transition: all .3s;
                                     cursor: pointer;
-                                    &:hover{
+
+                                    &:hover {
                                         text-decoration: underline;
                                     }
                                 }
-                               }
-    
-                                p{
+
+                                p {
                                     font-size: 13px;
                                     color: $grey;
                                     transition: all .3s;
                                     cursor: pointer;
-                                    &:hover{
+
+                                    &:hover {
                                         text-decoration: underline;
                                     }
                                 }
                             }
                         }
-    
-                        &-right{
-                           button{
-                            border: none;
-                            background: transparent;
-                           }
+
+                        &-right {
+                            button {
+                                border: none;
+                                background: transparent;
+                            }
                         }
                     }
                 }
 
 
-                .page-wrapper-hero{
+                .page-wrapper-hero {
                     display: flex;
                     padding: 20px;
                     justify-content: flex-start;
                     gap: 10px;
 
-                    &-left{
-                        img{
+                    &-left {
+                        img {
                             width: 200px;
                             height: 200px;
                             object-fit: cover;
@@ -162,23 +167,96 @@
                         }
                     }
 
-                    &-rigth{
-                        h3{
+                    &-rigth {
+                        h3 {
                             font-size: 20px;
                             font-weight: bold;
                             margin-bottom: 10px;
                         }
-                        p{
+
+                        p {
                             color: $grey;
                             margin-bottom: 10px;
                         }
                     }
                 }
-               
+
+            }
+
+            &-espace-jeux {
+                display: flex;
+                height: 100vh;
+
+                &-content {
+
+                    max-width: calc(100% - 250px);
+                    width: calc(100% - 250px);
+
+                }
+
+                &-tchat {
+                    max-width: 250px;
+                    width: 250px;
+                    padding: 5px;
+                    background: $secondaryColor;
+
+                    .message-content {
+                        display: flex;
+                        height: 100%;
+                        flex-direction: column;
+                        justify-content: flex-end;
+
+                        .message-sender,
+                        .message-receiver {
+                            box-sizing: border-box;
+                            padding: 0.5rem 1rem;
+                            margin: 1rem;
+                            background: #FFF;
+                            border-radius: 1.125rem 1.125rem 1.125rem 0;
+                            min-height: 2.25rem;
+                            width: fit-content;
+                            max-width: 66%;
+
+                            box-shadow:
+                                0 0 2rem rgba(black, 0.075),
+                                0rem 1rem 1rem -1rem rgba(black, 0.1);
+                        }
+
+                        .message-receiver {
+                            margin: 1rem 1rem 1rem auto;
+                            border-radius: 1.125rem 1.125rem 0 1.125rem;
+                            background: $grey;
+                            color: white;
+                        }
+                    }
+
+                    .input-message {
+                      input{
+                        width: 100%;
+                        border: none;
+                        background-image: none;
+                        background-color: white;
+                        padding: 0.5rem 1rem;
+                        border-radius: 1.125rem;
+                        box-shadow:
+                            0 0 1rem rgba(black, 0.1),
+                            0rem 1rem 1rem -1rem rgba(black, 0.2);
+
+                        font-weight: 400;
+                        letter-spacing: 0.025em;
+
+                        &:placeholder {
+                            color: $grey;
+                        }
+                      }
+                    }
+
+
+                }
             }
         }
 
-    
+
 
     }
 

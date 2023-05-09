@@ -1,7 +1,43 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import appRoutes from '../../routes/routes';
+import { useState } from 'react';
+import axios from 'axios';
+type loginParameter = {
+    email: String | any;
+    password: String | any;
+};
+const loginUser = async (data: loginParameter) => {
+    let user;
+    if (data.email !== null || data.password !== null) {
+        user = await axios.post('http://localhost:8080/user/login', data); 
+    }
+    else{
+        console.log('Renseignez tous les champs');
+    }
 
+    return user;
+    
+      
+};
 const Login = () => {
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+     const navigate = useNavigate();
+    function setToken(userToken: String) {
+        localStorage.setItem('auth', JSON.stringify({token : userToken, status : true}));
+      }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const user = await loginUser({
+            email,
+            password,
+        });
+        setToken(user.data.token)
+
+        if(user){
+          return  navigate(appRoutes.DASHBOARD_HOME)
+        }
+    };
     return (
         <div className="auth-page login-page-img-background">
             <div className="auth-card">
@@ -12,9 +48,11 @@ const Login = () => {
                         <div className="auth-form-content-input">
                             <i className="fa-regular fa-user custom-app-icon"></i>
                             <input
-                                type="text"
+                                type="email"
                                 placeholder="Votre adresse mail"
-                                id="username"
+                                id="email"
+                                name="email"
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                     </div>
@@ -27,8 +65,9 @@ const Login = () => {
                                 type="password"
                                 placeholder="Votre mot de passe"
                                 id="password"
+                                onChange={(e) => setPassword(e.target.value)}
                             />
-                            <button type="submit" className="auth-btn-submit">
+                            <button type="submit" className="auth-btn-submit" onClick={handleSubmit}>
                                 <i className="fa-solid fa-angle-right"></i>
                             </button>
                         </div>
