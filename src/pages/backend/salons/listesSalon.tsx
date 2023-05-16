@@ -52,7 +52,7 @@ const ListesSalon = () => {
       </div>
       {/*End page head*/}
 
-      <div className="cs-grid">
+      <div className="cs-grid p-2 bg-light">
 
         {lobbies.map((el) => (
            <Card  key={el.id}>

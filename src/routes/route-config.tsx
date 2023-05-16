@@ -8,6 +8,7 @@ import Home from '../pages/backend/home';
 import ListesSalon from "../pages/backend/salons/listesSalon";
 import DetailSalon from '../pages/backend/salons/detailSalon';
 import SalleJeu from '../pages/backend/salons/salleJeu';
+import ListesAmis from '../pages/backend/amis/listesAmis';
 const routesConfig = [
     {
         path: appRoutes.HOME,
@@ -47,6 +48,11 @@ const routesConfig = [
             {
                 path: appRoutes.SALLE_JEU,
                 element: <SalleJeu/>,
+            },
+
+            {
+                path: appRoutes.AMIS,
+                element: <ListesAmis/>,
             },
 
         ],

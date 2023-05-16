@@ -18,27 +18,29 @@ const SalleJeu = () => {
             </div>
             {/*End page head*/}
 
-<div className='bg-light p-2 my-2'>
-<Row>
-                <Col md={9}>
-                    <div className='jeux-content'>
-                        SALLE DE JEU
-                    </div>
-                </Col>
-                <Col md={3}>
-                <div className='tchat-content'>
-                <div className="message-content">
-                <div className="message-sender">Salut</div>
-                <div className="message-receiver">Salut ça va?</div>
-                </div>
-                <div className="input-message">
-                    <input type="text" placeholder='Entre votre message...' />
-                </div>
-                </div>
-                </Col>
-            </Row>
-</div>
-           
+            <div className="bg-light p-2 my-2">
+                <Row>
+                    <Col md={9}>
+                        <div className="jeux-content">SALLE DE JEU</div>
+                    </Col>
+                    <Col md={3}>
+                        <div className="tchat-content">
+                            <div className="message-content">
+                                <div className="message-sender">Salut</div>
+                                <div className="message-receiver">
+                                    Salut ça va?
+                                </div>
+                            </div>
+                            <div className="input-message">
+                                <input
+                                    type="text"
+                                    placeholder="Entre votre message..."
+                                />
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </div>
         </div>
     );
 };
