@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Modal,Form } from "react-bootstrap";
 import callOfDuty from "../../../assets/images/jeux/callOfDuty.jpg"
+import images from "../../../assets/images/jeux/images.png"
 import client from "../../../api/api";
 
 const ListesSalon = () => {
@@ -54,9 +55,9 @@ const ListesSalon = () => {
 
       <div className="cs-grid p-2 bg-light">
 
-        {lobbies.map((el) => (
+        {lobbies.map((el,index) => (
            <Card  key={el.id}>
-           <Card.Img variant="top" src={callOfDuty} />
+           <Card.Img variant="top" src={index == 0 ? images :callOfDuty} style={{ aspectRatio : 16/9 }} />
            <Card.Body>
              <Card.Title>{el.name}</Card.Title>
              <Card.Subtitle className="mb-2 text-muted">3 participants</Card.Subtitle>
