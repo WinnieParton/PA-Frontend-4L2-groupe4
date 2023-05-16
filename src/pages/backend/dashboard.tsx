@@ -1,18 +1,15 @@
 import { Outlet } from 'react-router';
 import Sidebar from '../../components/sidebar';
-import Navbar from '../../components/navbar';
+import Navigation from '../../components/Navigation';
 
 const Dashboard = () => {
 
     
     return (
-        <div className='dashboard'>
-            <Sidebar/>
-            <div className="dashboard-container">
-                <Navbar/>
-                <Outlet />
-            </div>
-            
+        <div className=''>
+          <Navigation/>
+          <Outlet/>
+
         </div>
     );
 };

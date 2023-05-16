@@ -5,11 +5,9 @@ import Dashboard from '../pages/backend/dashboard';
 import RouteProtected from './route-protected';
 import appRoutes from './routes';
 import Home from '../pages/backend/home';
-import ListJeux from '../pages/backend/jeux/listJeux';
-import ListAmis from '../pages/backend/amis/listAmis';
-import ListSalon from '../pages/backend/salons/listSalons';
-import Salon from '../pages/backend/salons/salon';
-import EspaceJeux from '../pages/backend/salons/espaceJeu';
+import ListesSalon from "../pages/backend/salons/listesSalon";
+import DetailSalon from '../pages/backend/salons/detailSalon';
+import SalleJeu from '../pages/backend/salons/salleJeu';
 const routesConfig = [
     {
         path: appRoutes.HOME,
@@ -39,25 +37,18 @@ const routesConfig = [
                 element: <Home />,
             },
             {
-                path: appRoutes.JEUX,
-                element: <ListJeux/>,
-            },
-            {
-                path: appRoutes.AMIS,
-                element: <ListAmis/>,
-            },
-            {
                 path: appRoutes.SALONS,
-                element: <ListSalon/>,
+                element: <ListesSalon/>,
             },
             {
                 path: appRoutes.SALONS_SHOW,
-                element: <Salon/>,
+                element: <DetailSalon/>,
             },
             {
-                path: appRoutes.SALONS_SHOW + '/:salon',
-                element: <EspaceJeux/>,
+                path: appRoutes.SALLE_JEU,
+                element: <SalleJeu/>,
             },
+
         ],
     },
 ];

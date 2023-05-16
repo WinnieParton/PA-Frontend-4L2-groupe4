@@ -262,3 +262,72 @@
 
 
 }
+
+ .cs-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+ }
+
+ .jeux-content, .tchat-content{
+    height: 80vh;
+    background: #ffffff;
+    padding: 5px;
+ }
+
+ .tchat-content{
+    background: $secondaryColor;
+
+    .message-content {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        .message-sender,
+        .message-receiver {
+            box-sizing: border-box;
+            padding: 0.5rem 1rem;
+            margin: 1rem;
+            background: #FFF;
+            border-radius: 1.125rem 1.125rem 1.125rem 0;
+            min-height: 2.25rem;
+            width: fit-content;
+            max-width: 66%;
+
+            box-shadow:
+                0 0 2rem rgba(black, 0.075),
+                0rem 1rem 1rem -1rem rgba(black, 0.1);
+        }
+
+        .message-receiver {
+            margin: 1rem 1rem 1rem auto;
+            border-radius: 1.125rem 1.125rem 0 1.125rem;
+            background: $grey;
+            color: white;
+        }
+    }
+
+    .input-message {
+      input{
+        width: 100%;
+        border: none;
+        background-image: none;
+        background-color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 1.125rem;
+        box-shadow:
+            0 0 1rem rgba(black, 0.1),
+            0rem 1rem 1rem -1rem rgba(black, 0.2);
+
+        font-weight: 400;
+        letter-spacing: 0.025em;
+
+        &:placeholder {
+            color: $grey;
+        }
+      }
+    }
+
+
+}

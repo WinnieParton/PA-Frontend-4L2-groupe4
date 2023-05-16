@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import appRoutes from '../../routes/routes';
 import { useState } from 'react';
-import axios from 'axios';
+import client from "../../api/api";
 type registerParameter = {
     name: String | any;
     email: String | any;
@@ -22,7 +22,7 @@ const registerUser = async (data: registerParameter) => {
         console.log('Les mots de passe ne concordent pas.');
     }
 
-    return await axios.post('http://localhost:8080/user', data);
+    return await client.post('http://localhost:8080/user', data);
     
       
 };
