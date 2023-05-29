@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, ListGroup, Row } from 'react-bootstrap';
 import appRoutes from '../../../routes/routes';
 import { useParams } from 'react-router-dom';
-import client from '../../../api/api';
 import callOfDuty from '../../../assets/images/jeux/callOfDuty.jpg';
+import { getLobby } from '../../../service/frontendService';
 
 const DetailSalon = () => {
     const { id } = useParams();
@@ -14,8 +14,8 @@ const DetailSalon = () => {
     }, []);
 
     const handleLoadLobby = async () => {
-        const results = await client.get(`/lobby/${id}`);
-        setLobby(results.data);
+        const results = await getLobby(id);
+        setLobby(results);
     };
 
     return (
@@ -23,7 +23,7 @@ const DetailSalon = () => {
             {/*Start page head*/}
             <div className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
                 <div>
-                    <h2>{lobby.name}</h2>
+                    {/* <h2>{lobby.name}</h2> */} lobi name
                 </div>
                 <div>
                     <Button variant="primary" href={appRoutes.SALONS}>

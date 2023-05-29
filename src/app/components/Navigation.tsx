@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Navigation = () => {
     const navigate = useNavigate();
     const handlLogout = () => {
-        localStorage.removeItem('auth');
+        localStorage.clear();
         return  navigate(appRoutes.HOME)
     }
     return (

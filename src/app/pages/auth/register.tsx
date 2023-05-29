@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import appRoutes from '../../routes/routes';
-import { useState } from 'react';
-import client from "../../api/api";
+import { signup } from '../../service/frontendService';
+
 type registerParameter = {
     name: String | any;
     email: String | any;
@@ -21,19 +22,21 @@ const registerUser = async (data: registerParameter) => {
     if (data.password !== data.password_confirm) {
         console.log('Les mots de passe ne concordent pas.');
     }
-
-    return await client.post('http://localhost:8080/user', data);
-    
-      
+    try {
+        return await signup(data);
+    } catch (error) {
+        // Handle login error
+        console.error('rrrrrrrrrrrrrrrrrrr ' + error);
+    }
 };
 
 const Register = () => {
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [password_confirm, setPasswordConfirm] = useState();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [password_confirm, setPasswordConfirm] = useState('');
 
-     const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,8 +48,8 @@ const Register = () => {
             role: 'PLAYER',
         });
 
-        if(user){
-            return  navigate(appRoutes.LOGIN)
+        if (user) {
+            return navigate(appRoutes.LOGIN);
         }
     };
 

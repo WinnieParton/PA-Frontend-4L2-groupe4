@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Button,
-    Card,
-    Modal,
-    Form,
-    Row,
+    ButtonGroup,
     Col,
-    Tabs,
+    Form,
+    Modal,
+    Row,
     Tab,
     Table,
-    ButtonGroup,
+    Tabs,
 } from 'react-bootstrap';
-import client from '../../../api/api';
+import {
+    AddFriend,
+    AnswerInvitation,
+    ListInvitationReceived,
+    ListInvitationSend,
+    researchUser,
+} from '../../../service/frontendService';
 
 const ListesAmis = () => {
     const tokenString = localStorage.getItem('auth');
@@ -20,7 +25,7 @@ const ListesAmis = () => {
 
     const [show, setShow] = useState(false);
     const [username, setUsername] = useState(null);
-    const [friend, setFriend] = useState({});
+    const [friends, setFriends] = useState([]);
 
     const [senders, setSenders] = useState([]);
     const [receivers, setReceivers] = useState([]);
@@ -31,50 +36,42 @@ const ListesAmis = () => {
         handleLoadSender();
         handleLoadReceiver();
     }, []);
-    
+
     useEffect(() => {
         handleLoadSender();
         handleLoadReceiver();
-    }, [friend]);
+    }, [friends]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const handleSearch = async () => {
-        const result = await client.get(`/user/name/${username}`);
-        if (result.data.id !== user.id) {
-            setFriend(result.data);
-        }
+        const result = await researchUser(username);
+        setFriends(result);
     };
 
-    const handleAddFriend = async () => {
-        const result = await client.post(`/friend/${user.id}`, {
-            receiver: friend.id,
+    const handleAddFriend = async (friendId) => {
+        const result = AddFriend(user.id, {
+            receiver: friendId,
         });
-
-        setFriend({});
+        setFriends([]);
         setUsername(null);
         handleClose();
     };
-
     const handleLoadSender = async () => {
-        const result = await client.get(`/friend/sent/${user.id}`);
-        setSenders(result.data);
+        const result = await ListInvitationSend(user.id);
+        setSenders(result);
     };
     const handleLoadReceiver = async () => {
-        const result = await client.get(`/friend/received/${user.id}`);
-        setReceivers(result.data);
+        const result = await ListInvitationReceived(user.id);
+        setReceivers(result);
     };
 
     const handleValidate = async (statut: String, id: String) => {
-      const result = await client.put(`/friend/${user.id}/answer`, {
+        const result = await AnswerInvitation(user.id, {
             receiver: id,
             status: statut,
         });
-        console.log('OK ');
-
-        // handleLoadSender();
-        // handleLoadReceiver();
     };
 
     return (
@@ -199,20 +196,28 @@ const ListesAmis = () => {
                             </Button>
                         </Form.Group>
                     </Form>
-                    {friend?.name !== undefined && (
-                        <Row className="p-2 my-2 bg-light align-items-center">
-                            <Col md="8">
-                                <h3>{friend.name}</h3>
-                            </Col>
-                            <Col md="4">
-                                <Button
-                                    variant="info"
-                                    onClick={handleAddFriend}
+                    {friends.map(
+                        (friend, index) =>
+                            friend.id !== friend.user && (
+                                <Row
+                                    className="p-2 my-2 bg-light align-items-center"
+                                    key={index}
                                 >
-                                    Invitation
-                                </Button>
-                            </Col>
-                        </Row>
+                                    <Col md="8">
+                                        <h3>{friend.name}</h3>
+                                    </Col>
+                                    <Col md="4">
+                                        <Button
+                                            variant="info"
+                                            onClick={() =>
+                                                handleAddFriend(friend)
+                                            }
+                                        >
+                                            Invitation
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            )
                     )}
                 </Modal.Body>
             </Modal>
