@@ -1,15 +1,62 @@
-import { Link } from "react-router-dom";
-import appRoutes from "../../routes/routes";
+import { Link, useNavigate } from 'react-router-dom';
+import appRoutes from '../../routes/routes';
+import { useState } from 'react';
+import client from "../../api/api";
+type registerParameter = {
+    name: String | any;
+    email: String | any;
+    password: String | any;
+    password_confirm: String | any;
+    role: String;
+};
+const registerUser = async (data: registerParameter) => {
+    if (
+        data.name === null ||
+        data.email === null ||
+        data.password === null ||
+        data.password_confirm === null
+    ) {
+        console.log('Renseignez tous les champs');
+    }
+    if (data.password !== data.password_confirm) {
+        console.log('Les mots de passe ne concordent pas.');
+    }
 
+    return await client.post('http://localhost:8080/user', data);
+    
+      
+};
 
 const Register = () => {
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [password_confirm, setPasswordConfirm] = useState();
+
+     const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const user = await registerUser({
+            name,
+            email,
+            password,
+            password_confirm,
+            role: 'PLAYER',
+        });
+
+        if(user){
+            return  navigate(appRoutes.LOGIN)
+        }
+    };
+
     return (
         <div className="auth-page register-page-img-background">
             <div className="auth-card">
                 <div className="auth-logo">LOGO</div>
                 <div className="auth-form">
                     <div className="auth-form-content">
-                        <label htmlFor="username" className="auth-form-label">
+                        <label htmlFor="name" className="auth-form-label">
                             Nom d'utilisateur
                         </label>
                         <div className="auth-form-content-input">
@@ -17,7 +64,9 @@ const Register = () => {
                             <input
                                 type="text"
                                 placeholder="Votre nom d'utilisateur"
-                                id="username"
+                                id="name"
+                                name="name"
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </div>
                     </div>
@@ -31,6 +80,8 @@ const Register = () => {
                                 type="email"
                                 placeholder="Votre adresse mail"
                                 id="email"
+                                name="email"
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                     </div>
@@ -45,6 +96,7 @@ const Register = () => {
                                 type="password"
                                 placeholder="Votre mot de passe"
                                 id="password"
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                     </div>
@@ -62,14 +114,23 @@ const Register = () => {
                                 type="password"
                                 placeholder="Votre mot de passe"
                                 id="password_confirm"
+                                name="password_confirm"
+                                onChange={(e) =>
+                                    setPasswordConfirm(e.target.value)
+                                }
                             />
                         </div>
                     </div>
                 </div>
                 <div className="auth-btn-container">
-                    
-                    <Link to={appRoutes.LOGIN} className="auth-btn-empty">Annuler</Link>
-                    <button type="submit" className="auth-btn-full">
+                    <Link to={appRoutes.LOGIN} className="auth-btn-empty">
+                        Annuler
+                    </Link>
+                    <button
+                        type="submit"
+                        className="auth-btn-full"
+                        onClick={handleSubmit}
+                    >
                         Valider
                     </button>
                 </div>
