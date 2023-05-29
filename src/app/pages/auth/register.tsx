@@ -3,53 +3,66 @@ import { Link, useNavigate } from 'react-router-dom';
 import appRoutes from '../../routes/routes';
 import { signup } from '../../service/frontendService';
 
-type registerParameter = {
-    name: String | any;
-    email: String | any;
-    password: String | any;
-    password_confirm: String | any;
-    role: String;
-};
-const registerUser = async (data: registerParameter) => {
-    if (
-        data.name === null ||
-        data.email === null ||
-        data.password === null ||
-        data.password_confirm === null
-    ) {
-        console.log('Renseignez tous les champs');
-    }
-    if (data.password !== data.password_confirm) {
-        console.log('Les mots de passe ne concordent pas.');
-    }
-    try {
-        return await signup(data);
-    } catch (error) {
-        // Handle login error
-        console.error('rrrrrrrrrrrrrrrrrrr ' + error);
-    }
-};
-
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password_confirm, setPasswordConfirm] = useState('');
-
+    const [errorMessage, setErrorMessage] = useState('');
+    const [errors, setErrors] = useState<{
+        email?: string;
+        password?: string;
+        name?: string;
+        password_confirm?: string;
+    }>({});
     const navigate = useNavigate();
+    
+    const validateForm = () => {
+        let formIsValid = true;
+        const newErrors: {
+            email?: string;
+            password?: string;
+            name?: string;
+            password_confirm?: string;
+        } = {};
+        if (!email) {
+            formIsValid = false;
+            newErrors.email = 'Email is required';
+        }
+        if (!password) {
+            formIsValid = false;
+            newErrors.password = 'Password is required';
+        }
+        if (!name) {
+            formIsValid = false;
+            newErrors.name = 'Username is required';
+        }
+        if (password && password != password_confirm) {
+            formIsValid = false;
+            newErrors.password = 'Password must match with confirm password';
+        }
 
+        setErrors(newErrors);
+        return formIsValid;
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const user = await registerUser({
-            name,
-            email,
-            password,
-            password_confirm,
-            role: 'PLAYER',
-        });
+        if (validateForm()) {
+            try {
+                const user = await signup({
+                    name,
+                    email,
+                    password,
+                    password_confirm,
+                    role: 'PLAYER',
+                });
 
-        if (user) {
-            return navigate(appRoutes.LOGIN);
+                if (user) {
+                    return navigate(appRoutes.LOGIN);
+                }
+            } catch (error) {
+                setErrorMessage(error.data);
+            }
         }
     };
 
@@ -58,6 +71,11 @@ const Register = () => {
             <div className="auth-card">
                 <div className="auth-logo">LOGO</div>
                 <div className="auth-form">
+                    {errorMessage && (
+                        <h3 className="text-danger text-center">
+                            <strong>Password or Email incorrect</strong>
+                        </h3>
+                    )}
                     <div className="auth-form-content">
                         <label htmlFor="name" className="auth-form-label">
                             Nom d'utilisateur
@@ -72,6 +90,14 @@ const Register = () => {
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
+                        {errors.name && (
+                            <span
+                                className="text-danger"
+                                style={{ fontSize: '13px' }}
+                            >
+                                {errors.name}
+                            </span>
+                        )}
                     </div>
                     <div className="auth-form-content">
                         <label htmlFor="email" className="auth-form-label">
@@ -87,6 +113,14 @@ const Register = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
+                        {errors.email && (
+                            <span
+                                className="text-danger"
+                                style={{ fontSize: '13px' }}
+                            >
+                                {errors.email}
+                            </span>
+                        )}
                     </div>
 
                     <div className="auth-form-content">
@@ -102,6 +136,14 @@ const Register = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        {errors.password && (
+                            <span
+                                className="text-danger"
+                                style={{ fontSize: '13px' }}
+                            >
+                                {errors.password}
+                            </span>
+                        )}
                     </div>
 
                     <div className="auth-form-content">
@@ -123,6 +165,17 @@ const Register = () => {
                                 }
                             />
                         </div>
+                        {errors.password_confirm && (
+                            <span
+                                className="text-danger"
+                                style={{
+                                    marginBottom: '10px',
+                                    fontSize: '13px',
+                                }}
+                            >
+                                {errors.password_confirm}
+                            </span>
+                        )}
                     </div>
                 </div>
                 <div className="auth-btn-container">

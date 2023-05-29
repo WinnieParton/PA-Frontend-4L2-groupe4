@@ -1,4 +1,8 @@
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faAngleRight,
+    faLock,
+    faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,24 +12,38 @@ import { login } from '../../service/frontendService';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState(false);
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+        {}
+    );
     const navigate = useNavigate();
-    function saveToken(userToken: String) {
-        localStorage.setItem(
-            'auth',
-            JSON.stringify({ token: userToken, status: true })
-        );
-    }
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
+    const validateForm = () => {
+        let formIsValid = true;
+        const newErrors: { email?: string; password?: string } = {};
+        if (!email) {
+            formIsValid = false;
+            newErrors.email = 'Email is required';
+        }
+        if (!password) {
+            formIsValid = false;
+            newErrors.password = 'Password is required';
+        }
+
+        setErrors(newErrors);
+        return formIsValid;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const user = await login(email, password);
-            saveToken(user.token);
-            if (user) {
-                return navigate(appRoutes.DASHBOARD_HOME);
+        if (validateForm()) {
+            try {
+                const user = await login(email, password);
+                if (user) {
+                    return navigate(appRoutes.DASHBOARD_HOME);
+                }
+            } catch (error) {
+                setErrorMessage(true);
             }
-        } catch (error) {
-            // Handle login error
-            console.error('rrrrrrrrrrrrrrrrrrr ' + error);
         }
     };
     return (
@@ -33,12 +51,20 @@ const Login = () => {
             <div className="auth-card">
                 <div className="auth-logo">LOGO</div>
                 <div className="auth-form">
+                    {errorMessage && (
+                        <h3 className="text-danger text-center">
+                            <strong>Password or Email incorrect</strong>
+                        </h3>
+                    )}
                     <div className="auth-form-content">
                         <label htmlFor="username" className="auth-form-label">
                             Nom d'utilisateur
                         </label>
                         <div className="auth-form-content-input">
-                            <i className="fa-regular fa-user custom-app-icon"></i>
+                            <FontAwesomeIcon
+                                icon={faUser}
+                                className="custom-app-icon"
+                            />
                             <input
                                 type="email"
                                 placeholder="Votre adresse mail"
@@ -47,6 +73,14 @@ const Login = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
+                        {errors.email && (
+                            <span
+                                className="text-danger"
+                                style={{ fontSize: '13px' }}
+                            >
+                                {errors.email}
+                            </span>
+                        )}
                     </div>
 
                     <div className="auth-form-content">
@@ -54,7 +88,10 @@ const Login = () => {
                             Mot de passe
                         </label>
                         <div className="auth-form-content-input">
-                            <i className="fa-solid fa-lock custom-app-icon"></i>
+                            <FontAwesomeIcon
+                                icon={faLock}
+                                className="custom-app-icon"
+                            />
                             <input
                                 type="password"
                                 placeholder="Votre mot de passe"
@@ -69,6 +106,17 @@ const Login = () => {
                                 <FontAwesomeIcon icon={faAngleRight} />
                             </button>
                         </div>
+                        {errors.password && (
+                            <span
+                                className="text-danger"
+                                style={{
+                                    marginBottom: '10px',
+                                    fontSize: '13px',
+                                }}
+                            >
+                                {errors.password}
+                            </span>
+                        )}
                     </div>
                 </div>
 

@@ -7,12 +7,18 @@ export const login = async (email: any, password: any) => {
             email,
             password,
         });
+        saveToken(response.data.token);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
     }
 };
-
+function saveToken(userToken: String) {
+    localStorage.setItem(
+        'auth',
+        JSON.stringify({ token: userToken, status: true })
+    );
+}
 export const signup = async (data: any) => {
     try {
         const response = await axios.post(`${baseURL}/auth/signup`, data);
@@ -22,7 +28,7 @@ export const signup = async (data: any) => {
     }
 };
 
-export const getLobby= async (id: any) => {
+export const getLobby = async (id: any) => {
     try {
         const response = await axios.get(`${baseURL}/lobby/${id}`);
         return response.data;
@@ -31,7 +37,7 @@ export const getLobby= async (id: any) => {
     }
 };
 
-export const researchUser= async (name: any) => {
+export const researchUser = async (name: any) => {
     try {
         const response = await axios.get(`${baseURL}/user/name/${name}`);
         return response.data;
@@ -60,23 +66,28 @@ export const ListInvitationSend = async (userId) => {
 
 export const ListInvitationReceived = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/friend/received/${userId}`);
+        const response = await axios.get(
+            `${baseURL}/friend/received/${userId}`
+        );
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
     }
 };
 
-export const AnswerInvitation = async (userId, data:any) => {
+export const AnswerInvitation = async (userId, data: any) => {
     try {
-        const response = await axios.put(`${baseURL}/friend/${userId}/answer`, data);
+        const response = await axios.put(
+            `${baseURL}/friend/${userId}/answer`,
+            data
+        );
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
     }
 };
 
-export const CreateLobby = async (data:any) => {
+export const CreateLobby = async (data: any) => {
     try {
         const response = await axios.post(`/lobby`, data);
         return response.data;
