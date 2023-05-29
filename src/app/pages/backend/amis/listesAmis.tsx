@@ -60,11 +60,11 @@ const ListesAmis = () => {
     };
     const handleLoadSender = async () => {
         const result = await ListInvitationSend(user.id);
-        setSenders(result);
+        setSenders(result.requests);
     };
     const handleLoadReceiver = async () => {
         const result = await ListInvitationReceived(user.id);
-        setReceivers(result);
+        setReceivers(result.requests);
     };
 
     const handleValidate = async (statut: String, id: String) => {

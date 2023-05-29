@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Form, Modal } from 'react-bootstrap';
-import callOfDuty from '../../../assets/images/jeux/callOfDuty.jpg';
 import images from '../../../assets/images/jeux/images.png';
-import { CreateLobby, ListLobby } from '../../../service/frontendService';
+import {
+    CreateLobby,
+    ListGames,
+    ListLobby,
+} from '../../../service/frontendService';
 
 const ListesSalon = () => {
     const [show, setShow] = useState(false);
     const [nomSalon, setNomSalon] = useState('');
     const [idJeu, setIdJeu] = useState('');
     const [lobbies, setLobbies] = useState([]);
+    const [games, setGames] = useState([]);
 
     useEffect(() => {
         handleLoadLobby();
@@ -33,16 +37,19 @@ const ListesSalon = () => {
 
     const handleLoadLobby = async () => {
         const results = await ListLobby();
+        setLobbies(results.lobbies);
 
-        setLobbies(results);
+        const res = await ListGames();
+        setGames(res.games);
     };
-
+    const handleJeuChange = (e) => {
+        setIdJeu(e.target.value);
+    };
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     return (
         <div className="container mt-5 pt-2">
-            {/*Start page head*/}
             <div className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
                 <div>
                     <h2>Liste des salons</h2>
@@ -53,35 +60,35 @@ const ListesSalon = () => {
                     </Button>
                 </div>
             </div>
-            {/*End page head*/}
 
             <div className="cs-grid p-2 bg-light">
                 {lobbies.map((el, index) => (
                     <Card key={el.id}>
                         <Card.Img
                             variant="top"
-                            src={index == 0 ? images : callOfDuty}
+                            src={el.game.miniature}
                             style={{ aspectRatio: 16 / 9 }}
                         />
                         <Card.Body>
                             <Card.Title>{el.name}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">
-                                3 participants
+                                {el.game.maxPlayers} participant(s)
                             </Card.Subtitle>
                             <Card.Text></Card.Text>
                             <Button
                                 variant="primary"
                                 href={'/dashboard/salle-jeu/' + el.id}
                                 className="me-2"
+                                style={{ width: '100%' }}
                             >
                                 Jouer
                             </Button>
-                            <Button
+                            {/* <Button
                                 variant="warning"
                                 href={'/dashboard/salon/' + el.id}
                             >
                                 Modifier
-                            </Button>
+                            </Button> */}
                         </Card.Body>
                     </Card>
                 ))}
@@ -105,12 +112,15 @@ const ListesSalon = () => {
                             <Form.Label>Jeu</Form.Label>
                             <Form.Select
                                 aria-label="Jeu"
-                                onChange={(e) => setIdJeu(e.target.value)}
+                                value={idJeu}
+                                onChange={handleJeuChange}
                             >
                                 <option>Selectionnez un jeu</option>
-                                <option value="5b08a18c-e224-11ed-b5ea-0242ac120002">
-                                    Jeu 1
-                                </option>
+                                {games.map((game) => (
+                                    <option key={game.id} value={game.id}>
+                                        {game.name}
+                                    </option>
+                                ))}
                             </Form.Select>
                         </Form.Group>
                     </Modal.Body>

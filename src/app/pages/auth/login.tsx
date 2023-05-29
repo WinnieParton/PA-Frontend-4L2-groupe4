@@ -125,7 +125,7 @@ const Login = () => {
                         Vous avez oublié votre mot de passe ?
                     </Link>
                     <Link to={appRoutes.REGISTER}>
-                        Pas encore de comtpe ? Rejoignez-nous !
+                        Pas encore de compte ? Rejoignez-nous !
                     </Link>
                 </div>
             </div>

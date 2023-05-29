@@ -89,7 +89,7 @@ export const AnswerInvitation = async (userId, data: any) => {
 
 export const CreateLobby = async (data: any) => {
     try {
-        const response = await axios.post(`/lobby`, data);
+        const response = await axios.post(`${baseURL}/lobby`, data);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -98,7 +98,16 @@ export const CreateLobby = async (data: any) => {
 
 export const ListLobby = async () => {
     try {
-        const response = await axios.get(`/lobby`);
+        const response = await axios.get(`${baseURL}/lobby`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const ListGames = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/game`);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
