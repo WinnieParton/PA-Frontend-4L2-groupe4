@@ -20,11 +20,11 @@ return (
                     <span>Tableau de bord</span>
                 </Link>
                 </li>
-                <li>
+                {/* <li>
                    <Link to={appRoutes.JEUX}>
                    <SportsEsportsIcon className='icon'/>
                     <span>Jeux</span></Link>
-                </li>
+                </li> */}
                 <li>
                     <Link to={appRoutes.SALONS}>
                     <MeetingRoomIcon className='icon'/>

@@ -37,9 +37,9 @@ export const getLobby = async (id: any) => {
     }
 };
 
-export const researchUser = async (name: any) => {
+export const researchUser = async (userId, name: any) => {
     try {
-        const response = await axios.get(`${baseURL}/user/name/${name}`);
+        const response = await axios.get(`${baseURL}/user/${userId}/name/${name}`);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -49,6 +49,15 @@ export const researchUser = async (name: any) => {
 export const AddFriend = async (userId, data: any) => {
     try {
         const response = await axios.post(`${baseURL}/friend/${userId}`, data);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const AddFriendInLobby = async (id, userId, data: any) => {
+    try {
+        const response = await axios.patch(`${baseURL}/lobby/${id}/user/${userId}`, data);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -87,6 +96,17 @@ export const AnswerInvitation = async (userId, data: any) => {
     }
 };
 
+export const ListMyFriends = async (userId) => {
+    try {
+        const response = await axios.get(
+            `${baseURL}/friend/${userId}`
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
 export const CreateLobby = async (data: any) => {
     try {
         const response = await axios.post(`${baseURL}/lobby`, data);
@@ -96,9 +116,9 @@ export const CreateLobby = async (data: any) => {
     }
 };
 
-export const ListLobby = async () => {
+export const ListLobby = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/lobby`);
+        const response = await axios.get(`${baseURL}/user/${userId}/lobbies`);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;

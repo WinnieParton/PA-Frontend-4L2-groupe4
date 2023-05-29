@@ -8,14 +8,14 @@ const Widget = ({ type }: Props) => {
     let data;
 
     switch (type) {
-        case 'jeux':
-            data = {
-                title: 'Jeux',
-                counter: 16,
-                link: 'Tous les jeux',
-                icon: <SportsEsportsIcon className="icon" style={{ backgroundColor : "rgba(45, 83, 221,0.2)", color : "rgb(45, 83, 221)"  }}/>,
-            };
-            break;
+        // case 'jeux':
+        //     data = {
+        //         title: 'Jeux',
+        //         counter: 16,
+        //         link: 'Tous les jeux',
+        //         icon: <SportsEsportsIcon className="icon" style={{ backgroundColor : "rgba(45, 83, 221,0.2)", color : "rgb(45, 83, 221)"  }}/>,
+        //     };
+        //     break;
         case 'amis':
             data = {
                 title: 'Amis',

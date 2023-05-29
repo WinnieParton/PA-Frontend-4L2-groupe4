@@ -15,6 +15,7 @@ import {
     AnswerInvitation,
     ListInvitationReceived,
     ListInvitationSend,
+    ListMyFriends,
     researchUser,
 } from '../../../service/frontendService';
 
@@ -26,6 +27,7 @@ const ListesAmis = () => {
     const [show, setShow] = useState(false);
     const [username, setUsername] = useState(null);
     const [friends, setFriends] = useState([]);
+    const [myFriends, setMyFriends] = useState([]);
 
     const [senders, setSenders] = useState([]);
     const [receivers, setReceivers] = useState([]);
@@ -33,34 +35,43 @@ const ListesAmis = () => {
     const [key, setKey] = useState('friends');
 
     useEffect(() => {
-        handleLoadSender();
-        handleLoadReceiver();
+        handleLoadMyFriend();
     }, []);
-
-    useEffect(() => {
-        handleLoadSender();
-        handleLoadReceiver();
-    }, [friends]);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const functGet = (k) => {
+        if (k == 2) handleLoadReceiver();
+        if (k == 1) handleLoadSender();
+        else handleLoadMyFriend();
+    };
+    const handleClose = () => {
+        functGet(key);
+        setShow(false);
+    };
+    const handleShow = () => {
+        setFriends([]);
+        setShow(true);
+    };
 
     const handleSearch = async () => {
-        const result = await researchUser(username);
+        const result = await researchUser(user.id, username);
         setFriends(result);
     };
 
     const handleAddFriend = async (friendId) => {
         const result = AddFriend(user.id, {
-            receiver: friendId,
+            sender: friendId,
         });
         setFriends([]);
         setUsername(null);
         handleClose();
+        handleLoadSender();
     };
     const handleLoadSender = async () => {
         const result = await ListInvitationSend(user.id);
         setSenders(result.requests);
+    };
+    const handleLoadMyFriend = async () => {
+        const result = await ListMyFriends(user.id);
+        setMyFriends(result.requests);
     };
     const handleLoadReceiver = async () => {
         const result = await ListInvitationReceived(user.id);
@@ -69,14 +80,13 @@ const ListesAmis = () => {
 
     const handleValidate = async (statut: String, id: String) => {
         const result = await AnswerInvitation(user.id, {
-            receiver: id,
+            sender: id,
             status: statut,
         });
     };
 
     return (
         <div className="container mt-5 pt-2">
-            {/*Start page head*/}
             <div className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
                 <div>
                     <h2>Listes des amis</h2>
@@ -87,21 +97,15 @@ const ListesAmis = () => {
                     </Button>
                 </div>
             </div>
-            {/*End page head*/}
-
-            <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="my-3">
-                <Tab eventKey="friends" title="Mes amis">
-                    <Table bordered hover>
-                        <thead className="bg-primary text-white">
-                            <tr>
-                                <th>Nom d'utilisateur</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </Table>
-                </Tab>
-                <Tab eventKey="senders" title="Demande envoyer">
+            <Tabs
+                activeKey={key}
+                onSelect={(k) => {
+                    setKey(k);
+                    functGet(k);
+                }}
+                className="my-3"
+            >
+                <Tab eventKey="0" title="Mes amis">
                     <Table bordered hover>
                         <thead className="bg-primary text-white">
                             <tr>
@@ -110,23 +114,29 @@ const ListesAmis = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {senders.map(
-                                (el, index) =>
-                                    el.friend.id !== el.user && (
-                                        <tr key={index}>
-                                            <td>{el.friend.name}</td>
-                                            <td>
-                                                <Button variant="outline-danger">
-                                                    Annuler
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    )
+                            {myFriends.length > 0 ? (
+                                myFriends.map(
+                                    (el, index) =>
+                                        el.friend.id !== el.user && (
+                                            <tr key={index}>
+                                                <td>{el.friend.name}</td>
+                                                <td>
+                                                    <Button variant="outline-danger">
+                                                        Annuler
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                )
+                            ) : (
+                                <h2 className="text-primary text-center mt-4">
+                                    Aucun ami
+                                </h2>
                             )}
                         </tbody>
                     </Table>
                 </Tab>
-                <Tab eventKey="receivers" title="Demande en attente">
+                <Tab eventKey="1" title="Demande envoyer">
                     <Table bordered hover>
                         <thead className="bg-primary text-white">
                             <tr>
@@ -135,39 +145,76 @@ const ListesAmis = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {receivers.map(
-                                (el, index) =>
-                                    el.user.id !== el.friend && (
-                                        <tr key={index}>
-                                            <td>{el.user.name}</td>
-                                            <td>
-                                                <ButtonGroup>
-                                                    <Button
-                                                        variant="outline-success"
-                                                        onClick={() =>
-                                                            handleValidate(
-                                                                'ACCEPTED',
-                                                                el.user.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Accepter
+                            {senders.length > 0 ? (
+                                senders.map(
+                                    (el, index) =>
+                                        el.friend.id !== el.user && (
+                                            <tr key={index}>
+                                                <td>{el.friend.name}</td>
+                                                <td>
+                                                    <Button variant="outline-danger">
+                                                        Annuler
                                                     </Button>
-                                                    <Button
-                                                        variant="outline-danger"
-                                                        onClick={() =>
-                                                            handleValidate(
-                                                                'REJECTED',
-                                                                el.user.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Rejeter
-                                                    </Button>
-                                                </ButtonGroup>
-                                            </td>
-                                        </tr>
-                                    )
+                                                </td>
+                                            </tr>
+                                        )
+                                )
+                            ) : (
+                                <h2 className="text-primary text-center mt-4">
+                                    Aucune invitation envoyé
+                                </h2>
+                            )}
+                        </tbody>
+                    </Table>
+                </Tab>
+                <Tab eventKey="2" title="Demande en attente">
+                    <Table bordered hover>
+                        <thead className="bg-primary text-white">
+                            <tr>
+                                <th>Nom d'utilisateur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {receivers.length > 0 ? (
+                                receivers.map(
+                                    (el, index) =>
+                                        el.user.id !== el.friend && (
+                                            <tr key={index}>
+                                                <td>{el.user.name}</td>
+                                                <td>
+                                                    <ButtonGroup>
+                                                        <Button
+                                                            variant="outline-success"
+                                                            onClick={() =>
+                                                                handleValidate(
+                                                                    'ACCEPTED',
+                                                                    el.user.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Accepter
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline-danger"
+                                                            onClick={() =>
+                                                                handleValidate(
+                                                                    'REJECTED',
+                                                                    el.user.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Rejeter
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                </td>
+                                            </tr>
+                                        )
+                                )
+                            ) : (
+                                <h2 className="text-primary text-center mt-4">
+                                    Aucune invitation recu
+                                </h2>
                             )}
                         </tbody>
                     </Table>
@@ -196,28 +243,34 @@ const ListesAmis = () => {
                             </Button>
                         </Form.Group>
                     </Form>
-                    {friends.map(
-                        (friend, index) =>
-                            friend.id !== friend.user && (
-                                <Row
-                                    className="p-2 my-2 bg-light align-items-center"
-                                    key={index}
-                                >
-                                    <Col md="8">
-                                        <h3>{friend.name}</h3>
-                                    </Col>
-                                    <Col md="4">
-                                        <Button
-                                            variant="info"
-                                            onClick={() =>
-                                                handleAddFriend(friend)
-                                            }
-                                        >
-                                            Invitation
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            )
+                    {friends.length > 0 ? (
+                        friends.map(
+                            (friend, index) =>
+                                friend.id !== friend.user && (
+                                    <Row
+                                        className="p-2 my-2 bg-light align-items-center"
+                                        key={index}
+                                    >
+                                        <Col md="8" sm="6">
+                                            <h3>{friend.name}</h3>
+                                        </Col>
+                                        <Col md="4" sm="6">
+                                            <Button
+                                                variant="info"
+                                                onClick={() =>
+                                                    handleAddFriend(friend.id)
+                                                }
+                                            >
+                                                Invitation
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                )
+                        )
+                    ) : (
+                        <h2 className="text-primary text-center mt-4">
+                            Aucun ami trouvé
+                        </h2>
                     )}
                 </Modal.Body>
             </Modal>

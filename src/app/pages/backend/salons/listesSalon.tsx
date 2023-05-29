@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Form, Modal } from 'react-bootstrap';
-import images from '../../../assets/images/jeux/images.png';
 import {
     CreateLobby,
     ListGames,
@@ -17,12 +16,11 @@ const ListesSalon = () => {
     useEffect(() => {
         handleLoadLobby();
     }, []);
-
+    const tokenString = localStorage.getItem('auth');
+    const userToken = JSON.parse(tokenString);
+    const user = JSON.parse(atob(userToken.token));
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const tokenString = localStorage.getItem('auth');
-        const userToken = JSON.parse(tokenString);
-        const user = JSON.parse(atob(userToken.token));
 
         const results = await CreateLobby({
             name: nomSalon,
@@ -36,7 +34,7 @@ const ListesSalon = () => {
     };
 
     const handleLoadLobby = async () => {
-        const results = await ListLobby();
+        const results = await ListLobby(user.id);
         setLobbies(results.lobbies);
 
         const res = await ListGames();
@@ -62,36 +60,41 @@ const ListesSalon = () => {
             </div>
 
             <div className="cs-grid p-2 bg-light">
-                {lobbies.map((el, index) => (
-                    <Card key={el.id}>
-                        <Card.Img
-                            variant="top"
-                            src={el.game.miniature}
-                            style={{ aspectRatio: 16 / 9 }}
-                        />
-                        <Card.Body>
-                            <Card.Title>{el.name}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                                {el.game.maxPlayers} participant(s)
-                            </Card.Subtitle>
-                            <Card.Text></Card.Text>
-                            <Button
-                                variant="primary"
-                                href={'/dashboard/salle-jeu/' + el.id}
-                                className="me-2"
-                                style={{ width: '100%' }}
-                            >
-                                Jouer
-                            </Button>
-                            {/* <Button
-                                variant="warning"
-                                href={'/dashboard/salon/' + el.id}
-                            >
-                                Modifier
-                            </Button> */}
-                        </Card.Body>
-                    </Card>
-                ))}
+                {lobbies.length > 0 ? (
+                    lobbies.map((el, index) => (
+                        <Card key={index}>
+                            <Card.Img
+                                variant="top"
+                                src={el.game.miniature}
+                                style={{ aspectRatio: 16 / 9 }}
+                            />
+                            <Card.Body>
+                                <Card.Title>{el.name}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">
+                                    {el.game.maxPlayers} participant(s)
+                                </Card.Subtitle>
+                                <Card.Text></Card.Text>
+                                <Button
+                                    variant="primary"
+                                    href={'/dashboard/salle-jeu/' + el.id}
+                                    className="me-2"
+                                >
+                                    Jouer
+                                </Button>
+                                <Button
+                                    variant="warning"
+                                    href={'/dashboard/salon/' + el.id}
+                                >
+                                    Modifier
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    ))
+                ) : (
+                    <h2 className="text-primary text-center mt-4">
+                        Aucun salon créé
+                    </h2>
+                )}
             </div>
 
             <Modal show={show} onHide={handleClose}>

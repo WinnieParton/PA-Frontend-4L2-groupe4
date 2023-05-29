@@ -19,7 +19,7 @@ const Navigation = () => {
               <Navbar.Collapse  id="basic-navbar-nav">
                   <Nav className="ms-auto">
                       <Nav.Link href={appRoutes.DASHBOARD_HOME} className="mx-2">Accueil</Nav.Link>
-                      <Nav.Link href="" className="mx-2">Jeux</Nav.Link>
+                      {/* <Nav.Link href="" className="mx-2">Jeux</Nav.Link> */}
                       <Nav.Link href={appRoutes.SALONS} className="mx-2">Salons</Nav.Link>
                       <Nav.Link href={appRoutes.AMIS} className="mx-2">Amis</Nav.Link>
                   </Nav>
