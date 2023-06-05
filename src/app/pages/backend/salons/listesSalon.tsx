@@ -71,22 +71,47 @@ const ListesSalon = () => {
                             <Card.Body>
                                 <Card.Title>{el.name}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted">
-                                    {el.game.maxPlayers} participant(s)
+                                    <p>
+                                        {el.participants.length} participant(s)
+                                        actuelle
+                                    </p>
+                                    <br />
+                                    <p>
+                                        Minimum {el.game.minPlayers} joueur(s)
+                                    </p>
+                                    <p>
+                                        Maximum {el.game.maxPlayers} joueur(s)
+                                    </p>
                                 </Card.Subtitle>
                                 <Card.Text></Card.Text>
-                                <Button
-                                    variant="primary"
-                                    href={'/dashboard/salle-jeu/' + el.id}
-                                    className="me-2"
-                                >
-                                    Jouer
-                                </Button>
-                                <Button
-                                    variant="warning"
-                                    href={'/dashboard/salon/' + el.id}
-                                >
-                                    Modifier
-                                </Button>
+                                {el.participants.length ==
+                                el.game.minPlayers ? (
+                                    <>
+                                        <Button
+                                            variant="primary"
+                                            href={
+                                                '/dashboard/salle-jeu/' + el.id
+                                            }
+                                            className="me-2"
+                                        >
+                                            Jouer
+                                        </Button>
+                                        <Button
+                                            variant="warning"
+                                            href={'/dashboard/salon/' + el.id}
+                                        >
+                                            Modifier
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <Button
+                                        variant="warning"
+                                        href={'/dashboard/salon/' + el.id}
+                                        className="w-100"
+                                    >
+                                        Modifier
+                                    </Button>
+                                )}
                             </Card.Body>
                         </Card>
                     ))

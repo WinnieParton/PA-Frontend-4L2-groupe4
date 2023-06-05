@@ -20,7 +20,12 @@ const DetailSalon = () => {
     const [lobby, setLobby] = useState<{
         id?: any;
         name?: string;
-        game?: { miniature?: string; name?: string };
+        game?: {
+            miniature?: string;
+            name?: string;
+            maxPlayers?: string;
+            minPlayers?: string;
+        };
         status?: string;
         creator?: any;
         participants?: [{ id?: any; name?: string }];
@@ -84,10 +89,19 @@ const DetailSalon = () => {
                     <Col md={6}>
                         <ListGroup>
                             <ListGroup.Item>
-                                {lobby?.game?.name}{' '}
+                                <strong> Jeux : </strong> {lobby?.game?.name}
                             </ListGroup.Item>
                             <ListGroup.Item>
-                                Créé par : {lobby.creator?.name}
+                                <strong>Créé par : </strong>{' '}
+                                {lobby.creator?.name}
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <strong>Nombre minimun de joueur :</strong>{' '}
+                                {lobby.game?.minPlayers}
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <strong>Nombre maximal de joueur :</strong>{' '}
+                                {lobby.game?.maxPlayers}
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>

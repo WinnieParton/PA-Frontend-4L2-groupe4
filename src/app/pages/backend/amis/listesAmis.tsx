@@ -57,8 +57,8 @@ const ListesAmis = () => {
     };
 
     const handleAddFriend = async (friendId) => {
-        const result = AddFriend(user.id, {
-            sender: friendId,
+        const result = AddFriend(friendId, {
+            sender: user.id ,
         });
         setFriends([]);
         setUsername(null);
