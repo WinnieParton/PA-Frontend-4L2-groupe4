@@ -32,14 +32,14 @@ const ListesAmis = () => {
     const [senders, setSenders] = useState([]);
     const [receivers, setReceivers] = useState([]);
 
-    const [key, setKey] = useState('friends');
+    const [key, setKey] = useState("0");
 
     useEffect(() => {
         handleLoadMyFriend();
     }, []);
     const functGet = (k) => {
-        if (k == 2) handleLoadReceiver();
-        if (k == 1) handleLoadSender();
+        if (k == "2") handleLoadReceiver();
+        if (k == "1") handleLoadSender();
         else handleLoadMyFriend();
     };
     const handleClose = () => {
@@ -57,13 +57,14 @@ const ListesAmis = () => {
     };
 
     const handleAddFriend = async (friendId) => {
-        const result = AddFriend(friendId, {
+        AddFriend(friendId, {
             sender: user.id ,
         });
         setFriends([]);
         setUsername(null);
         handleClose();
         handleLoadSender();
+        setKey("0")
     };
     const handleLoadSender = async () => {
         const result = await ListInvitationSend(user.id);
@@ -73,7 +74,7 @@ const ListesAmis = () => {
         const result = await ListMyFriends(user.id);
         setMyFriends(result.requests);
     };
-    const handleLoadReceiver = async () => {
+    const handleLoadReceiver = async () => {     
         const result = await ListInvitationReceived(user.id);
         setReceivers(result.requests);
     };
@@ -83,6 +84,7 @@ const ListesAmis = () => {
             sender: id,
             status: statut,
         });
+        window.location.reload();
     };
 
     return (
@@ -116,14 +118,13 @@ const ListesAmis = () => {
                         <tbody>
                             {myFriends.length > 0 ? (
                                 myFriends.map(
-                                    (el, index) =>
-                                        el.friend.id !== el.user && (
+                                    (el, index) =>(
                                             <tr key={index}>
-                                                <td>{el.friend.name}</td>
+                                                <td>{el.user.name} ({el.user.email})</td>
                                                 <td>
-                                                    <Button variant="outline-danger">
-                                                        Annuler
-                                                    </Button>
+                                                    {/* <Button variant="outline-danger">
+                                                        Retirer
+                                                    </Button> */}
                                                 </td>
                                             </tr>
                                         )

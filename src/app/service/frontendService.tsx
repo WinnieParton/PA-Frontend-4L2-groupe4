@@ -118,7 +118,7 @@ export const CreateLobby = async (data: any) => {
 
 export const ListLobby = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/user/${userId}/lobbies`);
+        const response = await axios.get(`${baseURL}/lobby/user/${userId}`);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;

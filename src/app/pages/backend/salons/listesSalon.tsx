@@ -84,9 +84,9 @@ const ListesSalon = () => {
                                     </p>
                                 </Card.Subtitle>
                                 <Card.Text></Card.Text>
-                                {el.participants.length ==
+                                {el.participants.length +1 ==
                                 el.game.minPlayers ? (
-                                    <>
+                                    <div className='d-flex' style={{justifyContent: "space-between"}}>
                                         <Button
                                             variant="primary"
                                             href={
@@ -102,7 +102,7 @@ const ListesSalon = () => {
                                         >
                                             Modifier
                                         </Button>
-                                    </>
+                                    </div>
                                 ) : (
                                     <Button
                                         variant="warning"

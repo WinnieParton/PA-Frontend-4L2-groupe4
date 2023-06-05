@@ -23,7 +23,7 @@ const DetailSalon = () => {
         game?: {
             miniature?: string;
             name?: string;
-            maxPlayers?: string;
+            maxPlayers?: number;
             minPlayers?: string;
         };
         status?: string;
@@ -109,14 +109,17 @@ const DetailSalon = () => {
                         <div className="my-3">
                             <div className="d-flex justify-content-between my-3">
                                 <h2>Mes amis du salon</h2>
-                                <div>
-                                    <Button
-                                        variant="primary"
-                                        onClick={handleShow}
-                                    >
-                                        Ajouter des amis au salon
-                                    </Button>
-                                </div>
+                                {lobby.participants.length + 1 <
+                                    lobby.game.maxPlayers && (
+                                    <div>
+                                        <Button
+                                            variant="primary"
+                                            onClick={handleShow}
+                                        >
+                                            Ajouter des amis au salon
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                             <Table bordered hover>
                                 <thead className="bg-primary text-white">
@@ -134,7 +137,7 @@ const DetailSalon = () => {
                                                         <td>{el.name}</td>
                                                         <td>
                                                             <Button variant="outline-danger">
-                                                                Annuler
+                                                                Retirer
                                                             </Button>
                                                         </td>
                                                     </tr>
