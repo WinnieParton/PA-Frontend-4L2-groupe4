@@ -7,16 +7,21 @@ export const login = async (email: any, password: any) => {
             email,
             password,
         });
-        saveToken(response.data.token);
+        saveToken(response.data);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
     }
 };
-function saveToken(userToken: String) {
+function saveToken(userToken: any) {
+    const user = JSON.parse(atob(userToken.token));
     localStorage.setItem(
         'auth',
-        JSON.stringify({ token: userToken, status: true })
+        JSON.stringify({
+            token: userToken.token,
+            status: true,
+            userid: user.id,
+        })
     );
 }
 export const signup = async (data: any) => {
@@ -39,7 +44,9 @@ export const getLobby = async (id: any) => {
 
 export const researchUser = async (userId, name: any) => {
     try {
-        const response = await axios.get(`${baseURL}/user/${userId}/name/${name}`);
+        const response = await axios.get(
+            `${baseURL}/user/${userId}/name/${name}`
+        );
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -57,7 +64,10 @@ export const AddFriend = async (userId, data: any) => {
 
 export const AddFriendInLobby = async (id, userId, data: any) => {
     try {
-        const response = await axios.patch(`${baseURL}/lobby/${id}/user/${userId}`, data);
+        const response = await axios.patch(
+            `${baseURL}/lobby/${id}/user/${userId}`,
+            data
+        );
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -98,9 +108,7 @@ export const AnswerInvitation = async (userId, data: any) => {
 
 export const ListMyFriends = async (userId) => {
     try {
-        const response = await axios.get(
-            `${baseURL}/friend/${userId}`
-        );
+        const response = await axios.get(`${baseURL}/friend/${userId}`);
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;

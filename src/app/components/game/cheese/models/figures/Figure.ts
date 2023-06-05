@@ -1,4 +1,4 @@
-import logo from "../../assets/black-bishop.png";
+import logo from "../../../../../assets/images/black-bishop.png";
 import { Cell } from "../Cell";
 import { Colors } from "../Colors";
 

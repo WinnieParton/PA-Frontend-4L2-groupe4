@@ -18,13 +18,9 @@ const SalleJeu = () => {
         participants?: [{ id?: any; name?: string }];
     }>(JSON.parse(localStorage.getItem('info')).info);
 
-    useEffect(() => {
-        console.log('ssssss ' + lobby?.name);
-    }, []);
 
     return (
         <div className="container-fluid mt-5 pt-2">
-            {/*Start page head*/}
             <div className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
                 <div>
                     <h2>{lobby?.game?.name}</h2>
@@ -40,7 +36,7 @@ const SalleJeu = () => {
                     <Col md={9}>
                         <div className="jeux-content">
                             <h2>{lobby.name}</h2>
-                            <div className="d-flex justify-content-center">
+                            <div className="d-flex mt-4 mb-4 justify-content-center">
                                 {lobby.game.name == 'Cheese' ? (
                                     <Cheese />
                                 ) : (
