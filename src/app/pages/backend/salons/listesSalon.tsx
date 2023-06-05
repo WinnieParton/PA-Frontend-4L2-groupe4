@@ -5,8 +5,10 @@ import {
     ListGames,
     ListLobby,
 } from '../../../service/frontendService';
-
+import { Link, useNavigate } from 'react-router-dom';
+import appRoutes from '../../../routes/routes';
 const ListesSalon = () => {
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const [nomSalon, setNomSalon] = useState('');
     const [idJeu, setIdJeu] = useState('');
@@ -46,6 +48,12 @@ const ListesSalon = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const playGame = (lobby: any) => {
+        localStorage.setItem('info', 
+        JSON.stringify({ info: lobby}));
+        navigate(`/dashboard/salle-jeu/${lobby.game.id}`);
+    };
+
     return (
         <div className="container mt-5 pt-2">
             <div className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
@@ -84,14 +92,17 @@ const ListesSalon = () => {
                                     </p>
                                 </Card.Subtitle>
                                 <Card.Text></Card.Text>
-                                {el.participants.length +1 ==
+                                {el.participants.length + 1 ==
                                 el.game.minPlayers ? (
-                                    <div className='d-flex' style={{justifyContent: "space-between"}}>
+                                    <div
+                                        className="d-flex"
+                                        style={{
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
                                         <Button
                                             variant="primary"
-                                            href={
-                                                '/dashboard/salle-jeu/' + el.id
-                                            }
+                                            onClick={() => playGame(el)}
                                             className="me-2"
                                         >
                                             Jouer
