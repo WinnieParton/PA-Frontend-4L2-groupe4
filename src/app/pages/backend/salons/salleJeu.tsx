@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import appRoutes from '../../../routes/routes';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Cheese from '../../../components/game/cheese/Cheese';
+import appRoutes from '../../../routes/routes';
+import { redirectOnLobby } from '../../../service/frontendService';
 const SalleJeu = () => {
-    const [lobby, setLobby] = useState<{
+    const navigate = useNavigate();
+    const lobby: {
         id?: any;
         name?: string;
         game?: {
@@ -16,8 +18,12 @@ const SalleJeu = () => {
         status?: string;
         creator?: any;
         participants?: [{ id?: any; name?: string }];
-    }>(JSON.parse(localStorage.getItem('info')).info);
+    } = JSON.parse(localStorage.getItem('info')).info;
 
+    const handleLoadLobby = async () => {
+        const results = await redirectOnLobby(lobby.id);
+        return navigate(appRoutes.SALONS);
+    };
 
     return (
         <div className="container-fluid mt-5 pt-2">
@@ -26,7 +32,7 @@ const SalleJeu = () => {
                     <h2>{lobby?.game?.name}</h2>
                 </div>
                 <div>
-                    <Button variant="primary" href={appRoutes.SALONS}>
+                    <Button variant="primary" onClick={handleLoadLobby}>
                         Retour
                     </Button>
                 </div>

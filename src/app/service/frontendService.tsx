@@ -42,6 +42,15 @@ export const getLobby = async (id: any) => {
     }
 };
 
+export const redirectOnLobby = async (id: any) => {
+    try {
+        const response = await axios.patch(`${baseURL}/lobby/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
 export const researchUser = async (userId, name: any) => {
     try {
         const response = await axios.get(
@@ -139,5 +148,22 @@ export const ListGames = async () => {
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
+    }
+};
+
+export const PlayGame = async (idGame, idLobby, status, data: any) => {
+    try {
+        const response = await axios.patch(
+            `${baseURL}/game/${idGame}/lobby/${idLobby}/status/${status}`,
+            data
+        );
+        return response.data;
+    } catch (error) {
+        console.error('errrrrrrrrrrrrr ', error.message);
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data);
+        } else {
+            throw new Error(error.message);
+        }
     }
 };
