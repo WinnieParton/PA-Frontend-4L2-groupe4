@@ -8,9 +8,11 @@ $lightGrey: #e8edf9;
 
 // sizes
 :root {
-  --board-size: 580px;
+  // --board-size: 580px;
+  --board-size: 55vw;
+  --figure-size: 5vw;
   --cell-size: calc(var(--board-size) / 8);
-  --figure-size: 48px;
+  // --figure-size: 48px;
   --available-size: 24px;
   --cell-mark-size: 15px;
 }

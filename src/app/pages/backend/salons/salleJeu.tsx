@@ -33,7 +33,7 @@ const SalleJeu = () => {
             </div>
             <div className="bg-light p-2 my-2">
                 <Row>
-                    <Col md={9}>
+                    <Col md={8}>
                         <div className="jeux-content">
                             <h2>{lobby.name}</h2>
                             <div className="d-flex mt-4 mb-4 justify-content-center">
@@ -45,7 +45,7 @@ const SalleJeu = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col md={3}>
+                    <Col md={4}>
                         <div className="tchat-content">
                             <div className="message-content">
                                 <div className="message-sender">Salut</div>

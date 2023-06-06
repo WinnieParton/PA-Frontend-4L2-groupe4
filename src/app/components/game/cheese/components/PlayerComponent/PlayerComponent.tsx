@@ -12,7 +12,7 @@ interface PlayerComponentProps {
 
 const PlayerComponent: FC<PlayerComponentProps> = (props) => {
     const { player, lostFigures, currentPlayer } = props;
-    
+
     return (
         <div className={style.player}>
             {player?.color == 'white' &&
@@ -21,7 +21,8 @@ const PlayerComponent: FC<PlayerComponentProps> = (props) => {
                 <p>
                     {player?.color +
                         ' player (' +
-                        JSON.parse(localStorage.getItem('info')).info.creator.name +
+                        JSON.parse(localStorage.getItem('info')).info.creator
+                            .name +
                         ')'}
                 </p>
             ) : (
