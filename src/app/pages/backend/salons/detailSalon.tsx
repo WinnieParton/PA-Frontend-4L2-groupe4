@@ -93,15 +93,15 @@ const DetailSalon = () => {
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Créé par : </strong>{' '}
-                                {lobby.creator?.name}
+                                {lobby?.creator?.name}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Nombre minimun de joueur :</strong>{' '}
-                                {lobby.game?.minPlayers}
+                                {lobby?.game?.minPlayers}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Nombre maximal de joueur :</strong>{' '}
-                                {lobby.game?.maxPlayers}
+                                {lobby?.game?.maxPlayers}
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>
@@ -109,8 +109,8 @@ const DetailSalon = () => {
                         <div className="my-3">
                             <div className="d-flex justify-content-between my-3">
                                 <h2>Mes amis du salon</h2>
-                                {lobby.participants.length + 1 <
-                                    lobby.game.maxPlayers && (
+                                {lobby?.participants?.length + 1 <
+                                    lobby?.game?.maxPlayers && (
                                     <div>
                                         <Button
                                             variant="primary"
@@ -130,7 +130,7 @@ const DetailSalon = () => {
                                 </thead>
                                 <tbody>
                                     {lobby?.participants?.length > 0 ? (
-                                        lobby.participants.map(
+                                        lobby?.participants.map(
                                             (el, index) =>
                                                 el.id !== user.id && (
                                                     <tr key={index}>

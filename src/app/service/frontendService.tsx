@@ -151,10 +151,12 @@ export const ListGames = async () => {
     }
 };
 
-export const PlayGame = async (idGame, idLobby, status, data: any) => {
+export const PlayGame = async (idGame, idLobby, data: any) => {
+    console.log('data', data);
+
     try {
         const response = await axios.patch(
-            `${baseURL}/game/${idGame}/lobby/${idLobby}/status/${status}`,
+            `${baseURL}/game/${idGame}/lobby/${idLobby}`,
             data
         );
         return response.data;
@@ -167,3 +169,16 @@ export const PlayGame = async (idGame, idLobby, status, data: any) => {
         }
     }
 };
+
+export function getCircularReplacer() {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+}
