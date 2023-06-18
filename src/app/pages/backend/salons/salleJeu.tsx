@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cheese from '../../../components/game/cheese/Cheese';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
+import Morpion from "../../../components/game/morpion/Morpion";
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -43,10 +44,12 @@ const SalleJeu = () => {
                         <div className="jeux-content">
                             <h2>{lobby.name}</h2>
                             <div className="d-flex mt-4 mb-4 justify-content-center">
-                                {lobby.game.name == 'Cheese' ? (
-                                    <Cheese />
+                                {lobby.game.name === 'Cheese' ? (
+                                  <Cheese />
+                                ) : lobby.game.name === 'Morpion' ? (
+                                  <Morpion />
                                 ) : (
-                                    <p>Le jeu n'est pas encore implementé</p>
+                                  <p>Le jeu n'est pas encore implementé</p>
                                 )}
                             </div>
                         </div>
