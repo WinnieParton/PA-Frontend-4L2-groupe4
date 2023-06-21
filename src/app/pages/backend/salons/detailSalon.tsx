@@ -109,7 +109,7 @@ const DetailSalon = () => {
                         <div className="my-3">
                             <div className="d-flex justify-content-between my-3">
                                 <h2>Mes amis du salon</h2>
-                                {lobby?.participants?.length + 1 <
+                                {lobby?.participants?.length <
                                     lobby?.game?.maxPlayers && (
                                     <div>
                                         <Button

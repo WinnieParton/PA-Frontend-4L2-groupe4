@@ -92,7 +92,7 @@ const ListesSalon = () => {
                                     </p>
                                 </Card.Subtitle>
                                 <Card.Text></Card.Text>
-                                {el.participants.length + 1 ==
+                                {el.participants.length ==
                                 el.game.minPlayers ? (
                                     <div
                                         className="d-flex"

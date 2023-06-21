@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cheese from '../../../components/game/cheese/Cheese';
+import ChatRoom from '../../../components/chat/ChatRoom';
+
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
-import Morpion from "../../../components/game/morpion/Morpion";
+import Morpion from '../../../components/game/morpion/Morpion';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -45,30 +47,17 @@ const SalleJeu = () => {
                             <h2>{lobby.name}</h2>
                             <div className="d-flex mt-4 mb-4 justify-content-center">
                                 {lobby.game.name === 'Cheese' ? (
-                                  <Cheese />
+                                    <Cheese />
                                 ) : lobby.game.name === 'Morpion' ? (
-                                  <Morpion />
+                                    <Morpion />
                                 ) : (
-                                  <p>Le jeu n'est pas encore implementé</p>
+                                    <p>Le jeu n'est pas encore implementé</p>
                                 )}
                             </div>
                         </div>
                     </Col>
                     <Col md={4}>
-                        <div className="tchat-content">
-                            <div className="message-content">
-                                <div className="message-sender">Salut</div>
-                                <div className="message-receiver">
-                                    Salut ça va?
-                                </div>
-                            </div>
-                            <div className="input-message">
-                                <input
-                                    type="text"
-                                    placeholder="Entre votre message..."
-                                />
-                            </div>
-                        </div>
+                        <ChatRoom />
                     </Col>
                 </Row>
             </div>
