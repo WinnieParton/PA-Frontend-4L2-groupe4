@@ -1,1 +1,1 @@
-export const baseURL = 'http://pa-backend.moneld.me';
+export const baseURL = 'http://localhost:8080';

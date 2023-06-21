@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { baseURL } from '../../environnements/environnement';
+import * as jose from 'jose';
 
 export const login = async (email: any, password: any) => {
     try {
@@ -14,13 +15,14 @@ export const login = async (email: any, password: any) => {
     }
 };
 function saveToken(userToken: any) {
-    const user = JSON.parse(atob(userToken.token));
+    const decoded = jose.decodeJwt(userToken.token);
+    console.log(decoded)
     localStorage.setItem(
         'auth',
         JSON.stringify({
             token: userToken.token,
             status: true,
-            userid: user.id,
+            // userid: user.id,
         })
     );
 }
