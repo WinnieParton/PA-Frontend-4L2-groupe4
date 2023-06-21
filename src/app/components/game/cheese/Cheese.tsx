@@ -50,7 +50,7 @@ const Cheese = () => {
             };
             status?: string;
             creator?: any;
-            participants?: [{ id?: any; name?: string }];
+            participants?: any;
         } = JSON.parse(localStorage.getItem('info')).info;
 
         const data: {
@@ -60,7 +60,10 @@ const Cheese = () => {
             currentPlayer: string;
         } = {
             player1: lobby.creator.name,
-            player2: lobby.participants[0].name,
+            player2:
+                lobby.creator.name != lobby.participants[0].name
+                    ? lobby.participants[0].name
+                    : lobby.participants[1].name,
             board: JSON.stringify(newBoard, getCircularReplacer()),
             currentPlayer: 'white',
         };

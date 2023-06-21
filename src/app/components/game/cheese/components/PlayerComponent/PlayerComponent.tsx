@@ -28,10 +28,14 @@ const PlayerComponent: FC<PlayerComponentProps> = (props) => {
             ) : (
                 <p>
                     {player?.color +
-                        ' player (' +
-                        JSON.parse(localStorage.getItem('info')).info
-                            .participants[0].name +
-                        ')'}
+                        ' player (' }
+                        {JSON.parse(localStorage.getItem('auth')).userid !=
+                    JSON.parse(localStorage.getItem('info')).info
+                        .participants[0].id
+                        ? JSON.parse(localStorage.getItem('info')).info
+                              .participants[0].name
+                        : JSON.parse(localStorage.getItem('info')).info
+                              .participants[1].name + ')'}
                 </p>
             )}
 

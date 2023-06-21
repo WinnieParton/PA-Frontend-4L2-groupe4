@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SockJS from "sockjs-client/dist/sockjs"
 import { over } from 'stompjs';
 import './../../assets/css/chat.css';
+import { baseURL } from '../../../environnements/environnement';
 
 var stompClient = null;
 const ChatRoom = () => {
@@ -19,7 +20,7 @@ const ChatRoom = () => {
     }, [userData]);
 
     const connect = () => {
-        let Sock = new SockJS('http://localhost:8080/private');
+        let Sock = new SockJS(`${baseURL}/private`);
         stompClient = over(Sock);
         stompClient.connect({}, onConnected, onError);
     };
