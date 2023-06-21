@@ -20,9 +20,10 @@ function saveToken(userToken: any) {
     localStorage.setItem(
         'auth',
         JSON.stringify({
-            token: userToken.token,
+            token: decoded,
             status: true,
-            // userid: user.id,
+            userid: decoded.id,
+            userName: decoded.name
         })
     );
 }
