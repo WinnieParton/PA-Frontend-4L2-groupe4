@@ -1,1 +1,1 @@
-export const baseURL = 'http://pa-backend.moneld.me';
+export const baseURL = 'https://pa-backend.moneld.me';
