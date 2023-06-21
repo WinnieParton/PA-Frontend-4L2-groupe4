@@ -33,7 +33,7 @@ const DetailSalon = () => {
     const [myFriends, setMyFriends] = useState([]);
     const tokenString = localStorage.getItem('auth');
     const userToken = JSON.parse(tokenString);
-    const user = JSON.parse(atob(userToken.token));
+    const user = userToken?.token;
     const [show, setShow] = useState(false);
     const [idFriend, setIdFriend] = useState([]);
     useEffect(() => {

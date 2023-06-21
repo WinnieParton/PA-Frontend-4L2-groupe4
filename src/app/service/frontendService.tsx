@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { baseURL } from '../../environnements/environnement';
 import * as jose from 'jose';
+import { baseURL } from '../../environnements/environnement';
 
 export const login = async (email: any, password: any) => {
     try {
@@ -16,17 +16,18 @@ export const login = async (email: any, password: any) => {
 };
 function saveToken(userToken: any) {
     const decoded = jose.decodeJwt(userToken.token);
-    console.log(decoded)
     localStorage.setItem(
         'auth',
         JSON.stringify({
             token: decoded,
             status: true,
             userid: decoded.id,
-            userName: decoded.name
+            userName: decoded.name,
+            userToken: userToken.token,
         })
     );
 }
+
 export const signup = async (data: any) => {
     try {
         const response = await axios.post(`${baseURL}/auth/signup`, data);
@@ -38,7 +39,11 @@ export const signup = async (data: any) => {
 
 export const getLobby = async (id: any) => {
     try {
-        const response = await axios.get(`${baseURL}/lobby/${id}`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/lobby/${id}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -47,7 +52,15 @@ export const getLobby = async (id: any) => {
 
 export const redirectOnLobby = async (id: any) => {
     try {
-        const response = await axios.patch(`${baseURL}/lobby/${id}`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.patch(
+            `${baseURL}/lobby/${id}`,
+            {},
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
+        );
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -56,8 +69,13 @@ export const redirectOnLobby = async (id: any) => {
 
 export const researchUser = async (userId, name: any) => {
     try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
         const response = await axios.get(
-            `${baseURL}/user/${userId}/name/${name}`
+            `${baseURL}/user/${userId}/name/${name}`,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
         );
         return response.data;
     } catch (error) {
@@ -67,7 +85,11 @@ export const researchUser = async (userId, name: any) => {
 
 export const AddFriend = async (userId, data: any) => {
     try {
-        const response = await axios.post(`${baseURL}/friend/${userId}`, data);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.post(`${baseURL}/friend/${userId}`, data, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -76,9 +98,14 @@ export const AddFriend = async (userId, data: any) => {
 
 export const AddFriendInLobby = async (id, userId, data: any) => {
     try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
         const response = await axios.patch(
             `${baseURL}/lobby/${id}/user/${userId}`,
-            data
+            data,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
         );
         return response.data;
     } catch (error) {
@@ -88,7 +115,11 @@ export const AddFriendInLobby = async (id, userId, data: any) => {
 
 export const ListInvitationSend = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/friend/sent/${userId}`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/friend/sent/${userId}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -97,8 +128,13 @@ export const ListInvitationSend = async (userId) => {
 
 export const ListInvitationReceived = async (userId) => {
     try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
         const response = await axios.get(
-            `${baseURL}/friend/received/${userId}`
+            `${baseURL}/friend/received/${userId}`,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
         );
         return response.data;
     } catch (error) {
@@ -108,9 +144,14 @@ export const ListInvitationReceived = async (userId) => {
 
 export const AnswerInvitation = async (userId, data: any) => {
     try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
         const response = await axios.put(
             `${baseURL}/friend/${userId}/answer`,
-            data
+            data,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
         );
         return response.data;
     } catch (error) {
@@ -120,7 +161,11 @@ export const AnswerInvitation = async (userId, data: any) => {
 
 export const ListMyFriends = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/friend/${userId}`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/friend/${userId}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -129,7 +174,11 @@ export const ListMyFriends = async (userId) => {
 
 export const CreateLobby = async (data: any) => {
     try {
-        const response = await axios.post(`${baseURL}/lobby`, data);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.post(`${baseURL}/lobby`, data, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -138,7 +187,11 @@ export const CreateLobby = async (data: any) => {
 
 export const ListLobby = async (userId) => {
     try {
-        const response = await axios.get(`${baseURL}/lobby/user/${userId}`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/lobby/user/${userId}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -147,7 +200,11 @@ export const ListLobby = async (userId) => {
 
 export const ListGames = async () => {
     try {
-        const response = await axios.get(`${baseURL}/game`);
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/game`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
@@ -158,9 +215,14 @@ export const PlayGame = async (idGame, idLobby, data: any) => {
     console.log('data', data);
 
     try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
         const response = await axios.patch(
             `${baseURL}/game/${idGame}/lobby/${idLobby}`,
-            data
+            data,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
         );
         return response.data;
     } catch (error) {

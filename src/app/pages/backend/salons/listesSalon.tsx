@@ -20,7 +20,7 @@ const ListesSalon = () => {
     }, []);
     const tokenString = localStorage.getItem('auth');
     const userToken = JSON.parse(tokenString);
-    const user = JSON.parse(atob(userToken.token));
+    const user = userToken?.token;
     const handleSubmit = async (e) => {
         e.preventDefault();
 
