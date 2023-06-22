@@ -46,7 +46,7 @@ const SalleJeu = () => {
                         <div className="jeux-content">
                             <h2>{lobby.name}</h2>
                             <div className="d-flex mt-4 mb-4 justify-content-center">
-                                {lobby.game.name === 'Cheese' ? (
+                                {lobby.game.name === 'Cheese1' ? (
                                     <Cheese />
                                 ) : lobby.game.name === 'Morpion' ? (
                                     <Morpion />
