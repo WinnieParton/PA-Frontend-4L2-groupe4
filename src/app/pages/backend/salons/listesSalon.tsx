@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Button, Card, Form, Modal } from 'react-bootstrap';
+import {useEffect, useState} from 'react';
+import {Button, Card, Form, Modal} from 'react-bootstrap';
 import {
+    AnswerLobbyInvitation,
     CreateLobby,
+    GetAllUserInvitations,
     ListGames,
     ListLobby,
 } from '../../../service/frontendService';
-import { Link, useNavigate } from 'react-router-dom';
-import appRoutes from '../../../routes/routes';
+import {useNavigate} from 'react-router-dom';
+
 const ListesSalon = () => {
     const navigate = useNavigate();
-    const [show, setShow] = useState(false);
+    const [showAddLobby, setShowAddLobby] = useState(false);
+    const [showInvitation, setShowInvitation] = useState(false);
     const [nomSalon, setNomSalon] = useState('');
     const [idJeu, setIdJeu] = useState('');
     const [lobbies, setLobbies] = useState([]);
     const [games, setGames] = useState([]);
+    const [invitations, setInvitations] = useState([]);
 
     useEffect(() => {
         handleLoadLobby();
@@ -30,7 +34,7 @@ const ListesSalon = () => {
             game: idJeu,
             private: true,
         });
-        handleClose();
+        handleCloseAddLobby();
         handleLoadLobby();
         console.log(results);
     };
@@ -45,14 +49,29 @@ const ListesSalon = () => {
     const handleJeuChange = (e) => {
         setIdJeu(e.target.value);
     };
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseAddLobby = () => setShowAddLobby(false);
+    const handleShowAddLobby = () => setShowAddLobby(true);
+    const handleShowInvitation = async () => {
+        const result = await GetAllUserInvitations(user.id);
+        setInvitations(result.invitations);
+        setShowInvitation(true);
+    }
+    const handleCloseInvitation = () => setShowInvitation(false);
+
 
     const playGame = (lobby: any) => {
-        localStorage.setItem('info', 
-        JSON.stringify({ info: lobby}));
+        localStorage.setItem('info',
+            JSON.stringify({info: lobby}));
         navigate(`/dashboard/salle-jeu/${lobby.game.id}`);
     };
+
+    const AcceptLobbyInvitation = (id, p) => {
+        const result = AnswerLobbyInvitation(id, p);
+    };
+
+    const DenyLobbyInvitation = (id, p) => {
+        const result = AnswerLobbyInvitation(id, p);
+    }
 
     return (
         <div className="container mt-5 pt-2">
@@ -61,7 +80,10 @@ const ListesSalon = () => {
                     <h2>Liste des salons</h2>
                 </div>
                 <div>
-                    <Button variant="primary" onClick={handleShow}>
+                    <Button variant="outline-primary" onClick={handleShowInvitation}>
+                        Voir les invitations
+                    </Button>
+                    <Button variant="primary" onClick={handleShowAddLobby}>
                         Ajouter un salon
                     </Button>
                 </div>
@@ -74,7 +96,7 @@ const ListesSalon = () => {
                             <Card.Img
                                 variant="top"
                                 src={el.game.miniature}
-                                style={{ aspectRatio: 16 / 9 }}
+                                style={{aspectRatio: 16 / 9}}
                             />
                             <Card.Body>
                                 <Card.Title>{el.name}</Card.Title>
@@ -83,7 +105,7 @@ const ListesSalon = () => {
                                         {el.participants.length} participant(s)
                                         actuelle
                                     </p>
-                                    <br />
+                                    <br/>
                                     <p>
                                         Minimum {el.game.minPlayers} joueur(s)
                                     </p>
@@ -133,7 +155,7 @@ const ListesSalon = () => {
                 )}
             </div>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={showAddLobby} onHide={handleCloseAddLobby}>
                 <Modal.Header closeButton>
                     <Modal.Title>Ajouter un salon</Modal.Title>
                 </Modal.Header>
@@ -164,7 +186,7 @@ const ListesSalon = () => {
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="secondary" onClick={handleCloseAddLobby}>
                             Fermer
                         </Button>
                         <Button
@@ -176,6 +198,42 @@ const ListesSalon = () => {
                         </Button>
                     </Modal.Footer>
                 </Form>
+            </Modal>
+            <Modal show={showInvitation} onHide={handleCloseInvitation}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Voir les invitations reçus</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        {invitations.map((invitation) => (
+                            <div key={invitation.id}
+                                 className="d-flex justify-content-between align-items-center p-2 my-2 bg-light">
+                                <div key={invitation.lobby.id}>{invitation.lobby.name}</div>
+                                <div>{invitation.lobby.creator.name}</div>
+                                <div>{invitation.lobby.game.name}</div>
+                                <Button variant="primary" onClick={() => AcceptLobbyInvitation(invitation.id, {
+                                    userId: user.id,
+                                    lobbyId: invitation.lobby.id,
+                                    response: "ACCEPTED"
+                                })}>
+                                    Accepter
+                                </Button>
+                                <Button variant="outline-danger" onClick={() => DenyLobbyInvitation(invitation.id, {
+                                    userId: user.id,
+                                    lobbyId: invitation.lobby.id,
+                                    response: "REJECTED"
+                                })}>
+                                    Refuser
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseInvitation}>
+                        Fermer
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
     );

@@ -1,22 +1,11 @@
-import { useEffect, useState } from 'react';
-import {
-    Button,
-    Col,
-    Form,
-    ListGroup,
-    Modal,
-    Row,
-    Table,
-} from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {Button, Col, Form, ListGroup, Modal, Row, Table,} from 'react-bootstrap';
+import {useParams} from 'react-router-dom';
 import appRoutes from '../../../routes/routes';
-import {
-    AddFriendInLobby,
-    ListMyFriends,
-    getLobby,
-} from '../../../service/frontendService';
+import {AddFriendInLobby, getLobby, ListMyFriends,} from '../../../service/frontendService';
+
 const DetailSalon = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [lobby, setLobby] = useState<{
         id?: any;
         name?: string;
@@ -35,7 +24,7 @@ const DetailSalon = () => {
     const userToken = JSON.parse(tokenString);
     const user = userToken?.token;
     const [show, setShow] = useState(false);
-    const [idFriend, setIdFriend] = useState([]);
+    const [idFriend, setIdFriend] = useState(0);
     useEffect(() => {
         handleLoadLobby();
         handleLoadMyFriend();
@@ -55,15 +44,14 @@ const DetailSalon = () => {
         setShow(true);
     };
     const handleAddFriendSalon = async () => {
-        const result = await AddFriendInLobby(id, user.id, {
-            arrayUser: idFriend,
+        const result = await AddFriendInLobby(id, {
+            friendId: idFriend,
         });
-        setLobby(result);
         handleClose();
     };
 
     const handleFriendChange = (e) => {
-        setIdFriend([e.target.value]);
+        setIdFriend(e.target.value);
     };
     return (
         <div className="container mt-5 pt-2">

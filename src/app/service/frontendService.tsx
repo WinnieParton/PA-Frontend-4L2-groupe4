@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as jose from 'jose';
-import { baseURL } from '../../environnements/environnement';
+import {baseURL} from '../../environnements/environnement';
 
 export const login = async (email: any, password: any) => {
     try {
@@ -96,15 +96,15 @@ export const AddFriend = async (userId, data: any) => {
     }
 };
 
-export const AddFriendInLobby = async (id, userId, data: any) => {
+export const AddFriendInLobby = async (id, data: any) => {
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
-        const response = await axios.patch(
-            `${baseURL}/lobby/${id}/user/${userId}`,
+        const response = await axios.post(
+            `${baseURL}/invitation/lobby/${id}`,
             data,
             {
-                headers: { Authorization: `Bearer ${userToken.userToken}` },
+                headers: {Authorization: `Bearer ${userToken.userToken}`},
             }
         );
         return response.data;
@@ -113,12 +113,40 @@ export const AddFriendInLobby = async (id, userId, data: any) => {
     }
 };
 
+export const GetAllUserInvitations = async (id) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(
+            `${baseURL}/invitation/${id}`,
+            {
+                headers: {Authorization: `Bearer ${userToken.userToken}`}
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+}
+
+export const AnswerLobbyInvitation = async (id, data) => {
+    try {
+        const userToken = JSON.parse(localStorage.getItem('auth'));
+        const response = await axios.patch(
+            `${baseURL}/invitation/${id}`,
+            data,
+            {headers: {Authorization: `Bearer ${userToken.userToken}`}});
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+}
+
 export const ListInvitationSend = async (userId) => {
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
         const response = await axios.get(`${baseURL}/friend/sent/${userId}`, {
-            headers: { Authorization: `Bearer ${userToken.userToken}` },
+            headers: {Authorization: `Bearer ${userToken.userToken}`},
         });
         return response.data;
     } catch (error) {
