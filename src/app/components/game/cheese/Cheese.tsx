@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import {
     PlayGame,
     getCircularReplacer,
@@ -8,8 +9,8 @@ import PlayerComponent from './components/PlayerComponent/PlayerComponent';
 import { Board } from './models/Board';
 import { Colors } from './models/Colors';
 import { Player } from './models/Player';
+import { King } from './models/figures/King';
 import './scss/index.scss';
-import { Modal, Button } from 'react-bootstrap';
 
 const Cheese = () => {
     const [board, setBoard] = useState(new Board());
@@ -18,12 +19,26 @@ const Cheese = () => {
     const [blackPlayer] = useState(new Player(Colors.BLACK));
     const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
     const [show, setShow] = useState(false);
+    const [result, setResult] = useState<{
+        player1: string;
+        player2: string;
+        board: any;
+        currentPlayer: string;
+        statusGame: string;
+    }>(null);
 
     var nb = 0;
 
     useEffect(() => {
         restart();
     }, []);
+    useEffect(() => {
+        console.log('result', result);
+    }, [result]);
+
+    useEffect(() => {
+        console.log('board');
+    }, [board]);
 
     function restart() {
         const newBoard = new Board();
@@ -32,7 +47,6 @@ const Cheese = () => {
         setBoard(newBoard);
         setCurrentPlayer(whitePlayer);
         if (nb == 0) {
-            console.log('frist load board', newBoard);
             handleStartGame(newBoard);
             nb++;
         }
@@ -58,6 +72,7 @@ const Cheese = () => {
             player2: string;
             board: any;
             currentPlayer: string;
+            statusGame: string;
         } = {
             player1: lobby.creator.name,
             player2:
@@ -66,10 +81,17 @@ const Cheese = () => {
                     : lobby.participants[1].name,
             board: JSON.stringify(newBoard, getCircularReplacer()),
             currentPlayer: 'white',
+            statusGame: 'STARTED',
         };
+        // setResult(data);
 
         try {
             const results = await PlayGame(lobby.game.id, lobby.id, data);
+            localStorage.setItem(
+                'currentgame',
+                JSON.stringify({ currentgame: results })
+            );
+            setResult(results);
         } catch (error) {
             // Gérer l'erreur ici
             console.error("Une erreur s'est produite:", error);
@@ -82,8 +104,12 @@ const Cheese = () => {
         );
     }
     function setStatusGame(b) {
+        console.log('b?.lostBlackFigures', b?.lostBlackFigures);
         setShow(
-            b?.lostBlackFigures.length == 16 || b?.lostWhiteFigures.length == 16
+            b?.lostBlackFigures.length == 16 ||
+                b?.lostWhiteFigures.length == 16 ||
+                b?.lostBlackFigures.some((obj) => obj instanceof King) ||
+                b?.lostWhiteFigures.some((obj) => obj instanceof King)
         );
         setBo(b);
     }
@@ -137,17 +163,39 @@ const Cheese = () => {
                     <Modal.Title>Fin de la partie</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Félicitation{' '}
-                    {currentPlayer?.color == 'black'
-                        ? JSON.parse(localStorage.getItem('currentgame'))
-                              ?.currentgame?.player2
-                        : JSON.parse(localStorage.getItem('currentgame'))
-                              ?.currentgame?.player1}{' '}
-                    Vous avez gagné avec{' '}
-                    {bo?.currentPlayer == 'black'
-                        ? bo?.lostBlackFigures.length
-                        : bo?.lostWhiteFigures.length}{' '}
-                    piong(s) sur le tableau
+                    {currentPlayer?.color == 'black' ? (
+                        <>
+                            {JSON.parse(localStorage.getItem('currentgame'))
+                                ?.currentgame?.player1 == result?.player1 ? (
+                                <>
+                                    Félicitation {result?.player1} .Vous avez
+                                    gagné avec{' '}
+                                    {bo?.currentPlayer == 'black'
+                                        ? 16 - bo?.lostBlackFigures.length
+                                        : 16 - bo?.lostWhiteFigures.length}{' '}
+                                    piong(s) sur le tableau
+                                </>
+                            ) : (
+                                <>Game Over</>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            {JSON.parse(localStorage.getItem('currentgame'))
+                                ?.currentgame?.player2 == result?.player2 ? (
+                                <>
+                                    Félicitation {result?.player2} .Vous avez
+                                    gagné avec{' '}
+                                    {bo?.currentPlayer == 'black'
+                                        ? 16 - bo?.lostBlackFigures.length
+                                        : 16 - bo?.lostWhiteFigures.length}{' '}
+                                    piong(s) sur le tableau
+                                </>
+                            ) : (
+                                <>Game Over</>
+                            )}
+                        </>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
