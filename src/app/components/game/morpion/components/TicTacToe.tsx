@@ -84,17 +84,34 @@ const TicTacToe = ({ gameData,participants }) => {
         setGameOver(true);
         setWinner(player === PLAYER_1 ? participants.player1 : participants.player2);
 
+       if( winner === JSON.parse(localStorage.getItem('auth')).userName) {
         Swal.fire({
           icon : 'success',
           title: 'Gagnant',
-          text : player === PLAYER_1 ? participants.player1 : participants.player2,
-          confirmButtonText: 'OK',
+          showCancelButton: true,
+          text : `Félicitation ${winner} vous avez gagné.`,
+          confirmButtonText: 'Nouvelle partie',
+          cancelButtonText: `Fermer`,
         }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             window.location.reload();
           } 
         })
+       }else{
+        Swal.fire({
+          icon : 'error',
+          title: 'Game Over',
+          showCancelButton: true,
+          text : player === PLAYER_1 ? participants.player1 : participants.player2,
+          confirmButtonText: 'Nouvelle partie',
+          cancelButtonText: `Fermer`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          } 
+        })
+       }
+       
         break;
       }
     }
@@ -119,7 +136,9 @@ const TicTacToe = ({ gameData,participants }) => {
         icon : 'success',
         title: 'Terminé',
         text : "Match nul",
-        confirmButtonText: 'OK',
+        showCancelButton: true,
+        confirmButtonText: 'Nouvelle partie',
+        cancelButtonText: `Fermer`,
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
