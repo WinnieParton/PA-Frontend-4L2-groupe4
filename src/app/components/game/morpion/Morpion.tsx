@@ -1,6 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TicTacToe from "./components/TicTacToe";
 const Morpion = () => {
+  const [data, setData] = useState({});
+  const handleStartGame = () => {
+    const lobby: {
+        id?: any;
+        name?: string;
+        game?: {
+            miniature?: string;
+            name?: string;
+            maxPlayers?: number;
+            minPlayers?: string;
+            id?: number;
+        };
+        status?: string;
+        creator?: any;
+        participants?: any;
+    } = JSON.parse(localStorage.getItem('info')).info;
+
+    const value: {
+        player1: string;
+        player2: string;
+    } = {
+        player1: lobby.creator.name,
+        player2:
+            lobby.creator.name !== lobby.participants[0].name
+                ? lobby.participants[0].name
+                : lobby.participants[1].name
+    };
+
+setData(value)
+
+   
+};
+
+
+useEffect(() => {
+  handleStartGame();
+}, []);
+
   const gameData = {
     "displays": [
       {
@@ -114,7 +152,8 @@ const Morpion = () => {
     }
   };
   return ( <div className="app">
-    <TicTacToe gameData={gameData}/>
+ 
+    <TicTacToe gameData={gameData} participants={{ "player1" : data.player1, "player2" :data.player2 }}/>
   </div>)
 }
 

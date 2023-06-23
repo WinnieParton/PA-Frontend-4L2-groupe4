@@ -3,6 +3,7 @@ import {Button, Col, Form, ListGroup, Modal, Row, Table,} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import appRoutes from '../../../routes/routes';
 import {AddFriendInLobby, getLobby, ListMyFriends,} from '../../../service/frontendService';
+import Swal from 'sweetalert2';
 
 const DetailSalon = () => {
     const {id} = useParams();
@@ -33,6 +34,7 @@ const DetailSalon = () => {
     const handleLoadLobby = async () => {
         const results = await getLobby(id);
         setLobby(results);
+        console.log(results)
     };
     const handleLoadMyFriend = async () => {
         setMyFriends([]);
@@ -47,6 +49,13 @@ const DetailSalon = () => {
         const result = await AddFriendInLobby(id, {
             friendId: idFriend,
         });
+        Swal.fire({
+            icon: 'success',
+            title: "Ajout d'ami",
+            text: "L'invidation a bien été envoyé",
+            showConfirmButton: false,
+            timer: 1500
+        })
         handleClose();
     };
 
@@ -104,7 +113,7 @@ const DetailSalon = () => {
                                             variant="primary"
                                             onClick={handleShow}
                                         >
-                                            Ajouter des amis au salon
+                                            Inviter des amis au salon
                                         </Button>
                                     </div>
                                 )}
@@ -132,9 +141,13 @@ const DetailSalon = () => {
                                                 )
                                         )
                                     ) : (
-                                        <h2 className="text-primary text-center mt-4">
+                                       <tr>
+                                            <td>
+                                            <h2 className="text-primary text-center mt-4">
                                             Aucun ami
                                         </h2>
+                                            </td>
+                                       </tr>
                                     )}
                                 </tbody>
                             </Table>
@@ -170,6 +183,7 @@ const DetailSalon = () => {
                                                 onClick={() =>
                                                     handleAddFriendSalon()
                                                 }
+                                               
                                             >
                                                 Ajouter
                                             </Button>

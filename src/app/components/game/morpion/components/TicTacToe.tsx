@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-
-const TicTacToe = ({ gameData }) => {
+import "../scss/morpion.scss"
+import Swal from "sweetalert2";
+const TicTacToe = ({ gameData,participants }) => {
   const BOARD_SIZE = 3;
   const EMPTY = 0;
   const PLAYER_1 = 1;
@@ -13,6 +14,7 @@ const TicTacToe = ({ gameData }) => {
   ]);
 
   const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState(null);
   const currentPlayerRef = useRef(PLAYER_1);
   const canvasRef = useRef(null);
 
@@ -31,11 +33,13 @@ const TicTacToe = ({ gameData }) => {
     context.beginPath();
     context.moveTo(col * cellSize + padding, row * cellSize + padding);
     context.lineTo((col + 1) * cellSize - padding, (row + 1) * cellSize - padding);
+    context.strokeStyle = "#40128B"; 
     context.stroke();
 
     context.beginPath();
     context.moveTo((col + 1) * cellSize - padding, row * cellSize + padding);
     context.lineTo(col * cellSize + padding, (row + 1) * cellSize - padding);
+    context.strokeStyle = "#40128B"; 
     context.stroke();
   };
 
@@ -48,6 +52,7 @@ const TicTacToe = ({ gameData }) => {
       0,
       2 * Math.PI
     );
+    context.strokeStyle = "#F24C3D"; 
     context.stroke();
   };
 
@@ -77,8 +82,50 @@ const TicTacToe = ({ gameData }) => {
       }
       if (win) {
         setGameOver(true);
+        setWinner(player === PLAYER_1 ? participants.player1 : participants.player2);
+
+        Swal.fire({
+          icon : 'success',
+          title: 'Gagnant',
+          text : player === PLAYER_1 ? participants.player1 : participants.player2,
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            window.location.reload();
+          } 
+        })
         break;
       }
+    }
+
+    // Vérifier si tous les champs sont remplis sans victoire
+    let isBoardFull = true;
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (gameBoard[row][col] === EMPTY) {
+          isBoardFull = false;
+          break;
+        }
+      }
+      if (!isBoardFull) {
+        break;
+      }
+    }
+    if (isBoardFull && !gameOver) {
+      setGameOver(true);
+      setWinner("null");
+      Swal.fire({
+        icon : 'success',
+        title: 'Terminé',
+        text : "Match nul",
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          window.location.reload();
+        } 
+      })
     }
   };
 
@@ -126,8 +173,22 @@ const TicTacToe = ({ gameData }) => {
   }, [gameData]);
 
   return (
-    <div className="app">
-      {gameOver && <div className="game-over">Game Over</div>}
+    <div>
+     
+        <table className="morpion-player-table">
+          <thead>
+            <tr>
+              <td className="player1">Player 1</td>
+              <td className="player2">Player 2</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{participants.player1}</td>
+              <td>{participants.player2}</td>
+            </tr>
+          </tbody>
+        </table>
       <canvas
         ref={canvasRef}
         id="gameCanvas"

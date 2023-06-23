@@ -17,4 +17,10 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+
+    .swal2-modal{
+        display: grid;
+        justify-items: center;
+        padding-top: 30px;
+        }
 }

@@ -22,7 +22,8 @@
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
     "sockjs-client": "^1.6.1",
-    "stompjs": "^2.3.3"
+    "stompjs": "^2.3.3",
+    "sweetalert2": "^11.7.12"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
