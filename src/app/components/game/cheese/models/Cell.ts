@@ -127,6 +127,7 @@ export class Cell {
             player2: string;
             board: any;
             currentPlayer: string;
+            statusGame: string;
         } = {
             player1: lobby.creator.name,
             player2: lobby.creator.name != lobby.participants[0].name
@@ -134,6 +135,7 @@ export class Cell {
             : lobby.participants[1].name,
             board: JSON.stringify(newBoard, getCircularReplacer()),
             currentPlayer: localStorage.getItem('currentPlayer'),
+            statusGame: 'PENDING'
         };
 
         try {
@@ -142,6 +144,8 @@ export class Cell {
                 'currentgame',
                 JSON.stringify({ currentgame: results })
             );
+            console.log('results 1234', results);
+            console.log('results newBoard', newBoard);
         } catch (error) {
             console.error("Une erreur s'est produite:", error);
         }

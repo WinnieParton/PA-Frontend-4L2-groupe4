@@ -59,7 +59,7 @@ const ListesSalon = () => {
     const handleCloseInvitation = () => setShowInvitation(false);
 
 
-    const playGame = (lobby: any) => {
+    const playGamebutton = (lobby: any) => {
         localStorage.setItem('info',
             JSON.stringify({info: lobby}));
         navigate(`/dashboard/salle-jeu/${lobby.game.id}`);
@@ -124,7 +124,7 @@ const ListesSalon = () => {
                                     >
                                         <Button
                                             variant="primary"
-                                            onClick={() => playGame(el)}
+                                            onClick={() => playGamebutton(el)}
                                             className="me-2"
                                         >
                                             Jouer

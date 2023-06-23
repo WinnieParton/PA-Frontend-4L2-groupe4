@@ -240,8 +240,6 @@ export const ListGames = async () => {
 };
 
 export const PlayGame = async (idGame, idLobby, data: any) => {
-    console.log('data', data);
-
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
