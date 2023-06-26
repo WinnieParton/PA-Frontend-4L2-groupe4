@@ -1,12 +1,10 @@
-import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Cheese from '../../../components/game/cheese/Cheese';
-import ChatRoom from '../../../components/chat/ChatRoom';
 
+import Cheese from '../../../components/game/cheese/Cheese';
+import Morpion from '../../../components/game/cheese/Morpion';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
-import Morpion from '../../../components/game/morpion/Morpion';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -45,7 +43,10 @@ const SalleJeu = () => {
                     <Col md={8}>
                         <div className="jeux-content">
                             <h2>{lobby.name}</h2>
-                            <div className="d-flex mt-4 mb-4 justify-content-center">
+                            <div
+                                className="d-flex mt-4 mb-4 justify-content-center"
+                                style={{ position: 'absolute' }}
+                            >
                                 {lobby.game.name === 'Cheese' ? (
                                     <Cheese />
                                 ) : lobby.game.name === 'Morpion' ? (
@@ -56,9 +57,9 @@ const SalleJeu = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col md={4}>
+                    {/* <Col md={4}>
                         <ChatRoom />
-                    </Col>
+                    </Col> */}
                 </Row>
             </div>
         </div>
