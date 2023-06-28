@@ -1,12 +1,12 @@
 import { Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import Cheese from '../../../components/game/cheese/Cheese';
-import Morpion from '../../../components/game/cheese/Morpion';
+import { useState } from 'react';
+import ChatRoom from '../../../components/chat/ChatRoom';
+import GuessingGame from '../../../components/game/GuessingGame';
+import Morpion from '../../../components/game/Morpion';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
-import ChatRoom from '../../../components/chat/ChatRoom';
-import { useState } from 'react';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -16,7 +16,8 @@ const SalleJeu = () => {
             miniature?: string;
             name?: string;
             maxPlayers?: number;
-            minPlayers?: string;
+            minPlayers?: number;
+            gameFiles?: string;
         };
         status?: string;
         creator?: any;
@@ -49,7 +50,7 @@ const SalleJeu = () => {
                     <Col md={12}>
                         <h2>{lobby.name}</h2>
                     </Col>
-                    <Col md={8}>
+                    <Col md={lobby.game.minPlayers > 1 ? 8 : 12}>
                         <div
                             className="jeux-content  d-flex justify-content-center align-items-center"
                             style={{
@@ -63,10 +64,12 @@ const SalleJeu = () => {
                                     className="mt-4 mb-4"
                                     style={{ position: 'absolute' }}
                                 >
-                                    {lobby.game.name === 'Cheese' ? (
-                                        <Cheese />
-                                    ) : lobby.game.name === 'Morpion' ? (
+                                    {lobby.game.gameFiles ===
+                                    'morpion.py.py' ? (
                                         <Morpion />
+                                    ) : lobby.game.gameFiles ===
+                                      'GuessingGame.js' ? (
+                                        <GuessingGame />
                                     ) : (
                                         <p>
                                             Le jeu n'est pas encore implementé
@@ -80,8 +83,11 @@ const SalleJeu = () => {
                             )}
                         </div>
                     </Col>
-                    <Col md={4} className='chat-box'>
-                        <ChatRoom />
+                    <Col
+                        md={lobby.game.minPlayers > 1 ? 4 : 0}
+                        className="chat-box"
+                    >
+                        {lobby.game.minPlayers > 1 && <ChatRoom />}
                     </Col>
                 </Row>
             </div>

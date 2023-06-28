@@ -38,7 +38,6 @@ const ListesSalon = () => {
         });
         handleCloseAddLobby();
         handleLoadLobby();
-        console.log(results);
     };
 
     const handleLoadLobby = async () => {

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { runEngine } from '../../../service/frontendService';
+import { runEngine } from '../../service/frontendService';
 
 const Morpion = () => {
     const [gameData, setGameData] = useState(null);
-    const [scores, setScores] = useState([0, 0]);
     const [gameOver, setGameOver] = useState(false);
-    const [winner, setWinner] = useState(null);
+
     let call = 0;
     useEffect(() => {
         const data = {
@@ -60,7 +59,6 @@ const Morpion = () => {
                 }
             }
 
-            setScores(results.game_state?.scores);
             setGameData(results);
         } catch (error) {
             console.error("Une erreur s'est produite:", error);
@@ -68,6 +66,8 @@ const Morpion = () => {
     };
 
     const handleZoneClick = (zone) => {
+        console.log("zone"+zone);
+        
         if (gameOver) return;
         const data = {
             actions: [
