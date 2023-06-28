@@ -6,6 +6,7 @@ import Morpion from '../../../components/game/cheese/Morpion';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
 import ChatRoom from '../../../components/chat/ChatRoom';
+import { useState } from 'react';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -21,10 +22,14 @@ const SalleJeu = () => {
         creator?: any;
         participants?: [{ id?: any; name?: string }];
     } = JSON.parse(localStorage.getItem('info')).info;
+    const [startGame, setStartGame] = useState(false);
 
     const handleLoadLobby = async () => {
         const results = await redirectOnLobby(lobby.id);
         return navigate(appRoutes.SALONS);
+    };
+    const handleStart = () => {
+        setStartGame(true);
     };
 
     return (
@@ -41,24 +46,41 @@ const SalleJeu = () => {
             </div>
             <div className="bg-light p-2 my-2">
                 <Row>
+                    <Col md={12}>
+                        <h2>{lobby.name}</h2>
+                    </Col>
                     <Col md={8}>
-                        <div className="jeux-content">
-                            <h2>{lobby.name}</h2>
-                            <div
-                                className="d-flex mt-4 mb-4 justify-content-center"
-                                style={{ position: 'absolute' }}
-                            >
-                                {lobby.game.name === 'Cheese' ? (
-                                    <Cheese />
-                                ) : lobby.game.name === 'Morpion' ? (
-                                    <Morpion />
-                                ) : (
-                                    <p>Le jeu n'est pas encore implementé</p>
-                                )}
-                            </div>
+                        <div
+                            className="jeux-content  d-flex justify-content-center align-items-center"
+                            style={{
+                                background: !startGame
+                                    ? '#3f51b54a'
+                                    : 'transparent',
+                            }}
+                        >
+                            {startGame ? (
+                                <div
+                                    className="mt-4 mb-4"
+                                    style={{ position: 'absolute' }}
+                                >
+                                    {lobby.game.name === 'Cheese' ? (
+                                        <Cheese />
+                                    ) : lobby.game.name === 'Morpion' ? (
+                                        <Morpion />
+                                    ) : (
+                                        <p>
+                                            Le jeu n'est pas encore implementé
+                                        </p>
+                                    )}
+                                </div>
+                            ) : (
+                                <Button variant="primary" onClick={handleStart}>
+                                    Jouer
+                                </Button>
+                            )}
                         </div>
                     </Col>
-                    <Col md={4}>
+                    <Col md={4} className='chat-box'>
                         <ChatRoom />
                     </Col>
                 </Row>

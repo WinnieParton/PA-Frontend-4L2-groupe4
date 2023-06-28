@@ -118,37 +118,27 @@ const ListesSalon = () => {
                                     </p>
                                 </Card.Subtitle>
                                 <Card.Text></Card.Text>
-                                {el.participants.length ==
-                                el.game.minPlayers ? (
-                                    <div
-                                        className="d-flex"
-                                        style={{
-                                            justifyContent: 'space-between',
-                                        }}
+
+                                <div
+                                    className="d-flex"
+                                    style={{
+                                        justifyContent: 'space-between',
+                                    }}
+                                >
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => playGamebutton(el)}
+                                        className="me-2"
                                     >
-                                        <Button
-                                            variant="primary"
-                                            onClick={() => playGamebutton(el)}
-                                            className="me-2"
-                                        >
-                                            Jouer
-                                        </Button>
-                                        <Button
-                                            variant="warning"
-                                            href={'/dashboard/salon/' + el.id}
-                                        >
-                                            Modifier
-                                        </Button>
-                                    </div>
-                                ) : (
+                                        Acceder au salon
+                                    </Button>
                                     <Button
                                         variant="warning"
                                         href={'/dashboard/salon/' + el.id}
-                                        className="w-100"
                                     >
                                         Modifier
                                     </Button>
-                                )}
+                                </div>
                             </Card.Body>
                         </Card>
                     ))

@@ -129,67 +129,62 @@ const ChatRoom = () => {
         connect();
     };
     return (
-        <div className="">
+        <div className="chat-content">
             {userData.connected ? (
-                <div className="chat-box">
-                    <div className="chat-content">
-                        <ul className="chat-messages">
-                            {privateChats.size > 0 &&
-                                privateChats.has(tab) &&
-                                Array.isArray(privateChats.get(tab)) &&
-                                privateChats.get(tab).map((chat, index) => (
-                                    <li
-                                        className={`message ${
-                                            chat.senderName ===
-                                                userData.username && 'self'
-                                        }`}
-                                        key={index}
-                                    >
-                                        {chat.senderName !==
-                                            userData.username && (
-                                            <div className="avatar">
-                                                {chat.senderName}
-                                            </div>
-                                        )}
-                                        <div className="message-data">
-                                            <span className="message-text">
-                                                {chat.message}
-                                            </span>
-                                            <span
-                                                className="text-info"
-                                                style={{ fontSize: 'small' }}
-                                            >
-                                                <br /> {chat.currentDate}
-                                            </span>
+                <>
+                    <ul className="chat-messages">
+                        {privateChats.size > 0 &&
+                            privateChats.has(tab) &&
+                            Array.isArray(privateChats.get(tab)) &&
+                            privateChats.get(tab).map((chat, index) => (
+                                <li
+                                    className={`message ${
+                                        chat.senderName === userData.username &&
+                                        'self'
+                                    }`}
+                                    key={index}
+                                >
+                                    {chat.senderName !== userData.username && (
+                                        <div className="avatar">
+                                            {chat.senderName}
                                         </div>
-                                        {chat.senderName ===
-                                            userData.username && (
-                                            <div className="avatar self">
-                                                {chat.senderName}
-                                            </div>
-                                        )}
-                                    </li>
-                                ))}
-                        </ul>
-
-                        <div className="send-message">
-                            <input
-                                type="text"
-                                className="input-message"
-                                placeholder="enter the message"
-                                value={userData.message}
-                                onChange={handleMessage}
-                            />
-                            <button
-                                type="button"
-                                className="send-button"
-                                onClick={sendPrivateValue}
-                            >
-                                send
-                            </button>
-                        </div>
+                                    )}
+                                    <div className="message-data">
+                                        <span className="message-text">
+                                            {chat.message}
+                                        </span>
+                                        <span
+                                            className="text-info"
+                                            style={{ fontSize: 'small' }}
+                                        >
+                                            <br /> {chat.currentDate}
+                                        </span>
+                                    </div>
+                                    {chat.senderName === userData.username && (
+                                        <div className="avatar self">
+                                            {chat.senderName}
+                                        </div>
+                                    )}
+                                </li>
+                            ))}
+                    </ul>
+                    <div className="send-message">
+                        <input
+                            type="text"
+                            className="input-message"
+                            placeholder="enter the message"
+                            value={userData.message}
+                            onChange={handleMessage}
+                        />
+                        <button
+                            type="button"
+                            className="send-button"
+                            onClick={sendPrivateValue}
+                        >
+                            send
+                        </button>
                     </div>
-                </div>
+                </>
             ) : (
                 <div className="register">Loading ...</div>
             )}
