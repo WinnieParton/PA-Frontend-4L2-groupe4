@@ -1,198 +1,97 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { runEngine } from '../../../service/frontendService';
 
 const Morpion = () => {
-    const gameData = {
-        displays: [
-            {
-                width: '300',
-                height: '300',
-                content: [
-                    {
-                        tag: 'style',
-                        content: 'line{stroke:black;stroke-width:4;}',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '0',
-                        y1: '100',
-                        x2: '300',
-                        y2: '100',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '100',
-                        y1: '0',
-                        x2: '100',
-                        y2: '300',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '0',
-                        y1: '200',
-                        x2: '300',
-                        y2: '200',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '200',
-                        y1: '0',
-                        x2: '200',
-                        y2: '300',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '150',
-                        cy: '50',
-                        r: '33',
-                        fill: 'blue',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '150',
-                        cy: '250',
-                        r: '33',
-                        fill: 'blue',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '250',
-                        cy: '50',
-                        r: '33',
-                        fill: 'red',
-                    },
-                ],
-                player: 1,
+    const [gameData, setGameData] = useState(null);
+    const [scores, setScores] = useState([0, 0]);
+    const [gameOver, setGameOver] = useState(false);
+    const [winner, setWinner] = useState(null);
+    let call = 0;
+    useEffect(() => {
+        const data = {
+            init: {
+                players: 2,
             },
-            {
-                width: '300',
-                height: '300',
-                content: [
-                    {
-                        tag: 'style',
-                        content: 'line{stroke:black;stroke-width:4;}',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '0',
-                        y1: '100',
-                        x2: '300',
-                        y2: '100',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '100',
-                        y1: '0',
-                        x2: '100',
-                        y2: '300',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '0',
-                        y1: '200',
-                        x2: '300',
-                        y2: '200',
-                    },
-                    {
-                        tag: 'line',
-                        x1: '200',
-                        y1: '0',
-                        x2: '200',
-                        y2: '300',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '150',
-                        cy: '50',
-                        r: '33',
-                        fill: 'blue',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '150',
-                        cy: '250',
-                        r: '33',
-                        fill: 'blue',
-                    },
-                    {
-                        tag: 'circle',
-                        cx: '250',
-                        cy: '50',
-                        r: '33',
-                        fill: 'red',
-                    },
-                ],
-                player: 2,
-            },
-        ],
-        requested_actions: [
-            {
-                type: 'CLICK',
-                player: 2,
-                zones: [
-                    {
-                        x: 0,
-                        y: 0,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        x: 0,
-                        y: 100,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        x: 0,
-                        y: 200,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        x: 100,
-                        y: 100,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        x: 200,
-                        y: 100,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        x: 200,
-                        y: 200,
-                        width: 100,
-                        height: 100,
-                    },
-                ],
-            },
-        ],
-        game_state: {
-            scores: [0, 0],
-            game_over: false,
-        },
+        };
+        if (call == 0) {
+            call++;
+            handleGame(data);
+        }
+    }, []);
+
+    const handleGame = async (data) => {
+        try {
+            const idLobby = JSON.parse(localStorage.getItem('info')).info.id;
+            const results = await runEngine(idLobby, data);
+            if (results.game_state?.game_over) {
+                setGameOver(true);
+                if (
+                    JSON.parse(localStorage.getItem('auth')).userid ==
+                        JSON.parse(localStorage.getItem('info')).info.creator
+                            .id &&
+                    results.requested_actions[0].player === 2
+                ) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Gagnant',
+                        showCancelButton: true,
+                        text: `Félicitation vous avez gagné.`,
+                        confirmButtonText: 'Nouvelle partie',
+                        cancelButtonText: `Fermer`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Game Over',
+                        showCancelButton: true,
+                        text: 'Une revenge?',
+                        confirmButtonText: 'Nouvelle partie',
+                        cancelButtonText: `Fermer`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+
+            setScores(results.game_state?.scores);
+            setGameData(results);
+        } catch (error) {
+            console.error("Une erreur s'est produite:", error);
+        }
     };
-    const [scores, setScores] = useState(gameData.game_state.scores);
 
-    const handleZoneClick = (zone, zoneIndex) => {
-        // Handle the click event here based on the zoneIndex
-        // You can update the game state, scores, etc.
-        // For this example, we'll just increment the score of player 1
-        console.log('Clicked zone:', zoneIndex);
-        console.log('Clicked zone:', zone);
-
-        console.log('prevScores:', scores);
+    const handleZoneClick = (zone) => {
+        if (gameOver) return;
+        const data = {
+            actions: [
+                {
+                    type: 'CLICK',
+                    player: gameData.requested_actions[0].player,
+                    x: zone.x,
+                    y: zone.y,
+                    width: zone.width,
+                    height: zone.height,
+                },
+            ],
+        };
+        handleGame(data);
     };
 
     return (
         <div>
             <div>
                 <svg
-                    width={gameData.displays[0].width}
-                    height={gameData.displays[0].height}
+                    width={gameData?.displays[0].width}
+                    height={gameData?.displays[0].height}
                 >
-                    {gameData.displays
+                    {gameData?.displays
                         .flatMap((display) => display.content)
                         .map((item, itemIndex) => {
                             if (item.tag === 'style') {
@@ -225,9 +124,9 @@ const Morpion = () => {
                             return null;
                         })}
                 </svg>
-                <p>Player: {gameData.displays[0].player}</p>
+                <p>Player: {gameData?.displays[0].player}</p>
             </div>
-            {gameData.requested_actions.map((action, index) => (
+            {gameData?.requested_actions.map((action, index) => (
                 <div key={index}>
                     <p>Type: {action.type}</p>
                     <p>Player: {action.player}</p>
@@ -241,17 +140,11 @@ const Morpion = () => {
                                 width: zone.width,
                                 height: zone.height,
                             }}
-                            onClick={() => handleZoneClick(zone, zoneIndex)}
+                            onClick={() => handleZoneClick(zone)}
                         ></div>
                     ))}
                 </div>
             ))}
-            <div>
-                <p>Scores:</p>
-                <p>Player 1: {gameData.game_state.scores[0]}</p>
-                <p>Player 2: {gameData.game_state.scores[1]}</p>
-                {gameData.game_state.game_over && <p>Game Over!</p>}
-            </div>
         </div>
     );
 };

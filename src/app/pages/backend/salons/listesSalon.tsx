@@ -67,7 +67,7 @@ const ListesSalon = () => {
 
     const AcceptLobbyInvitation = (id, p) => {
         const result = AnswerLobbyInvitation(id, p);
-        handleShowInvitation();
+        handleCloseAddLobby();
     };
 
     const DenyLobbyInvitation = (id, p) => {

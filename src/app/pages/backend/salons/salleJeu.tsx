@@ -5,6 +5,7 @@ import Cheese from '../../../components/game/cheese/Cheese';
 import Morpion from '../../../components/game/cheese/Morpion';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
+import ChatRoom from '../../../components/chat/ChatRoom';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -57,9 +58,9 @@ const SalleJeu = () => {
                             </div>
                         </div>
                     </Col>
-                    {/* <Col md={4}>
+                    <Col md={4}>
                         <ChatRoom />
-                    </Col> */}
+                    </Col>
                 </Row>
             </div>
         </div>
