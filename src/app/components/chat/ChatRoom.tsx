@@ -1,4 +1,7 @@
+
+import EmojiPicker from 'emoji-picker-react';
 import { useEffect, useState } from 'react';
+import { ReactMic } from 'react-mic';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
 import { baseURL } from '../../../environnements/environnement';
@@ -26,6 +29,10 @@ const ChatRoom = () => {
         currentDate: new Date().toLocaleString(),
         message: '',
     });
+    const [message, setMessage] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [selectedEmoji, setSelectedEmoji] = useState(null);
     useEffect(() => {
         console.log('privateChats', privateChats);
     }, [userData]);
@@ -49,7 +56,26 @@ const ChatRoom = () => {
         );
         userJoin();
     };
+    const handleInputChange = (e) => {
+        setMessage(e.target.value);
+    };
 
+    const handleEmojiClick = (emoji) => {
+        const emojiRepresentation = emoji.emoji;
+        setMessage((prevMessage) => prevMessage + emojiRepresentation);
+      };
+
+      const toggleEmojiPicker = () => {
+        setShowEmojiPicker((prevShowEmojiPicker) => !prevShowEmojiPicker);
+      };
+
+    const startRecording = () => {
+        setIsRecording(true);
+    };
+
+    const stopRecording = () => {
+        setIsRecording(false);
+    };
     const userJoin = () => {
         var chatMessage = {
             senderUser: userData.senderUser,
@@ -103,7 +129,7 @@ const ChatRoom = () => {
             var chatMessage = {
                 senderUser: userData.senderUser,
                 lobby: userData.lobby,
-                message: userData.message,
+                message: message,
                 senderName: userData.username,
                 receiverName: userData.receivername,
                 currentDate: new Date().toLocaleString(),
@@ -128,66 +154,92 @@ const ChatRoom = () => {
     const registerUser = () => {
         connect();
     };
+    const handleAudioUpload = (recordedBlob) => {
+        // Handle the recorded audio blob here (e.g., send it to the server)
+        console.log('Recorded audio blob:', recordedBlob);
+    };
     return (
-        <div className="chat-content">
-            {userData.connected ? (
-                <>
-                    <ul className="chat-messages">
-                        {privateChats.size > 0 &&
-                            privateChats.has(tab) &&
-                            Array.isArray(privateChats.get(tab)) &&
-                            privateChats.get(tab).map((chat, index) => (
-                                <li
-                                    className={`message ${
-                                        chat.senderName === userData.username &&
-                                        'self'
-                                    }`}
-                                    key={index}
-                                >
-                                    {chat.senderName !== userData.username && (
-                                        <div className="avatar">
-                                            {chat.senderName}
+        <div>
+            <div>
+                <textarea
+                    value={message}
+                    onChange={handleInputChange}
+                    placeholder="Type your message..."
+                />
+                <button onClick={toggleEmojiPicker}>😀</button>
+            </div>
+            {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
+            <div>
+                <button onMouseDown={startRecording} onMouseUp={stopRecording}>
+                    {isRecording ? 'Stop Recording' : 'Start Recording'}
+                </button>
+                {isRecording && (
+                    <ReactMic record={isRecording} onStop={handleAudioUpload} />
+                )}
+            </div>
+
+            <div className="chat-content">
+                {userData.connected ? (
+                    <>
+                        <ul className="chat-messages">
+                            {privateChats.size > 0 &&
+                                privateChats.has(tab) &&
+                                Array.isArray(privateChats.get(tab)) &&
+                                privateChats.get(tab).map((chat, index) => (
+                                    <li
+                                        className={`message ${
+                                            chat.senderName ===
+                                                userData.username && 'self'
+                                        }`}
+                                        key={index}
+                                    >
+                                        {chat.senderName !==
+                                            userData.username && (
+                                            <div className="avatar">
+                                                {chat.senderName}
+                                            </div>
+                                        )}
+                                        <div className="message-data">
+                                            <span className="message-text">
+                                                {chat.message}
+                                            </span>
+                                            <span
+                                                className="text-info"
+                                                style={{ fontSize: 'small' }}
+                                            >
+                                                <br /> {chat.currentDate}
+                                            </span>
                                         </div>
-                                    )}
-                                    <div className="message-data">
-                                        <span className="message-text">
-                                            {chat.message}
-                                        </span>
-                                        <span
-                                            className="text-info"
-                                            style={{ fontSize: 'small' }}
-                                        >
-                                            <br /> {chat.currentDate}
-                                        </span>
-                                    </div>
-                                    {chat.senderName === userData.username && (
-                                        <div className="avatar self">
-                                            {chat.senderName}
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                    </ul>
-                    <div className="send-message">
-                        <input
-                            type="text"
-                            className="input-message"
-                            placeholder="enter the message"
-                            value={userData.message}
-                            onChange={handleMessage}
-                        />
-                        <button
-                            type="button"
-                            className="send-button"
-                            onClick={sendPrivateValue}
-                        >
-                            send
-                        </button>
-                    </div>
-                </>
-            ) : (
-                <div className="register">Loading ...</div>
-            )}
+                                        {chat.senderName ===
+                                            userData.username && (
+                                            <div className="avatar self">
+                                                {chat.senderName}
+                                            </div>
+                                        )}
+                                    </li>
+                                ))}
+                        </ul>
+                        <div className="send-message">
+                            <input
+                                type="text"
+                                className="input-message"
+                                placeholder="enter the message"
+                                value={userData.message}
+                                onChange={handleMessage}
+                            />
+                            <button
+                                type="button"
+                                className="send-button"
+                                onClick={sendPrivateValue}
+                            >
+                                send
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <div className="register">Loading ...</div>
+                )}
+            </div>
         </div>
     );
 };
