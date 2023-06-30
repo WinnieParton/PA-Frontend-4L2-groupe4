@@ -13,6 +13,7 @@ function getToken() {
 const RouteProtected = ({ expectedRoles, children }: PropsRouteProtected) => {
    // const auth = true;
 
+   
     if (!getToken() ) {
         return <Navigate to="/" replace />;
     }

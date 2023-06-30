@@ -6,6 +6,7 @@ const appRoutes = {
   DASHBOARD: "/dashboard",
   DASHBOARD_HOME: "/dashboard/home",
   JEUX: "/dashboard/jeux",
+  JEUX_AJOUTER: "/dashboard/jeux/ajouter",
   AMIS: "/dashboard/amis",
   SALONS: "/dashboard/salons",
   SALONS_SHOW: "/dashboard/salon/:id",

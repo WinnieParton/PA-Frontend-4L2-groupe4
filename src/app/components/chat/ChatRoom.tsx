@@ -199,8 +199,9 @@ const ChatRoom = () => {
                                                 </span>
                                             </div>
                                         )}
-                                        <div className="message-data">
-                                            <span className="message-text">
+                                        <div className={chat.senderName !==
+                                            userData.username  ? "message-data" : "message-data message-data-self"}>
+                                            <span className="message-text" >
                                                 {chat.message}
                                             </span>
                                             <span

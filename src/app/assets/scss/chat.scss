@@ -1,3 +1,4 @@
+@import 'variable';
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
@@ -67,7 +68,7 @@ input {
 }
 
 .chat-messages {
-    height: 400px;
+    height: 500px;
     border: 1px solid #ccc;
     overflow-x: hidden;
     margin-bottom: 10px;
@@ -118,17 +119,18 @@ ul {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: cornflowerblue;
+    background-color: $grey;
     width: 40px;
     height: 40px;
     padding: 15px;
     border-radius: 50%;
     color: #fff;
     margin-right: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 .avatar.self {
     color: #000;
-    background-color: greenyellow;
+    background-color: $primaryColor;
     margin-left: 5px;
 }
 .message {
@@ -184,4 +186,11 @@ aside.EmojiPickerReact.epr-main {
     font-weight: 500;
     color: #555;
     font-style: italic;
+}
+.message-data-self{
+    background-color: $grey;
+    color: #ffffff;
+    .tcha-message-time{
+        color: #ffffff;
+    }
 }

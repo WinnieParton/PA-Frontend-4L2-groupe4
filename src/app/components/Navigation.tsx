@@ -26,6 +26,7 @@ const Navigation = () => {
                   <Nav className="ms-auto">
                       <NavDropdown title="Mon compte" id="basic-nav-dropdown">
                           <NavDropdown.Item href="#action/3.1">Profil</NavDropdown.Item>
+                          <NavDropdown.Item href={appRoutes.JEUX_AJOUTER}>Ajouter un jeu</NavDropdown.Item>
                           <NavDropdown.Divider />
                           <NavDropdown.Item onClick={handlLogout}>
                               Se déconnecter
