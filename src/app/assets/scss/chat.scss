@@ -67,11 +67,12 @@ input {
 }
 
 .chat-messages {
-    height: 80%;
+    height: 600px;
     border: 1px solid #ccc;
     overflow-x: hidden;
     margin-bottom: 10px;
     background: #fff;
+    overflow-y: scroll;
 }
 
 .send-message {
