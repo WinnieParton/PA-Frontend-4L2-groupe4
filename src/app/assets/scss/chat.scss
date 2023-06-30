@@ -16,13 +16,19 @@ input {
     padding: 10px;
     font-size: 1.2em;
 }
-button {
-    border: none;
-    padding: 10px;
-    background: green;
-    color: #fff;
+.tchat-cs-btn {
+    width: 40px;
+    height: 40px;
+    padding: 15px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 1.2em;
     font-weight: bold;
+    margin: 0 5px;
 }
 
 .container {
@@ -62,15 +68,18 @@ button {
 
 .chat-messages {
     height: 80%;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
     overflow-x: hidden;
-    margin-bottom: 5vh;
+    margin-bottom: 10px;
+    background: #fff;
 }
 
 .send-message {
     width: 100%;
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .input-message {
@@ -105,14 +114,21 @@ ul {
 }
 
 .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: cornflowerblue;
-    padding: 3px 5px;
-    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 15px;
+    border-radius: 50%;
     color: #fff;
+    margin-right: 5px;
 }
 .avatar.self {
     color: #000;
     background-color: greenyellow;
+    margin-left: 5px;
 }
 .message {
     padding: 5px;
@@ -133,4 +149,38 @@ ul {
     display: inline-block;
     max-width: 100%;
     overflow: hidden;
+}
+
+.tcha-block{
+    width: 100%;
+    position: relative;
+}
+
+aside.EmojiPickerReact.epr-main {
+    border-color: var(--epr-picker-border-color);
+    border-radius: var(--epr-picker-border-radius);
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 70px;
+    box-shadow: 9px -9px 9px -1px rgba(0,0,0,0.23);
+}
+
+.message-box-emoji{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-right: 5px;
+    }
+}
+
+.tcha-message-time{
+    font-size: 10px;
+    font-weight: 500;
+    color: #555;
+    font-style: italic;
 }

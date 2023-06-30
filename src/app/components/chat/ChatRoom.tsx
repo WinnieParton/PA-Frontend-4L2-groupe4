@@ -1,11 +1,17 @@
-
 import EmojiPicker from 'emoji-picker-react';
 import { useEffect, useState } from 'react';
 import { ReactMic } from 'react-mic';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
 import { baseURL } from '../../../environnements/environnement';
-import './../../assets/css/chat.css';
+import './../../assets/scss/chat.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faFaceSmile,
+    faMicrophone,
+    faMicrophoneSlash,
+    faPaperPlane,
+} from '@fortawesome/free-solid-svg-icons';
 
 var stompClient = null;
 const ChatRoom = () => {
@@ -63,11 +69,11 @@ const ChatRoom = () => {
     const handleEmojiClick = (emoji) => {
         const emojiRepresentation = emoji.emoji;
         setMessage((prevMessage) => prevMessage + emojiRepresentation);
-      };
+    };
 
-      const toggleEmojiPicker = () => {
+    const toggleEmojiPicker = () => {
         setShowEmojiPicker((prevShowEmojiPicker) => !prevShowEmojiPicker);
-      };
+    };
 
     const startRecording = () => {
         setIsRecording(true);
@@ -148,6 +154,7 @@ const ChatRoom = () => {
                 {},
                 JSON.stringify(chatMessage)
             );
+            setMessage('');
             setUserData({ ...userData, message: '' });
         }
     };
@@ -159,20 +166,8 @@ const ChatRoom = () => {
         console.log('Recorded audio blob:', recordedBlob);
     };
     return (
-        <div>
+        <div className="tcha-block">
             <div>
-                <textarea
-                    value={message}
-                    onChange={handleInputChange}
-                    placeholder="Type your message..."
-                />
-                <button onClick={toggleEmojiPicker}>😀</button>
-            </div>
-            {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
-            <div>
-                <button onMouseDown={startRecording} onMouseUp={stopRecording}>
-                    {isRecording ? 'Stop Recording' : 'Start Recording'}
-                </button>
                 {isRecording && (
                     <ReactMic record={isRecording} onStop={handleAudioUpload} />
                 )}
@@ -196,7 +191,12 @@ const ChatRoom = () => {
                                         {chat.senderName !==
                                             userData.username && (
                                             <div className="avatar">
-                                                {chat.senderName}
+                                                <span>
+                                                    {' '}
+                                                    {chat.senderName
+                                                        .substring(2, 0)
+                                                        .toUpperCase()}
+                                                </span>
                                             </div>
                                         )}
                                         <div className="message-data">
@@ -207,33 +207,67 @@ const ChatRoom = () => {
                                                 className="text-info"
                                                 style={{ fontSize: 'small' }}
                                             >
-                                                <br /> {chat.currentDate}
+                                                <br />{' '}
+                                                <span className="tcha-message-time">
+                                                    {chat.currentDate}
+                                                </span>
                                             </span>
                                         </div>
                                         {chat.senderName ===
                                             userData.username && (
                                             <div className="avatar self">
-                                                {chat.senderName}
+                                                <span>
+                                                    {chat.senderName
+                                                        .substring(2, 0)
+                                                        .toUpperCase()}
+                                                </span>
                                             </div>
                                         )}
                                     </li>
                                 ))}
                         </ul>
                         <div className="send-message">
-                            <input
-                                type="text"
-                                className="input-message"
-                                placeholder="enter the message"
-                                value={userData.message}
-                                onChange={handleMessage}
-                            />
-                            <button
-                                type="button"
-                                className="send-button"
-                                onClick={sendPrivateValue}
-                            >
-                                send
-                            </button>
+                            <div className="message-box-emoji">
+                                <textarea
+                                    value={message}
+                                    onChange={handleInputChange}
+                                    placeholder="Message."
+                                />
+                                <button
+                                    onClick={toggleEmojiPicker}
+                                    className="tchat-cs-btn"
+                                >
+                                    <FontAwesomeIcon icon={faFaceSmile} />
+                                </button>
+                                {message != '' ? 
+                                 <button
+                                 type="button"
+                                 className="tchat-cs-btn"
+                                 onClick={sendPrivateValue}
+                             >
+                                 <FontAwesomeIcon icon={faPaperPlane} />
+                             </button>
+                             :
+                             <button
+                                    onMouseDown={startRecording}
+                                    onMouseUp={stopRecording}
+                                    className="tchat-cs-btn"
+                                >
+                                    {isRecording ? (
+                                        <FontAwesomeIcon
+                                            icon={faMicrophoneSlash}
+                                        />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faMicrophone} />
+                                    )}
+                                </button>
+                                }
+                                
+                               
+                            </div>
+                            {showEmojiPicker && (
+                                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                            )}
                         </div>
                     </>
                 ) : (
