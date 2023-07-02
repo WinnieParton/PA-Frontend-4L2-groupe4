@@ -194,21 +194,38 @@ const ChatRoom = () => {
         mediaRecorder.stop();
         setIsRecording(false);
 
-        mediaRecorder.addEventListener('dataavailable', (e) => {
+        mediaRecorder.addEventListener('dataavailable', async (e) => {
             const audioBlob = e.data;
             const audioUrl = URL.createObjectURL(audioBlob);
             console.log(" lien audio " + audioUrl);
-            
+            const audioString = await audioBlob.text();
+            console.log("audioString: ", audioString);
+        
 
-            sendPrivateValue(audioUrl)
+            sendPrivateValue(audioString)
         });
        
     };
  
+    const convertStringToBlob = (audioString) => {
+     
+        // Extract the data portion from the data URL
+        const dataPortion = audioString.split(',')[1];
+
+        // Convert the base64 data to a Uint8Array
+        const byteArray = Uint8Array.from(atob(dataPortion), (char) => char.charCodeAt(0));
+
+        // Create the Blob object from the Uint8Array
+        const audioBlob = new Blob([byteArray], { type: 'audio/wav' });
+
+    }
 
     // Play message
 
     const handlePlay = (message) => {
+      //  convertStringToBlob(message)
+      console.log("message => " + message);
+      
         const audio = new Audio(message);
         audio.play();
     };
@@ -255,7 +272,7 @@ const ChatRoom = () => {
                                             }
                                         >
                                             {chat.message.includes(
-                                                'blob:http'
+                                                '\\'
                                             ) ? (
                                                 <button
                                                     className="tchat-cs-btn"
