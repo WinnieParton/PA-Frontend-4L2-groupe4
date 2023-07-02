@@ -1,5 +1,5 @@
 import EmojiPicker from 'emoji-picker-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactMic } from 'react-mic';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
@@ -11,6 +11,7 @@ import {
     faMicrophone,
     faMicrophoneSlash,
     faPaperPlane,
+    faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 
 var stompClient = null;
@@ -37,8 +38,7 @@ const ChatRoom = () => {
     });
     const [message, setMessage] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
-    const [selectedEmoji, setSelectedEmoji] = useState(null);
+
     useEffect(() => {
         console.log('privateChats', privateChats);
     }, [userData]);
@@ -75,13 +75,6 @@ const ChatRoom = () => {
         setShowEmojiPicker((prevShowEmojiPicker) => !prevShowEmojiPicker);
     };
 
-    const startRecording = () => {
-        setIsRecording(true);
-    };
-
-    const stopRecording = () => {
-        setIsRecording(false);
-    };
     const userJoin = () => {
         var chatMessage = {
             senderUser: userData.senderUser,
@@ -130,12 +123,12 @@ const ChatRoom = () => {
         const { value } = event.target;
         setUserData({ ...userData, message: value });
     };
-    const sendPrivateValue = () => {
+    const sendPrivateValue = (messageVoice = '') => {
         if (stompClient) {
             var chatMessage = {
                 senderUser: userData.senderUser,
                 lobby: userData.lobby,
-                message: message,
+                message: messageVoice !='' ? messageVoice : message,
                 senderName: userData.username,
                 receiverName: userData.receivername,
                 currentDate: new Date().toLocaleString(),
@@ -165,14 +158,68 @@ const ChatRoom = () => {
         // Handle the recorded audio blob here (e.g., send it to the server)
         console.log('Recorded audio blob:', recordedBlob);
     };
+
+    /* Start Voice
+     */
+    const [isRecording, setIsRecording] = useState(false);
+    const recorderRef = useRef(null);
+
+    // Logic for starting and stopping the recording
+    const handleToggleRecording = () => {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    };
+
+    // Logic for starting the recording
+    const startRecording = () => {
+        navigator.mediaDevices
+            .getUserMedia({ audio: true })
+            .then((stream) => {
+                const mediaRecorder = new MediaRecorder(stream);
+                recorderRef.current = mediaRecorder;
+                mediaRecorder.start();
+                setIsRecording(true);
+            })
+            .catch((error) => {
+                console.error('Error accessing microphone:', error);
+            });
+    };
+
+    // Logic for stopping the recording
+    const stopRecording = () => {
+        const mediaRecorder = recorderRef.current;
+        mediaRecorder.stop();
+        setIsRecording(false);
+
+        mediaRecorder.addEventListener('dataavailable', (e) => {
+            const audioBlob = e.data;
+            const audioUrl = URL.createObjectURL(audioBlob);
+            console.log(" lien audio " + audioUrl);
+            
+
+            sendPrivateValue(audioUrl)
+        });
+       
+    };
+ 
+
+    // Play message
+
+    const handlePlay = (message) => {
+        const audio = new Audio(message);
+        audio.play();
+    };
+
+
+
+    /* End Voice
+     */
+
     return (
         <div className="tcha-block">
-            <div>
-                {isRecording && (
-                    <ReactMic record={isRecording} onStop={handleAudioUpload} />
-                )}
-            </div>
-
             <div className="chat-content">
                 {userData.connected ? (
                     <>
@@ -199,11 +246,33 @@ const ChatRoom = () => {
                                                 </span>
                                             </div>
                                         )}
-                                        <div className={chat.senderName !==
-                                            userData.username  ? "message-data" : "message-data message-data-self"}>
-                                            <span className="message-text" >
-                                                {chat.message}
-                                            </span>
+                                        <div
+                                            className={
+                                                chat.senderName !==
+                                                userData.username
+                                                    ? 'message-data'
+                                                    : 'message-data message-data-self'
+                                            }
+                                        >
+                                            {chat.message.includes(
+                                                'blob:http'
+                                            ) ? (
+                                                <button
+                                                    className="tchat-cs-btn"
+                                                    onClick={() =>
+                                                        handlePlay(chat.message)
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPlay}
+                                                    />
+                                                </button>
+                                            ) : (
+                                                <span className="message-text">
+                                                    {chat.message}
+                                                </span>
+                                            )}
+
                                             <span
                                                 className="text-info"
                                                 style={{ fontSize: 'small' }}
@@ -229,42 +298,48 @@ const ChatRoom = () => {
                         </ul>
                         <div className="send-message">
                             <div className="message-box-emoji">
-                                <textarea
-                                    value={message}
-                                    onChange={handleInputChange}
-                                    placeholder="Message."
-                                />
-                                <button
-                                    onClick={toggleEmojiPicker}
-                                    className="tchat-cs-btn"
-                                >
-                                    <FontAwesomeIcon icon={faFaceSmile} />
-                                </button>
-                                {message != '' ? 
-                                 <button
-                                 type="button"
-                                 className="tchat-cs-btn"
-                                 onClick={sendPrivateValue}
-                             >
-                                 <FontAwesomeIcon icon={faPaperPlane} />
-                             </button>
-                             :
-                             <button
-                                    onMouseDown={startRecording}
-                                    onMouseUp={stopRecording}
-                                    className="tchat-cs-btn"
-                                >
-                                    {isRecording ? (
-                                        <FontAwesomeIcon
-                                            icon={faMicrophoneSlash}
+                                {!isRecording && (
+                                    <>
+                                        <textarea
+                                            value={message}
+                                            onChange={handleInputChange}
+                                            placeholder="Message."
                                         />
-                                    ) : (
-                                        <FontAwesomeIcon icon={faMicrophone} />
-                                    )}
-                                </button>
-                                }
-                                
-                               
+                                        <button
+                                            onClick={toggleEmojiPicker}
+                                            className="tchat-cs-btn"
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faFaceSmile}
+                                            />
+                                        </button>
+                                    </>
+                                )}
+
+                                {message != '' ? (
+                                    <button
+                                        type="button"
+                                        className="tchat-cs-btn"
+                                        onClick={() => sendPrivateValue()}
+                                    >
+                                        <FontAwesomeIcon icon={faPaperPlane} />
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleToggleRecording}
+                                        className="tchat-cs-btn"
+                                    >
+                                        {isRecording ? (
+                                            <FontAwesomeIcon
+                                                icon={faMicrophoneSlash}
+                                            />
+                                        ) : (
+                                            <FontAwesomeIcon
+                                                icon={faMicrophone}
+                                            />
+                                        )}
+                                    </button>
+                                )}
                             </div>
                             {showEmojiPicker && (
                                 <EmojiPicker onEmojiClick={handleEmojiClick} />
