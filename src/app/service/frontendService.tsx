@@ -312,3 +312,29 @@ export const addGame = async (data) => {
     }
   };
   
+
+  export const UploadVoice = async ( data: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.post(`${baseURL}/files/upload`, data, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const readVoices = async (fileName) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/files/download/${fileName}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};

@@ -1,11 +1,3 @@
-import EmojiPicker from 'emoji-picker-react';
-import { useEffect, useRef, useState } from 'react';
-import { ReactMic } from 'react-mic';
-import SockJS from 'sockjs-client/dist/sockjs';
-import { over } from 'stompjs';
-import { baseURL } from '../../../environnements/environnement';
-import './../../assets/scss/chat.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faFaceSmile,
     faMicrophone,
@@ -13,6 +5,14 @@ import {
     faPaperPlane,
     faPlay,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import EmojiPicker from 'emoji-picker-react';
+import { useEffect, useRef, useState } from 'react';
+import SockJS from 'sockjs-client/dist/sockjs';
+import { over } from 'stompjs';
+import { baseURL } from '../../../environnements/environnement';
+import './../../assets/scss/chat.scss';
+import { UploadVoice, readVoices } from '../../service/frontendService';
 
 var stompClient = null;
 const ChatRoom = () => {
@@ -128,7 +128,7 @@ const ChatRoom = () => {
             var chatMessage = {
                 senderUser: userData.senderUser,
                 lobby: userData.lobby,
-                message: messageVoice !='' ? messageVoice : message,
+                message: messageVoice != '' ? messageVoice : message,
                 senderName: userData.username,
                 receiverName: userData.receivername,
                 currentDate: new Date().toLocaleString(),
@@ -153,10 +153,6 @@ const ChatRoom = () => {
     };
     const registerUser = () => {
         connect();
-    };
-    const handleAudioUpload = (recordedBlob) => {
-        // Handle the recorded audio blob here (e.g., send it to the server)
-        console.log('Recorded audio blob:', recordedBlob);
     };
 
     /* Start Voice
@@ -196,41 +192,50 @@ const ChatRoom = () => {
 
         mediaRecorder.addEventListener('dataavailable', async (e) => {
             const audioBlob = e.data;
-            const audioUrl = URL.createObjectURL(audioBlob);
-            console.log(" lien audio " + audioUrl);
-            const audioString = await audioBlob.text();
-            console.log("audioString: ", audioString);
-        
+            const formData = new FormData();
+            formData.append('audio', audioBlob);
 
-            sendPrivateValue(audioString)
+            try {
+                const response = await UploadVoice(formData);
+                console.log('URL:', response);
+                console.log('URL: type ', typeof response);
+                sendPrivateValue(response);
+            } catch (error) {
+                console.error('Error uploading audio:', error);
+            }
         });
-       
     };
- 
+
     const convertStringToBlob = (audioString) => {
-     
         // Extract the data portion from the data URL
         const dataPortion = audioString.split(',')[1];
 
         // Convert the base64 data to a Uint8Array
-        const byteArray = Uint8Array.from(atob(dataPortion), (char) => char.charCodeAt(0));
+        const byteArray = Uint8Array.from(atob(dataPortion), (char) =>
+            char.charCodeAt(0)
+        );
 
         // Create the Blob object from the Uint8Array
-        const audioBlob = new Blob([byteArray], { type: 'audio/wav' });
-
-    }
+        const audio = new Blob([byteArray], { type: 'audio/wav' });
+        return URL.createObjectURL(audio);
+    };
 
     // Play message
 
-    const handlePlay = (message) => {
-      //  convertStringToBlob(message)
-      console.log("message => " + message);
-      
-        const audio = new Audio(message);
+    const handlePlay = async (message) => {
+        const response = await readVoices(message);
+
+        console.log('message => ' + message);
+        console.log('response => ' + typeof response);
+
+        const blob = new Blob([response], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+
+        const audio = new Audio();
+        audio.src = url;
+        audio.controls = true;
         audio.play();
     };
-
-
 
     /* End Voice
      */
@@ -271,9 +276,7 @@ const ChatRoom = () => {
                                                     : 'message-data message-data-self'
                                             }
                                         >
-                                            {chat.message.includes(
-                                                '\\'
-                                            ) ? (
+                                            {chat.message.includes('_blob') ? (
                                                 <button
                                                     className="tchat-cs-btn"
                                                     onClick={() =>
