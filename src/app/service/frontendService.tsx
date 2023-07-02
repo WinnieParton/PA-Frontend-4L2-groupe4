@@ -286,34 +286,32 @@ export const runEngine = async (idLobby, data: any) => {
                 },
             }
         );
-        
+
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
     }
 };
 
-
 export const addGame = async (data) => {
     try {
-      const tokenString = localStorage.getItem('auth');
-      const userToken = JSON.parse(tokenString);
-  
-      const response = await axios.post(`${baseURL}/game/create`, data, {
-        headers: {
-          Authorization: `Bearer ${userToken.userToken}`,
-          'Accept': 'application/json',
-        },
-      });
-  
-      return response.data;
-    } catch (error) {
-      throw error.response?.data as Error;
-    }
-  };
-  
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
 
-  export const UploadVoice = async ( data: any) => {
+        const response = await axios.post(`${baseURL}/game/create`, data, {
+            headers: {
+                Authorization: `Bearer ${userToken.userToken}`,
+                Accept: 'application/json',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const UploadVoice = async (data: any) => {
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
@@ -332,6 +330,7 @@ export const readVoices = async (fileName) => {
         const userToken = JSON.parse(tokenString);
         const response = await axios.get(`${baseURL}/files/download/${fileName}`, {
             headers: { Authorization: `Bearer ${userToken.userToken}` },
+            responseType: 'blob',
         });
         return response.data;
     } catch (error) {

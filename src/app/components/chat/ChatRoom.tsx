@@ -11,8 +11,8 @@ import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
 import { baseURL } from '../../../environnements/environnement';
-import './../../assets/scss/chat.scss';
 import { UploadVoice, readVoices } from '../../service/frontendService';
+import './../../assets/scss/chat.scss';
 
 var stompClient = null;
 const ChatRoom = () => {
@@ -119,10 +119,6 @@ const ChatRoom = () => {
         registerUser();
     };
 
-    const handleMessage = (event) => {
-        const { value } = event.target;
-        setUserData({ ...userData, message: value });
-    };
     const sendPrivateValue = (messageVoice = '') => {
         if (stompClient) {
             var chatMessage = {
@@ -197,44 +193,24 @@ const ChatRoom = () => {
 
             try {
                 const response = await UploadVoice(formData);
-                console.log('URL:', response);
-                console.log('URL: type ', typeof response);
                 sendPrivateValue(response);
             } catch (error) {
                 console.error('Error uploading audio:', error);
             }
         });
     };
-
-    const convertStringToBlob = (audioString) => {
-        // Extract the data portion from the data URL
-        const dataPortion = audioString.split(',')[1];
-
-        // Convert the base64 data to a Uint8Array
-        const byteArray = Uint8Array.from(atob(dataPortion), (char) =>
-            char.charCodeAt(0)
-        );
-
-        // Create the Blob object from the Uint8Array
-        const audio = new Blob([byteArray], { type: 'audio/wav' });
-        return URL.createObjectURL(audio);
-    };
-
     // Play message
 
     const handlePlay = async (message) => {
-        const response = await readVoices(message);
-
-        console.log('message => ' + message);
-        console.log('response => ' + typeof response);
-
-        const blob = new Blob([response], { type: 'audio/wav' });
-        const url = URL.createObjectURL(blob);
-
-        const audio = new Audio();
-        audio.src = url;
-        audio.controls = true;
-        audio.play();
+        try {
+            const response = await readVoices(message);
+            const audioUrl = URL.createObjectURL(response);
+            const audio = new Audio(audioUrl);
+            audio.controls = true;
+            audio.play();
+        } catch (error) {
+            console.error('Error while playing audio:', error);
+        }
     };
 
     /* End Voice
