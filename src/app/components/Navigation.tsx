@@ -11,6 +11,11 @@ const Navigation = () => {
         localStorage.clear();
         return  navigate(appRoutes.HOME)
     }
+    const getAuthRole = () => {
+        const tokenString = localStorage.getItem('auth');
+        const auth = JSON.parse(tokenString);
+        return auth?.token.role
+      }
     return (
       <Navbar bg="light" fixed="top" expand="lg">
           <Container>
@@ -19,7 +24,7 @@ const Navigation = () => {
               <Navbar.Collapse  id="basic-navbar-nav">
                   <Nav className="ms-auto">
                       <Nav.Link href={appRoutes.DASHBOARD_HOME} className="mx-2">Accueil</Nav.Link>
-                      {/* <Nav.Link href="" className="mx-2">Jeux</Nav.Link> */}
+                      {(getAuthRole() == "DEVELOPPER") && <Nav.Link href={appRoutes.JEUX} className="mx-2">Jeux</Nav.Link> }
                       <Nav.Link href={appRoutes.SALONS} className="mx-2">Salons</Nav.Link>
                       <Nav.Link href={appRoutes.AMIS} className="mx-2">Amis</Nav.Link>
                   </Nav>

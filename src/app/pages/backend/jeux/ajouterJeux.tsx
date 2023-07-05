@@ -82,7 +82,7 @@ console.log(gameFiles)
               <h2>Ajouter un jeu</h2>
           </div>
           <div>
-              <Button variant="primary" href={appRoutes.DASHBOARD_HOME}>
+              <Button variant="primary" href={appRoutes.JEUX}>
                   Retour
               </Button>
           </div>
