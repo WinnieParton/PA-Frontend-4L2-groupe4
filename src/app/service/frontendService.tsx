@@ -337,3 +337,17 @@ export const readVoices = async (fileName) => {
         throw error.response?.data as Error;
     }
 };
+
+
+export const getGame = async (id: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/game/file/${id}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};

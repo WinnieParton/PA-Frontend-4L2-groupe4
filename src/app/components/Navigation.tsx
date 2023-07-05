@@ -25,13 +25,14 @@ const Navigation = () => {
                   <Nav className="ms-auto">
                       <Nav.Link href={appRoutes.DASHBOARD_HOME} className="mx-2">Accueil</Nav.Link>
                       {(getAuthRole() == "DEVELOPPER") && <Nav.Link href={appRoutes.JEUX} className="mx-2">Jeux</Nav.Link> }
-                      <Nav.Link href={appRoutes.SALONS} className="mx-2">Salons</Nav.Link>
-                      <Nav.Link href={appRoutes.AMIS} className="mx-2">Amis</Nav.Link>
+                      {(getAuthRole() == "PLAYER") && <Nav.Link href={appRoutes.SALONS} className="mx-2">Salons</Nav.Link> }
+                      {(getAuthRole() == "PLAYER") && <Nav.Link href={appRoutes.AMIS} className="mx-2">Amis</Nav.Link> }
+                      
+                      
                   </Nav>
                   <Nav className="ms-auto">
                       <NavDropdown title="Mon compte" id="basic-nav-dropdown">
                           <NavDropdown.Item href="#action/3.1">Profil</NavDropdown.Item>
-                          <NavDropdown.Item href={appRoutes.JEUX_AJOUTER}>Ajouter un jeu</NavDropdown.Item>
                           <NavDropdown.Divider />
                           <NavDropdown.Item onClick={handlLogout}>
                               Se déconnecter

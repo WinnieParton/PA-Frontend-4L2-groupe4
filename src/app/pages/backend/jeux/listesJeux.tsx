@@ -58,9 +58,9 @@ const ListesJeux = () =>{
                                     }}
                                 >
                                     <Button
-                                        variant="primary"
+                                        variant="primary" className="w-100" href={'/dashboard/jeux/' + el.id}
                                     >
-                                        Détail
+                                        Visualiser le code
                                     </Button>
                                 </div>
                             </Card.Body>

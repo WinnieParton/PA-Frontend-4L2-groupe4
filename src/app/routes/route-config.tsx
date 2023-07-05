@@ -11,6 +11,7 @@ import SalleJeu from '../pages/backend/salons/salleJeu';
 import ListesAmis from '../pages/backend/amis/listesAmis';
 import AjouterJeux from '../pages/backend/jeux/ajouterJeux';
 import ListesJeux from '../pages/backend/jeux/listesJeux';
+import VisualiserCode from '../pages/backend/jeux/visualiserCode';
 const routesConfig = [
     {
         path: appRoutes.HOME,
@@ -64,6 +65,10 @@ const routesConfig = [
             {
                 path: appRoutes.JEUX_AJOUTER,
                 element: <AjouterJeux/>,
+            },
+            {
+                path: appRoutes.JEUX_VISUALISER,
+                element: <VisualiserCode/>,
             },
 
         ],
