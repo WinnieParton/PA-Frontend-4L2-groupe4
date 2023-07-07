@@ -37,6 +37,7 @@ const ChatRoom = () => {
         message: '',
     });
     const [message, setMessage] = useState('');
+    const [clickButton, setClickButton] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     useEffect(() => {
@@ -120,6 +121,7 @@ const ChatRoom = () => {
     };
 
     const sendPrivateValue = (messageVoice = '') => {
+        setClickButton(true);
         if (stompClient) {
             var chatMessage = {
                 senderUser: userData.senderUser,
@@ -145,7 +147,9 @@ const ChatRoom = () => {
             );
             setMessage('');
             setUserData({ ...userData, message: '' });
+            setClickButton(false);
         }
+        setClickButton(false);
     };
     const registerUser = () => {
         connect();
@@ -261,6 +265,14 @@ const ChatRoom = () => {
                                                 >
                                                     <FontAwesomeIcon
                                                         icon={faPlay}
+                                                        style={{
+                                                            color:
+                                                                chat.senderName !==
+                                                                userData.username
+                                                                    ? '#dc3545'
+                                                                    : 'blue',
+                                                            fontSize: '1.3em',
+                                                        }}
                                                     />
                                                 </button>
                                             ) : (
@@ -293,13 +305,17 @@ const ChatRoom = () => {
                                 ))}
                         </ul>
                         <div className="send-message">
-                            <div className="message-box-emoji">
+                            <div
+                                className="message-box-emoji"
+                                style={{ justifyContent: 'space-between' }}
+                            >
                                 {!isRecording && (
-                                    <>
+                                    <div className="d-flex w-100 align-items-center">
                                         <textarea
                                             value={message}
                                             onChange={handleInputChange}
                                             placeholder="Message."
+                                            className="w-100"
                                         />
                                         <button
                                             onClick={toggleEmojiPicker}
@@ -307,9 +323,13 @@ const ChatRoom = () => {
                                         >
                                             <FontAwesomeIcon
                                                 icon={faFaceSmile}
+                                                style={{
+                                                    color: '#d1a521',
+                                                    fontSize: '1.3em',
+                                                }}
                                             />
                                         </button>
-                                    </>
+                                    </div>
                                 )}
 
                                 {message != '' ? (
@@ -317,8 +337,15 @@ const ChatRoom = () => {
                                         type="button"
                                         className="tchat-cs-btn"
                                         onClick={() => sendPrivateValue()}
+                                        disabled={clickButton}
                                     >
-                                        <FontAwesomeIcon icon={faPaperPlane} />
+                                        <FontAwesomeIcon
+                                            icon={faPaperPlane}
+                                            style={{
+                                                color: '#d1a521',
+                                                fontSize: '1.3em',
+                                            }}
+                                        />
                                     </button>
                                 ) : (
                                     <button
@@ -328,10 +355,18 @@ const ChatRoom = () => {
                                         {isRecording ? (
                                             <FontAwesomeIcon
                                                 icon={faMicrophoneSlash}
+                                                style={{
+                                                    color: 'blue',
+                                                    fontSize: '1.3em',
+                                                }}
                                             />
                                         ) : (
                                             <FontAwesomeIcon
                                                 icon={faMicrophone}
+                                                style={{
+                                                    color: '#d1a521',
+                                                    fontSize: '1.3em',
+                                                }}
                                             />
                                         )}
                                     </button>
