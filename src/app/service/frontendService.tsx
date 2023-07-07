@@ -357,9 +357,7 @@ export const getGame = async (id: any) => {
 export const SaveScore = async (idLobby, data: any) => {
     try {
         const tokenString = localStorage.getItem('auth');
-        const userToken = JSON.parse(tokenString);
-        console.log("eeeeeeeeeeeeeeee  ",data);
-        
+        const userToken = JSON.parse(tokenString);        
         const response = await axios.post(
             `${baseURL}/ranking/lobby/${idLobby}/endgame`,
             data,
@@ -367,6 +365,19 @@ export const SaveScore = async (idLobby, data: any) => {
                 headers: { Authorization: `Bearer ${userToken.userToken}` },
             }
         );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const getRankingByGame = async (id: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/ranking/game/${id}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
         return response.data;
     } catch (error) {
         throw error.response?.data as Error;
