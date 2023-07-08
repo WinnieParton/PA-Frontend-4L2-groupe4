@@ -1,71 +1,176 @@
 import { useEffect, useState } from 'react';
-import { Accordion, Carousel } from 'react-bootstrap';
-import { ListGames } from '../../service/frontendService';
+import { Badge, Button, Carousel, ListGroup, Modal, Table } from 'react-bootstrap';
+import Accordion from 'react-bootstrap/Accordion';
+import { ListGames, getRankingByGame, getRankingByUser } from '../../service/frontendService';
 
 const Home = () => {
     const [games, setGames] = useState([]);
+    const [rankingGame, setRankingGame] = useState([]);
+    const [rankingUser, setRankingUser] = useState([]);
+    const [load, setLoad] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+
     const list = async () => {
         const result = await ListGames();
+        setRankingGame([]);
+        for (let key in result.games) {
+            if (result.games.hasOwnProperty(key)) {
+                let res = result.games[key];
+                const ranking = await getRankingByGame(res.id);
+                const data = {
+                    game: res,
+                    ranking: ranking,
+                };
+                setRankingGame((prevRankingGame) => [
+                    ...prevRankingGame,
+                    [data],
+                ]);
+            }
+        }
+
+        console.log('ddddddddd ', rankingGame);
+        setLoad(false);
         setGames(result.games);
     };
+
     useEffect(() => {
         list();
     }, []);
+    useEffect(() => {}, [rankingGame, games]);
+    useEffect(() => {}, [games]);
 
+    const handleCloseModal = () =>{
+        setShowModal(false)
+    }
+    const handleShowModal = async (id) =>{
+        const user = await getRankingByUser(id)
+        console.log(user.rankings);
+        setRankingUser(user.rankings);
+        setShowModal(true)
+        
+    }
     return (
         <div className="mt-5">
-            <Carousel className="w-65">
-                {games.length > 0 ? (
-                    games.map((el, index) => (
-                        <Carousel.Item key={index}>
-                            <img
-                                className="d-block w-100"
-                                style={{ height: '500px',aspectRatio: 16 / 9  }}
-                                src={el.miniature}
-                                alt={el.name}
-                               
-                            />
-                            <Carousel.Caption>
-                                <h3>{el.name}</h3>
-                                <p>{el.description}</p>
-                            </Carousel.Caption>
-                        </Carousel.Item>
-                    ))
-                ) : (
-                    <h2 className="text-primary text-center mt-4">
-                        Aucun jeu créé
-                    </h2>
-                )}
-            </Carousel>
+            {load ? (
+                <div className="register">Loading ...</div>
+            ) : (
+                <>
+                    <Carousel className="w-65">
+                        {games.length > 0 ? (
+                            games.map((el, index) => (
+                                <Carousel.Item key={index}>
+                                    <img
+                                        className="d-block w-100"
+                                        style={{ height: '500px' }}
+                                        src={el.miniature}
+                                        alt={el.name}
+                                    />
+                                    <Carousel.Caption>
+                                        <h3>{el.name}</h3>
+                                        <p>{el.description}</p>
+                                    </Carousel.Caption>
+                                </Carousel.Item>
+                            ))
+                        ) : (
+                            <h2 className="text-primary text-center mt-4">
+                                Aucun jeu créé
+                            </h2>
+                        )}
+                    </Carousel>
+                   <div className='container my-4'>
+                   <div className="cs-grid p-2">
+                   {rankingGame.length > 0 &&
+                        rankingGame.map(
+                            (rank, i) =>
+                                rank[0]?.ranking.globalRanking.length > 0 && (
+                                    <ListGroup variant="flush" key={i}>
+                                        <ListGroup.Item variant="primary" >
+                                            {' '}
+                                            <span className="fw-bold">
+                                            {rank[0]?.game.name}
+                                            </span>
+                                           
+                                        </ListGroup.Item>
+                                        {rank[0]?.ranking.globalRanking.map(
+                                            (ranks, ind) => (
+                                                <ListGroup.Item className="d-flex justify-content-between align-items-center" action onClick={() => handleShowModal(ranks.user.id)} key={ind}>
+                                                    <div className='user-avata'>
+                                                        {ind+1}
+                                                    </div>
+                                                    <div className="ms-2 me-auto">
+                                                        <div className="fw-bold">
+                                                            {' '}
+                                                            {
+                                                                ranks.user.name
+                                                            }{' '}
+                                                        </div>
+                                                        {ranks.user.email}
+                                                    </div>
+                                                    <Badge bg="primary" pill>
+                                                    {ranks.score}
+                                                    </Badge>
+                                                </ListGroup.Item>
+                                            )
+                                        )}
+                                    </ListGroup>
+                                )
+                        )}
+                   </div>
+                  
+                   </div>
 
-            <div className="container-fluid mt-5 pt-2">
-            <Accordion defaultActiveKey="0">
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>Accordion Item #1</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>Accordion Item #2</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
-            </div>
+                </>
+            )}
+
+<Modal  size="lg" show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Détail du joueur</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                      <div className='d-flex flex-column  align-items-center w-100 mb-4'>
+                        <div className='user-avata-with'>
+                        {rankingUser[0]?.player.name.substring(2, 0).toUpperCase()}
+                        </div>
+                        <h3 className="fw-bold my-2">{rankingUser[0]?.player.name}</h3>
+                        <p>{rankingUser[0]?.player.email}</p>
+                      </div>
+                      <Table  bordered hover>
+                        <thead>
+                            <tr>
+                            <th className="fw-bold">Noms du jeux</th>
+                            <th className="fw-bold">Scores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {rankingUser.map((el, index) => (
+                             <tr key={index}>
+                             <td>
+                                <h3 className="fw-bold">{el.game.name}</h3>
+                                <p className='truncate-text-cs'>{el.game.description}</p>
+                             </td>
+                             <td>
+                                
+                                <Badge bg="primary" pill>
+                                {el.score}
+                                 </Badge>
+                                </td>
+                             </tr>
+                        )
+                              
+                        )}
+                            
+                        </tbody>
+                        </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={handleCloseModal}
+                        >
+                            Fermer
+                        </Button>
+                    </Modal.Footer>
+            </Modal>
         </div>
     );
 };

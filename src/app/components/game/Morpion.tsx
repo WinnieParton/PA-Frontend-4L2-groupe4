@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { runEngine } from '../../service/frontendService';
+import { SaveScore, runEngine } from '../../service/frontendService';
 
 const Morpion = () => {
     const [gameData, setGameData] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-
     let call = 0;
     useEffect(() => {
         const data = {
@@ -25,11 +24,17 @@ const Morpion = () => {
             const results = await runEngine(idLobby, data);
             if (results.game_state?.game_over) {
                 setGameOver(true);
+                let winnerId = 0;
+                let lostId = 0;
                 if (
-                    JSON.parse(localStorage.getItem('auth')).userid ==
+                    (JSON.parse(localStorage.getItem('auth')).userid ==
                         JSON.parse(localStorage.getItem('info')).info.creator
                             .id &&
-                    results.requested_actions[0].player === 2
+                        results.requested_actions[0].player === 2) ||
+                    (JSON.parse(localStorage.getItem('auth')).userid !=
+                        JSON.parse(localStorage.getItem('info')).info.creator
+                            .id &&
+                        results.requested_actions[0].player === 1)
                 ) {
                     Swal.fire({
                         icon: 'success',
@@ -43,6 +48,7 @@ const Morpion = () => {
                             window.location.reload();
                         }
                     });
+                    winnerId = JSON.parse(localStorage.getItem('auth')).userid;
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -56,7 +62,43 @@ const Morpion = () => {
                             window.location.reload();
                         }
                     });
+                    if (
+                        JSON.parse(localStorage.getItem('auth')).userid ==
+                            JSON.parse(localStorage.getItem('info')).info
+                                .creator.id &&
+                        results.requested_actions[0].player === 1
+                    ) {
+                        winnerId =
+                            JSON.parse(localStorage.getItem('auth')).userid !=
+                            JSON.parse(localStorage.getItem('info')).info
+                                .participants[0].id
+                                ? JSON.parse(localStorage.getItem('info')).info
+                                      .participants[0].id
+                                : JSON.parse(localStorage.getItem('info')).info
+                                      .participants[1].id;
+                    } else
+                        winnerId = JSON.parse(localStorage.getItem('info')).info
+                            .creator.id;
                 }
+                lostId =
+                    winnerId != JSON.parse(localStorage.getItem('auth')).userid
+                        ? JSON.parse(localStorage.getItem('auth')).userid
+                        : winnerId !=
+                          JSON.parse(localStorage.getItem('info')).info
+                              .participants[0].id
+                        ? JSON.parse(localStorage.getItem('info')).info
+                              .participants[0].id
+                        : JSON.parse(localStorage.getItem('info')).info
+                              .participants[1].id;
+
+                const newScores = new Map();
+                newScores.set(winnerId, 1.0);
+                newScores.set(lostId, 0.0);
+                const datascore = {
+                    winnerId: winnerId,
+                    scoresByPlayers: JSON.stringify([...newScores]),
+                };
+                const score = await SaveScore(idLobby, datascore);
             }
 
             setGameData(results);
@@ -66,8 +108,8 @@ const Morpion = () => {
     };
 
     const handleZoneClick = (zone) => {
-        console.log("zone"+zone);
-        
+        console.log('zone' + zone);
+
         if (gameOver) return;
         const data = {
             actions: [

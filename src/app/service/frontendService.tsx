@@ -328,9 +328,25 @@ export const readVoices = async (fileName) => {
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
-        const response = await axios.get(`${baseURL}/files/download/${fileName}`, {
+        const response = await axios.get(
+            `${baseURL}/files/download/${fileName}`,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+                responseType: 'blob',
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const getGame = async (id: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/game/file/${id}`, {
             headers: { Authorization: `Bearer ${userToken.userToken}` },
-            responseType: 'blob',
         });
         return response.data;
     } catch (error) {
@@ -338,12 +354,41 @@ export const readVoices = async (fileName) => {
     }
 };
 
+export const SaveScore = async (idLobby, data: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);        
+        const response = await axios.post(
+            `${baseURL}/ranking/lobby/${idLobby}/endgame`,
+            data,
+            {
+                headers: { Authorization: `Bearer ${userToken.userToken}` },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
 
-export const getGame = async (id: any) => {
+export const getRankingByGame = async (id: any) => {
     try {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
-        const response = await axios.get(`${baseURL}/game/file/${id}`, {
+        const response = await axios.get(`${baseURL}/ranking/game/${id}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+
+export const getRankingByUser = async (id: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/ranking/user/${id}`, {
             headers: { Authorization: `Bearer ${userToken.userToken}` },
         });
         return response.data;

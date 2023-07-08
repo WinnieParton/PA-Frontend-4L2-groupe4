@@ -2,8 +2,10 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import appRoutes from "../../../routes/routes";
 import { useState } from "react";
 import { addGame } from "../../../service/frontendService";
+import { useNavigate } from 'react-router-dom';
 
 const AjouterJeux = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [miniature, setMiniature] = useState('');
@@ -64,7 +66,7 @@ console.log(gameFiles)
     try {
       const game = await addGame(formData);
       if (game) {
-          console.log(game)
+        return navigate(appRoutes.JEUX);
       }
   } catch (error) {
       setErrorMessage(true);

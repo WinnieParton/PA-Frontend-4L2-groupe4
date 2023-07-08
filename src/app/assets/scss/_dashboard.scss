@@ -330,5 +330,53 @@
     }
 
 
+
    
 }
+
+.user-avata{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 1px solid $grey;
+    background: $grey;
+    color: $secondaryColor;
+    font-weight: bold;
+    &-with{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        border: 1px solid $grey;
+        background: $grey;
+        color: $secondaryColor;
+        font-weight: bold;
+        font-size: 30px;
+
+    }
+
+
+
+
+
+
+}
+
+.truncate-text-cs {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  table {
+    border-collapse: collapse !important;
+    td,th{
+        border: 1px solid $grey !important;
+        vertical-align: middle;
+    }
+  }

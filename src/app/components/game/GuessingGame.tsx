@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { runEngine } from '../../service/frontendService';
+import { SaveScore, runEngine } from '../../service/frontendService';
 import Swal from 'sweetalert2';
 
 const GuessingGame = () => {
@@ -44,6 +44,14 @@ const GuessingGame = () => {
                         window.location.reload();
                     }
                 });
+                let winnerId = JSON.parse(localStorage.getItem('auth')).userid;
+                const newScores = new Map();
+                newScores.set(winnerId, results?.score);
+                const datascore = {
+                    winnerId: winnerId,
+                    scoresByPlayers: JSON.stringify([...newScores]),
+                };
+                const score = await SaveScore(idLobby, datascore);
             }
         } catch (error) {
             console.error("Une erreur s'est produite:", error);
