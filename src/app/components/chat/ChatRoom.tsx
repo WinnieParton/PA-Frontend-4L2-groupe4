@@ -41,7 +41,7 @@ const ChatRoom = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     useEffect(() => {
-        console.log('privateChats', privateChats);
+        // console.log('privateChats', privateChats);
     }, [userData]);
 
     useEffect(() => {
@@ -115,7 +115,7 @@ const ChatRoom = () => {
     };
 
     const onError = (err) => {
-        console.log(err);
+        // console.log(err);
 
         registerUser();
     };

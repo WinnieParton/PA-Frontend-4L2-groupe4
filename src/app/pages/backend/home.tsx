@@ -28,7 +28,6 @@ const Home = () => {
             }
         }
 
-        console.log('ddddddddd ', rankingGame);
         setLoad(false);
         setGames(result.games);
     };
