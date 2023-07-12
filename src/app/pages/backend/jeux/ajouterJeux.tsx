@@ -98,7 +98,7 @@ console.log(gameFiles)
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Description</Form.Label>
-        <Form.Control type="text" onChange={(e) => setDescription(e.target.value)} />
+        <Form.Control as="textarea" rows={3} onChange={(e) => setDescription(e.target.value)} />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">

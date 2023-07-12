@@ -65,16 +65,19 @@ const SalleJeu = () => {
                                     className="mt-4 mb-4"
                                     style={{ position: 'absolute' }}
                                 >
-                                    {lobby.game.gameFiles ===
-                                    'morpion.py.py' ? (
+                                    {lobby.game.gameFiles.includes(
+                                        'morpion'
+                                    ) ? (
                                         <Morpion />
-                                    ) : lobby.game.gameFiles ===
-                                      'GuessingGame.js' ? (
+                                    ) : lobby.game.gameFiles.includes(
+                                          'Guessing'
+                                      ) ? (
                                         <GuessingGame />
-                                    ) : lobby.game.gameFiles ===
-                                    'PierrePapierCiseaux.js' ? (
-                                      <PierrePapierCiseaux/>
-                                  ) : (
+                                    ) : lobby.game.gameFiles.includes(
+                                          'PierrePapier'
+                                      ) ? (
+                                        <PierrePapierCiseaux />
+                                    ) : (
                                         <p>
                                             Le jeu n'est pas encore implementé
                                         </p>

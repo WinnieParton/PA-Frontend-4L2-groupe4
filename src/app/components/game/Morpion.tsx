@@ -22,7 +22,10 @@ const Morpion = () => {
         connected: false,
     });
     const idLobby = JSON.parse(localStorage.getItem('info')).info.id;
-    const [clickAction, setClickAction] = useState(true);
+    const [clickAction, setClickAction] = useState(
+        JSON.parse(localStorage.getItem('auth')).userid ==
+            JSON.parse(localStorage.getItem('info')).info.creator.id
+    );
 
     let call = 0;
     useEffect(() => {

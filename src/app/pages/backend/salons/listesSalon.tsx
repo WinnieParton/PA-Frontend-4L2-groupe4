@@ -8,6 +8,7 @@ import {
     ListLobby,
 } from '../../../service/frontendService';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ListesSalon = () => {
     const navigate = useNavigate();
@@ -66,11 +67,26 @@ const ListesSalon = () => {
 
     const AcceptLobbyInvitation = (id, p) => {
         const result = AnswerLobbyInvitation(id, p);
-        handleCloseAddLobby();
+        Swal.fire({
+            icon: 'success',
+            title: "Invitation au salon",
+            text: "Invidation accepté",
+            showConfirmButton: false,
+            timer: 1500
+        })
+        handleCloseInvitation();
     };
 
     const DenyLobbyInvitation = (id, p) => {
         const result = AnswerLobbyInvitation(id, p);
+        Swal.fire({
+            icon: 'success',
+            title: "Invitation au salon",
+            text: "Invidation refusé",
+            showConfirmButton: false,
+            timer: 1500
+        })
+        handleCloseInvitation();
     };
 
     return (

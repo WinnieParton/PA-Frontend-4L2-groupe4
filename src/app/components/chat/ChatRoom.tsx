@@ -40,9 +40,7 @@ const ChatRoom = () => {
     const [clickButton, setClickButton] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-    useEffect(() => {
-        // console.log('privateChats', privateChats);
-    }, [userData]);
+    useEffect(() => {}, [userData]);
 
     useEffect(() => {
         registerUser();
@@ -91,6 +89,7 @@ const ChatRoom = () => {
 
     const onMessageReceived = (payload) => {
         var payloadData = JSON.parse(payload.body);
+
         if (!payloadData.status) {
             const key = Object.keys(payloadData)[0];
             privateChats.set(parseInt(key, 10), payloadData[key]);
@@ -104,8 +103,11 @@ const ChatRoom = () => {
     const onPrivateMessage = (payload) => {
         var payloadData = JSON.parse(payload.body);
         if (privateChats.get(payloadData.lobby)) {
-            privateChats.get(payloadData.lobby).push(payloadData);
-            setPrivateChats(new Map(privateChats));
+            const oldval = privateChats.get(payloadData.lobby).slice(-1)[0];
+            if (oldval !== payloadData) {
+                privateChats.get(payloadData.lobby).push(payloadData);
+                setPrivateChats(new Map(privateChats));
+            }
         } else {
             let list = [];
             list.push(payloadData);
@@ -115,8 +117,6 @@ const ChatRoom = () => {
     };
 
     const onError = (err) => {
-        // console.log(err);
-
         registerUser();
     };
 
