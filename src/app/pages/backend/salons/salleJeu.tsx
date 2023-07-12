@@ -7,6 +7,7 @@ import GuessingGame from '../../../components/game/GuessingGame';
 import Morpion from '../../../components/game/Morpion';
 import appRoutes from '../../../routes/routes';
 import { redirectOnLobby } from '../../../service/frontendService';
+import PierrePapierCiseaux from '../../../components/game/PierrePapierCiseaux';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -70,7 +71,10 @@ const SalleJeu = () => {
                                     ) : lobby.game.gameFiles ===
                                       'GuessingGame.js' ? (
                                         <GuessingGame />
-                                    ) : (
+                                    ) : lobby.game.gameFiles ===
+                                    'PierrePapierCiseaux.js' ? (
+                                      <PierrePapierCiseaux/>
+                                  ) : (
                                         <p>
                                             Le jeu n'est pas encore implementé
                                         </p>
