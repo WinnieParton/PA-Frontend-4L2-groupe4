@@ -143,7 +143,7 @@ ul {
     padding: 5px;
     white-space: pre-wrap;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-    background: #f3cccf21
+    background: #f3cccf21;
 }
 .message.self {
     justify-content: end;
@@ -155,7 +155,7 @@ ul {
     overflow: hidden;
 }
 
-.tcha-block{
+.tcha-block {
     width: 100%;
     position: relative;
 }
@@ -168,30 +168,34 @@ aside.EmojiPickerReact.epr-main {
     flex-direction: column;
     position: absolute;
     bottom: 70px;
-    box-shadow: 9px -9px 9px -1px rgba(0,0,0,0.23);
+    box-shadow: 9px -9px 9px -1px rgba(0, 0, 0, 0.23);
 }
 
-.message-box-emoji{
+.message-box-emoji {
     display: flex;
     align-items: center;
     width: 100%;
-    textarea {
+    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+        0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+        0 100px 80px rgba(0, 0, 0, 0.12) textarea {
         padding: 10px;
         border: 1px solid #ccc;
         margin-right: 5px;
     }
 }
 
-.tcha-message-time{
+.tcha-message-time {
     font-size: 10px;
     font-weight: 500;
     color: #555;
     font-style: italic;
 }
-.message-data-self{
+.message-data-self {
     background-color: #0d6efd;
     color: #ffffff;
-    .tcha-message-time{
+    .tcha-message-time {
         color: #ffffff;
     }
 }

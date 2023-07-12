@@ -58,6 +58,7 @@ const PierrePapierCiseaux = () => {
     const onMessageReceived = (payload) => {
         var payloadData =
             payload.body != '' ? JSON.parse(payload.body) : payload.body;
+
         if (payloadData == '') {
             const data = {
                 init: {
@@ -178,10 +179,12 @@ const PierrePapierCiseaux = () => {
         setClickAction(
             (JSON.parse(localStorage.getItem('auth')).userid ==
                 JSON.parse(localStorage.getItem('info')).info.creator.id &&
-                results?.requested_actions[0].player === 1) ||
+                (results?.message.includes('Joueur 1') ||
+                    results?.result.winner.includes('joueur1'))) ||
                 (JSON.parse(localStorage.getItem('auth')).userid !=
                     JSON.parse(localStorage.getItem('info')).info.creator.id &&
-                    results.requested_actions[0].player === 2)
+                    (results?.message.includes('Joueur 2') ||
+                        results?.result.winner.includes('joueur2')))
         );
     };
     return (

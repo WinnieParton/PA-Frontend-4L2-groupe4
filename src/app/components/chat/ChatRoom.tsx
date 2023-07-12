@@ -307,7 +307,11 @@ const ChatRoom = () => {
                         <div className="send-message">
                             <div
                                 className="message-box-emoji"
-                                style={{ justifyContent: 'space-between' }}
+                                style={{
+                                    justifyContent: isRecording
+                                        ? 'center'
+                                        : 'space-between',
+                                }}
                             >
                                 {!isRecording && (
                                     <div className="d-flex w-100 align-items-center">
@@ -315,7 +319,7 @@ const ChatRoom = () => {
                                             value={message}
                                             onChange={handleInputChange}
                                             placeholder="Message."
-                                            className="w-100"
+                                            className="w-100 form-control"
                                         />
                                         <button
                                             onClick={toggleEmojiPicker}
