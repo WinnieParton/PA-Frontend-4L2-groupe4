@@ -3,7 +3,11 @@ import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
 import Swal from 'sweetalert2';
 import { baseURL } from '../../../environnements/environnement';
-import { SaveScore, runEngine } from '../../service/frontendService';
+import {
+    SaveScore,
+    getLastStateGame,
+    runEngine,
+} from '../../service/frontendService';
 var stompClient = null;
 const Morpion = () => {
     const [gameData, setGameData] = useState(null);
@@ -87,7 +91,13 @@ const Morpion = () => {
             return handleResult(results);
         } catch (error) {}
     };
-
+    const handleGameLastState = async () => {
+        try {
+            const results = await getLastStateGame(idLobby);
+            setGameData(results);
+            setClickAction(false);
+        } catch (error) {}
+    };
     const handleZoneClick = (zone) => {
         if (gameOver) return;
         const data = {
@@ -129,6 +139,9 @@ const Morpion = () => {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        console.log('Dialog closed by cancel button');
+                        handleGameLastState();
                     }
                 });
                 winnerId = JSON.parse(localStorage.getItem('auth')).userid;
@@ -143,6 +156,8 @@ const Morpion = () => {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        handleGameLastState();
                     }
                 });
                 if (
@@ -240,12 +255,9 @@ const Morpion = () => {
                                     return null;
                                 })}
                         </svg>
-                        {/* <p>Player: {gameData?.displays[0].player}</p> */}
                     </div>
                     {gameData?.requested_actions.map((action, index) => (
                         <div key={index}>
-                            {/* <p>Type: {action.type}</p>
-                            <p>Player: {action.player}</p> */}
                             {action.zones.map((zone, zoneIndex) => (
                                 <div
                                     key={zoneIndex}
