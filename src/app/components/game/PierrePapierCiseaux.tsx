@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
-import { SaveScore, runEngine } from '../../service/frontendService';
-import Swal from 'sweetalert2';
-import { baseURL } from '../../../environnements/environnement';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
+import Swal from 'sweetalert2';
+import { baseURL } from '../../../environnements/environnement';
+import {
+    SaveScore,
+    getLastStateGame,
+    runEngine,
+} from '../../service/frontendService';
 
 var stompClient = null;
 const PierrePapierCiseaux = () => {
@@ -59,7 +63,7 @@ const PierrePapierCiseaux = () => {
         var payloadData =
             payload.body != '' ? JSON.parse(payload.body) : payload.body;
 
-        if (payloadData == '') {
+        if (payloadData == '' || payloadData == null) {
             const data = {
                 init: {
                     players: 2,
@@ -135,6 +139,8 @@ const PierrePapierCiseaux = () => {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        handleGameLastState();
                     }
                 });
                 if (
@@ -180,12 +186,19 @@ const PierrePapierCiseaux = () => {
             (JSON.parse(localStorage.getItem('auth')).userid ==
                 JSON.parse(localStorage.getItem('info')).info.creator.id &&
                 (results?.message.includes('Joueur 1') ||
-                    results?.result.winner.includes('joueur1'))) ||
+                    results?.result?.winner.includes('joueur1'))) ||
                 (JSON.parse(localStorage.getItem('auth')).userid !=
                     JSON.parse(localStorage.getItem('info')).info.creator.id &&
                     (results?.message.includes('Joueur 2') ||
-                        results?.result.winner.includes('joueur2')))
+                        results?.result?.winner.includes('joueur2')))
         );
+    };
+    const handleGameLastState = async () => {
+        try {
+            const results = await getLastStateGame(idLobby);
+            setGameData(results);
+            setClickAction(false);
+        } catch (error) {}
     };
     return (
         <div
@@ -193,20 +206,56 @@ const PierrePapierCiseaux = () => {
                 pointerEvents: clickAction ? 'initial' : 'none',
             }}
         >
-            <h2 className="mb-2 text-center fw-bold">{gameData?.message}</h2>
-            {gameData?.display.map((element, index) => {
-                if (element.type === 'BUTTON') {
-                    return (
-                        <button
-                            key={index}
-                            onClick={() => hanldeClick(element.value)}
-                            className="mx-2"
-                        >
-                            <img src={element.content.src} />
-                        </button>
-                    );
-                }
-            })}
+            <h2 className="mb-2 text-center fw-bold">
+                {gameData?.message?.includes('Joueur 1')
+                    ? gameData.message.replace(
+                          'Joueur 1',
+                          JSON.parse(localStorage.getItem('info')).info.creator
+                              .name
+                      )
+                    : gameData?.message?.includes('Joueur 2')
+                    ? gameData.message.replace(
+                          'Joueur 2',
+                          JSON.parse(localStorage.getItem('info')).info
+                              .participants[1].name
+                      )
+                    : gameData?.message}
+            </h2>
+            <div className="d-flex">
+                {gameData?.display.map((element, index) => {
+                    if (element.type === 'BUTTON') {
+                        return (
+                            <div key={index}>
+                                <button
+                                    onClick={() => hanldeClick(element.value)}
+                                    className="mx-2"
+                                    style={{ display: 'grid' }}
+                                >
+                                    <img src={element.content.src} />
+                                </button>
+                                {element?.player?.includes('player1') && (
+                                    <span>
+                                        {
+                                            JSON.parse(
+                                                localStorage.getItem('info')
+                                            ).info.creator.name
+                                        }
+                                    </span>
+                                )}{' '}
+                                {element?.player?.includes('player2') && (
+                                    <span>
+                                        {
+                                            JSON.parse(
+                                                localStorage.getItem('info')
+                                            ).info.participants[1].name
+                                        }
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    }
+                })}
+            </div>
         </div>
     );
 };
