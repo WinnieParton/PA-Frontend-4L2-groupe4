@@ -250,7 +250,6 @@ export const PlayGame = async (idGame, idLobby, data: any) => {
         );
         return response.data;
     } catch (error) {
-        console.error('errrrrrrrrrrrrr ', error.message);
         if (error.response && error.response.data) {
             throw new Error(error.response.data);
         } else {
@@ -389,6 +388,18 @@ export const getRankingByUser = async (id: any) => {
         const tokenString = localStorage.getItem('auth');
         const userToken = JSON.parse(tokenString);
         const response = await axios.get(`${baseURL}/ranking/user/${id}`, {
+            headers: { Authorization: `Bearer ${userToken.userToken}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data as Error;
+    }
+};
+export const getLastStateGame = async (id: any) => {
+    try {
+        const tokenString = localStorage.getItem('auth');
+        const userToken = JSON.parse(tokenString);
+        const response = await axios.get(`${baseURL}/game/move/${id}`, {
             headers: { Authorization: `Bearer ${userToken.userToken}` },
         });
         return response.data;
