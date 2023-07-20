@@ -50,23 +50,6 @@ export const getLobby = async (id: any) => {
     }
 };
 
-export const redirectOnLobby = async (id: any) => {
-    try {
-        const tokenString = localStorage.getItem('auth');
-        const userToken = JSON.parse(tokenString);
-        const response = await axios.patch(
-            `${baseURL}/lobby/${id}`,
-            {},
-            {
-                headers: { Authorization: `Bearer ${userToken.userToken}` },
-            }
-        );
-        return response.data;
-    } catch (error) {
-        throw error.response?.data as Error;
-    }
-};
-
 export const researchUser = async (userId, name: any) => {
     try {
         const tokenString = localStorage.getItem('auth');

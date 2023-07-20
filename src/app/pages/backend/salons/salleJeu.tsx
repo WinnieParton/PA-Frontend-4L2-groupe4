@@ -5,9 +5,8 @@ import { useState } from 'react';
 import ChatRoom from '../../../components/chat/ChatRoom';
 import GuessingGame from '../../../components/game/GuessingGame';
 import Morpion from '../../../components/game/Morpion';
-import appRoutes from '../../../routes/routes';
-import { redirectOnLobby } from '../../../service/frontendService';
 import PierrePapierCiseaux from '../../../components/game/PierrePapierCiseaux';
+import appRoutes from '../../../routes/routes';
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -27,7 +26,6 @@ const SalleJeu = () => {
     const [startGame, setStartGame] = useState(false);
 
     const handleLoadLobby = async () => {
-        const results = await redirectOnLobby(lobby.id);
         return navigate(appRoutes.SALONS);
     };
     const handleStart = () => {

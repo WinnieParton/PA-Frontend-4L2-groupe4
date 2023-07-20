@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { over } from 'stompjs';
 import Swal from 'sweetalert2';
@@ -18,9 +18,9 @@ const Morpion = () => {
             JSON.parse(localStorage.getItem('auth')).userid !=
             JSON.parse(localStorage.getItem('info')).info.participants[0].id
                 ? JSON.parse(localStorage.getItem('info')).info.participants[0]
-                      .name
+                      ?.name
                 : JSON.parse(localStorage.getItem('info')).info.participants[1]
-                      .name,
+                      ?.name,
         senderUser: JSON.parse(localStorage.getItem('auth')).userid,
         lobby: JSON.parse(localStorage.getItem('info')).info.id,
         connected: false,
@@ -32,6 +32,7 @@ const Morpion = () => {
     );
 
     let call = 0;
+    let isGameSaved = useRef(false);
     useEffect(() => {
         connect();
     }, []);
@@ -63,15 +64,26 @@ const Morpion = () => {
             };
             if (call == 0) {
                 call++;
-                handleGame(data);
+                handleGame(data, 'received');
             }
-        } else setGameData(payloadData);
+        } else {
+            setGameData(payloadData);
+            setClickAction(
+                (JSON.parse(localStorage.getItem('auth')).userid ==
+                    JSON.parse(localStorage.getItem('info')).info.creator.id &&
+                    payloadData?.requested_actions[0].player == 1) ||
+                    (JSON.parse(localStorage.getItem('auth')).userid !=
+                        JSON.parse(localStorage.getItem('info')).info.creator
+                            .id &&
+                        payloadData.requested_actions[0].player == 2)
+            );
+        }
     };
     const onPrivateMessage = (payload) => {
         var payloadData = JSON.parse(payload.body);
         var oldGameState = gameData;
         if (oldGameState != payloadData) {
-            handleResult(payloadData);
+            handleResult(payloadData, 'received');
         }
     };
 
@@ -85,17 +97,25 @@ const Morpion = () => {
         connect();
     };
 
-    const handleGame = async (data) => {
+    const handleGame = async (data, action) => {
         try {
             const results = await runEngine(idLobby, data);
-            return handleResult(results);
+            return handleResult(results, action);
         } catch (error) {}
     };
     const handleGameLastState = async () => {
         try {
             const results = await getLastStateGame(idLobby);
             setGameData(results);
-            setClickAction(false);
+            setClickAction(
+                (JSON.parse(localStorage.getItem('auth')).userid ==
+                    JSON.parse(localStorage.getItem('info')).info.creator.id &&
+                    results?.requested_actions[0].player == 1) ||
+                    (JSON.parse(localStorage.getItem('auth')).userid !=
+                        JSON.parse(localStorage.getItem('info')).info.creator
+                            .id &&
+                        results.requested_actions[0].player == 2)
+            );
         } catch (error) {}
     };
     const handleZoneClick = (zone) => {
@@ -112,10 +132,9 @@ const Morpion = () => {
                 },
             ],
         };
-        handleGame(data);
+        handleGame(data, 'onclick');
     };
-
-    const handleResult = async (results) => {
+    const handleResult = async (results, action) => {
         if (results.game_state?.game_over) {
             setClickAction(true);
             setGameOver(true);
@@ -196,17 +215,25 @@ const Morpion = () => {
                 winnerId: winnerId,
                 scoresByPlayers: JSON.stringify([...newScores]),
             };
-            const score = await SaveScore(idLobby, datascore);
+            if (action != 'onclick')
+                if (!isGameSaved.current) {
+                    isGameSaved.current = true; // Set the flag to true to indicate the game is saved
+                    return saveScore(datascore);
+                }
         }
         setGameData(results);
         setClickAction(
             (JSON.parse(localStorage.getItem('auth')).userid ==
                 JSON.parse(localStorage.getItem('info')).info.creator.id &&
-                results?.requested_actions[0].player === 1) ||
+                results?.requested_actions[0]?.player == 1) ||
                 (JSON.parse(localStorage.getItem('auth')).userid !=
                     JSON.parse(localStorage.getItem('info')).info.creator.id &&
-                    results.requested_actions[0].player === 2)
+                    results?.requested_actions[0]?.player == 2)
         );
+    };
+
+    const saveScore = async (datascore) => {
+        return await SaveScore(idLobby, datascore);
     };
 
     return (

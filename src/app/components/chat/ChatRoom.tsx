@@ -27,9 +27,9 @@ const ChatRoom = () => {
             JSON.parse(localStorage.getItem('auth')).userid !=
             JSON.parse(localStorage.getItem('info')).info.participants[0].id
                 ? JSON.parse(localStorage.getItem('info')).info.participants[0]
-                      .name
+                      ?.name
                 : JSON.parse(localStorage.getItem('info')).info.participants[1]
-                      .name,
+                      ?.name,
         senderUser: JSON.parse(localStorage.getItem('auth')).userid,
         lobby: JSON.parse(localStorage.getItem('info')).info.id,
         connected: false,
