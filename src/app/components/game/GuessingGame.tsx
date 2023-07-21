@@ -8,6 +8,7 @@ const GuessingGame = () => {
     const [gameOver, setGameOver] = useState(false);
     const [inputText, setInputText] = useState('');
     let call = 0;
+    let saveRanking = 0;
     useEffect(() => {
         const data = {
             init: {
@@ -51,7 +52,10 @@ const GuessingGame = () => {
                     winnerId: winnerId,
                     scoresByPlayers: JSON.stringify([...newScores]),
                 };
-                const score = await SaveScore(idLobby, datascore);
+                if (saveRanking == 0) {
+                    saveRanking++;
+                    const score = await SaveScore(idLobby, datascore);
+                }
             }
         } catch (error) {
             console.error("Une erreur s'est produite:", error);

@@ -20,9 +20,9 @@ const PierrePapierCiseaux = () => {
             JSON.parse(localStorage.getItem('auth')).userid !=
             JSON.parse(localStorage.getItem('info')).info.participants[0].id
                 ? JSON.parse(localStorage.getItem('info')).info.participants[0]
-                      .name
+                      ?.name
                 : JSON.parse(localStorage.getItem('info')).info.participants[1]
-                      .name,
+                      ?.name,
         senderUser: JSON.parse(localStorage.getItem('auth')).userid,
         lobby: JSON.parse(localStorage.getItem('info')).info.id,
         connected: false,
@@ -32,7 +32,7 @@ const PierrePapierCiseaux = () => {
             JSON.parse(localStorage.getItem('info')).info.creator.id
     );
     let call = 0;
-
+    let saveRanking = 0;
     const hanldeClick = (value) => {
         if (gameOver) return;
         const data = { actions: { value: value } };
@@ -179,7 +179,10 @@ const PierrePapierCiseaux = () => {
                 winnerId: winnerId,
                 scoresByPlayers: JSON.stringify([...newScores]),
             };
-            const score = await SaveScore(idLobby, datascore);
+            if (saveRanking == 0) {
+                saveRanking++;
+                const score = await SaveScore(idLobby, datascore);
+            }
         }
         setGameData(results);
         setClickAction(
