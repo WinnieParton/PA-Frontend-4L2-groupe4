@@ -1,12 +1,12 @@
-import { Button, Col, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import {Button, Col, Row} from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
 
-import { useState } from 'react';
+import {useState} from 'react';
 import ChatRoom from '../../../components/chat/ChatRoom';
-import GuessingGame from '../../../components/game/GuessingGame';
-import Morpion from '../../../components/game/Morpion';
-import PierrePapierCiseaux from '../../../components/game/PierrePapierCiseaux';
 import appRoutes from '../../../routes/routes';
+import {redirectOnLobby} from '../../../service/frontendService';
+import Game from "../../../components/game/Game";
+
 const SalleJeu = () => {
     const navigate = useNavigate();
     const lobby: {
@@ -63,23 +63,24 @@ const SalleJeu = () => {
                                     className="mt-4 mb-4"
                                     style={{ position: 'absolute' }}
                                 >
-                                    {lobby.game.gameFiles.includes(
-                                        'morpion'
-                                    ) ? (
-                                        <Morpion />
-                                    ) : lobby.game.gameFiles.includes(
-                                          'Guessing'
-                                      ) ? (
-                                        <GuessingGame />
-                                    ) : lobby.game.gameFiles.includes(
-                                          'PierrePapier'
-                                      ) ? (
-                                        <PierrePapierCiseaux />
-                                    ) : (
-                                        <p>
-                                            Le jeu n'est pas encore implementé
-                                        </p>
-                                    )}
+                                    <Game lobby={lobby} />
+                                    {/*{lobby.game.gameFiles.includes(*/}
+                                    {/*    'morpion'*/}
+                                    {/*) ? (*/}
+                                    {/*    <Morpion />*/}
+                                    {/*) : lobby.game.gameFiles.includes(*/}
+                                    {/*      'Guessing'*/}
+                                    {/*  ) ? (*/}
+                                    {/*    <GuessingGame />*/}
+                                    {/*) : lobby.game.gameFiles.includes(*/}
+                                    {/*      'PierrePapier'*/}
+                                    {/*  ) ? (*/}
+                                    {/*    <PierrePapierCiseaux />*/}
+                                    {/*) : (*/}
+                                    {/*    <p>*/}
+                                    {/*        Le jeu n'est pas encore implementé*/}
+                                    {/*    </p>*/}
+                                    {/*)}*/}
                                 </div>
                             ) : (
                                 <Button variant="primary" onClick={handleStart}>

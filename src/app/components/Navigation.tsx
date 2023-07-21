@@ -29,7 +29,7 @@ const Navigation = () => {
                         >
                             Accueil
                         </Nav.Link>
-                        {getAuthRole() == 'DEVELOPPER' && (
+                        {getAuthRole() == 'PLAYER' && (
                             <Nav.Link href={appRoutes.JEUX} className="mx-2">
                                 Jeux
                             </Nav.Link>
