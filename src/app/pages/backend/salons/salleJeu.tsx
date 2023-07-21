@@ -4,7 +4,6 @@ import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import ChatRoom from '../../../components/chat/ChatRoom';
 import appRoutes from '../../../routes/routes';
-import {redirectOnLobby} from '../../../service/frontendService';
 import Game from "../../../components/game/Game";
 
 const SalleJeu = () => {
