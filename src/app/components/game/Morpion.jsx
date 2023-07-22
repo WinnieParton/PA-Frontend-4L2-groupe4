@@ -5,9 +5,9 @@ import { over } from "stompjs";
 import Swal from "sweetalert2";
 import { baseURL } from "../../../environnements/environnement";
 import {
-    SaveScore,
-    getLastStateGame,
-    runEngine,
+  SaveScore,
+  getLastStateGame,
+  runEngine,
 } from "../../service/frontendService";
 
 var stompClient = null;
@@ -272,6 +272,16 @@ const Morpion = () => {
           </div>
           {gameData?.requested_actions.map((action, index) => (
             <div key={index}>
+              <p>Type: {action.type}</p>
+              <p>
+                Player:{" "}
+                {action.player == 1
+                  ? JSON.parse(localStorage.getItem("info")).info
+                      .participants[0]?.name
+                  : JSON.parse(localStorage.getItem("info")).info
+                      .participants[1]?.name}
+              </p>
+
               {action.zones.map((zone, zoneIndex) => (
                 <div
                   key={zoneIndex}

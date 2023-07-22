@@ -1,15 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const VideoPlayer = ({
   name,
   callAccepted,
   myVideo,
-  userVideo,
   callEnded,
   stream,
   idToCall,
 }) => {
-  useEffect(() => {}, [callAccepted]);
+  const userVideo = useRef(null);
+  const getUserMedia = async () => {
+    try {
+      const currentStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      if (userVideo.current) {
+        userVideo.current.srcObject = currentStream;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUserMedia();
+  }, [callAccepted]);
   const classes = {
     video: {
       maxWidth: "100%",

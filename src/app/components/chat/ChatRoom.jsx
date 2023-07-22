@@ -19,7 +19,6 @@ import "./../../assets/scss/chat.scss";
 import ChatVideoRoom from "./ChatVideoRoom";
 
 var stompClient = null;
-var nb = 0;
 const ChatRoom = () => {
   const [privateChats, setPrivateChats] = useState(new Map());
   const [publicChats, setPublicChats] = useState([]);
@@ -51,7 +50,6 @@ const ChatRoom = () => {
   const [stream, setStream] = useState(null);
   const myVideo = useRef(null);
   const connectionRef = useRef();
-  const userVideo = useRef();
   const idToCall =
     JSON.parse(localStorage.getItem("auth")).userid !=
     JSON.parse(localStorage.getItem("info")).info.participants[0].id
@@ -59,6 +57,7 @@ const ChatRoom = () => {
       : JSON.parse(localStorage.getItem("info")).info.participants[1]?.name;
   const me = JSON.parse(localStorage.getItem("auth")).userName;
   useEffect(() => {}, [userData]);
+  useEffect(() => {}, [call]);
 
   useEffect(() => {
     registerUser();
@@ -293,16 +292,22 @@ const ChatRoom = () => {
    */
   useEffect(() => {}, [chatMessage]);
   let nb = 0;
+
   const answerCall = () => {
-    let sign = null;
     if (nb == 0) {
       setCallAccepted(true);
-      const peer = new Peer({ initiator: false, trickle: false, stream });
-      peer.on("signal", (data) => {
-        console.log("123456789 123456789  123456789 ", data.type, data);
+      const peer = new Peer({
+        initiator: false,
+        trickle: false,
+        stream,
+      });
+
+      peer.once("signal", (data) => {
         if (data.type.includes("answer")) {
-          console.log("123456789 kkkkkkkkkkkkkkkkkkkkk", data.type, data);
-          sign = data;
+          setCall((prevCall) => ({
+            ...prevCall,
+            signal: data,
+          }));
           stompClient.send(
             "/app/answerCall",
             {},
@@ -314,18 +319,15 @@ const ChatRoom = () => {
               lobby: JSON.parse(localStorage.getItem("info")).info.id,
             })
           );
-
-          peer.on("stream", (currentStream) => {
-            userVideo.current.srcObject = currentStream;
-          });
-          // peer.signal(call.signal);
-          peer.signal(data);
-          connectionRef.current = peer;
         }
       });
+
+      peer.signal(call.signal);
+      connectionRef.current = peer;
     }
     nb += 1;
   };
+
   const getUserMedia = async () => {
     try {
       const currentStream = await navigator.mediaDevices.getUserMedia({
@@ -333,7 +335,9 @@ const ChatRoom = () => {
         audio: true,
       });
       setStream(currentStream);
-      myVideo.current.srcObject = currentStream;
+      if (myVideo.current) {
+        myVideo.current.srcObject = currentStream;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -341,7 +345,6 @@ const ChatRoom = () => {
   const callUser = (id) => {
     const peer = new Peer({ initiator: true, trickle: false, stream });
     peer.on("signal", (data) => {
-      console.log("123456789 callUser  peer ", data);
       stompClient.send(
         "/app/callUser",
         {},
@@ -354,17 +357,11 @@ const ChatRoom = () => {
         })
       );
     });
-    peer.on("stream", (currentStream) => {
-      userVideo.current.srcObject = currentStream;
-    });
     stompClient.subscribe(
       "/user/" + me + "/private/video/accepted",
       (payload) => {
         var payloadData = JSON.parse(payload.body);
-        console.log(
-          "123456789 callAccepted callAccepted callAccepted ",
-          payloadData
-        );
+
         setCallAccepted(true);
         peer.signal(payloadData.signalData);
       }
@@ -549,11 +546,9 @@ const ChatRoom = () => {
                 setCallAccepted={setCallAccepted}
                 callAccepted={callAccepted}
                 getUserMedia={getUserMedia}
-                setStream={setStream}
                 stream={stream}
                 myVideo={myVideo}
                 connectionRef={connectionRef}
-                userVideo={userVideo}
                 idToCall={idToCall}
                 callUser={callUser}
                 me={me}

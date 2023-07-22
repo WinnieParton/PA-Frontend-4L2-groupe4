@@ -16,11 +16,9 @@ const ChatVideoRoom = ({
   setCallAccepted,
   callAccepted,
   getUserMedia,
-  setStream,
   stream,
   myVideo,
   connectionRef,
-  userVideo,
   idToCall,
   callUser,
   me
@@ -93,7 +91,6 @@ const ChatVideoRoom = ({
         name={me}
         callAccepted={callAccepted}
         myVideo={myVideo}
-        userVideo={userVideo}
         callEnded={callEnded}
         stream={stream}
         idToCall={idToCall}
