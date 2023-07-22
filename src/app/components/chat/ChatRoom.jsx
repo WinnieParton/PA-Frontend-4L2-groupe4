@@ -3,6 +3,7 @@ import {
   faMicrophone,
   faMicrophoneSlash,
   faPaperPlane,
+  faPhoneSlash,
   faPlay,
   faVideo,
   faVideoSlash,
@@ -18,6 +19,7 @@ import SockJS from "sockjs-client/dist/sockjs";
 import { over } from "stompjs";
 
 var stompClient = null;
+var nb = 0;
 const ChatRoom = () => {
   const [privateChats, setPrivateChats] = useState(new Map());
   const [publicChats, setPublicChats] = useState([]);
@@ -43,6 +45,7 @@ const ChatRoom = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [alreadyStart, setAlreadyStart] = useState(false);
   const [appelEntrant, setAppelEntrant] = useState(false);
+  const [firstload, setFirstload] = useState(true);
 
   useEffect(() => {}, [userData]);
 
@@ -67,9 +70,17 @@ const ChatRoom = () => {
       "/user/" + userData.username + "/private/video/call",
       onCallVideoReceivedPrivate
     );
+    stompClient.subscribe(
+      "/user/" +
+        JSON.parse(localStorage.getItem("auth")).userName +
+        "/private/video/call/leave",
+      leaveCallAnother
+    );
     userJoin();
   };
-
+  const leaveCallAnother = () => {
+    window.location.reload();
+  };
   const onCallVideoReceivedPrivate = (payload) => {
     var payloadData = JSON.parse(payload.body);
     setAlreadyStart(payloadData.call);
@@ -78,9 +89,12 @@ const ChatRoom = () => {
         payloadData.userConnect !=
           JSON.parse(localStorage.getItem("auth")).userid
     );
+
+    setFirstload(nb % 2 === 0);
     setChatMessage(!payloadData.call);
+    nb += 1;
   };
-  useEffect(() => {}, [appelEntrant]);
+  useEffect(() => {}, [appelEntrant, firstload]);
   const handleInputChange = (e) => {
     setMessage(e.target.value);
   };
@@ -200,6 +214,18 @@ const ChatRoom = () => {
       });
   };
   const startCallVideo = () => {
+    if (!chatMessage == true) {
+      nb = 0;
+      stompClient.send(
+        "/app/end/callUser",
+        {},
+        JSON.stringify({
+          call: false,
+          lobby: JSON.parse(localStorage.getItem("info")).info.id,
+          userConnect: JSON.parse(localStorage.getItem("auth")).userid,
+        })
+      );
+    }
     setChatMessage(!chatMessage);
     stompClient.send(
       "/app/start/callUser",
@@ -270,9 +296,9 @@ const ChatRoom = () => {
                 style={{ border: "none" }}
               >
                 <FontAwesomeIcon
-                  icon={!appelEntrant && chatMessage ? faVideo : faVideoSlash}
+                  icon={!appelEntrant && chatMessage ? faVideo : faPhoneSlash}
                   style={{
-                    color: "#d1a521",
+                    color: !appelEntrant && chatMessage ? "#d1a521" : "red",
                     fontSize: "2em",
                   }}
                 />
@@ -425,7 +451,7 @@ const ChatRoom = () => {
               </>
             ) : (
               <ChatVideoRoom
-                alreadyStart={alreadyStart}
+                firstload={firstload}
                 appelEntrant={appelEntrant}
               />
             )}

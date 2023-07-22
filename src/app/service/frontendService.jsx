@@ -375,3 +375,16 @@ export const getLastStateGame = async (id) => {
     throw error.response?.data;
   }
 };
+
+export const lastInfoVideoCall = async (lobbyId) => {
+  try {
+    const tokenString = localStorage.getItem("auth");
+    const userToken = JSON.parse(tokenString);
+    const response = await axios.get(`${baseURL}/user/chat/private/video/${lobbyId}`, {
+      headers: { Authorization: `Bearer ${userToken.userToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data;
+  }
+};

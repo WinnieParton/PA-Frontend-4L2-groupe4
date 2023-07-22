@@ -4,28 +4,20 @@ import SockJS from "sockjs-client/dist/sockjs";
 import { over } from "stompjs";
 import { baseURL } from "../../../environnements/environnement";
 import Notifications from "../video/Notifications";
-import Options from "../video/Options";
 import VideoPlayer from "../video/VideoPlayer";
 
 var stompClient = null;
-var peer = null;
-const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
+const ChatVideoRoom = ({ firstload, appelEntrant }) => {
   const [stream, setStream] = useState(null);
-  const [me, setMe] = useState(
-    JSON.parse(localStorage.getItem("auth")).userName
-  );
-  const [idToCall, setIdToCall] = useState(
+  const me = JSON.parse(localStorage.getItem("auth")).userName;
+  const idToCall =
     JSON.parse(localStorage.getItem("auth")).userid !=
-      JSON.parse(localStorage.getItem("info")).info.participants[0].id
+    JSON.parse(localStorage.getItem("info")).info.participants[0].id
       ? JSON.parse(localStorage.getItem("info")).info.participants[0]?.name
-      : JSON.parse(localStorage.getItem("info")).info.participants[1]?.name
-  );
+      : JSON.parse(localStorage.getItem("info")).info.participants[1]?.name;
   const [call, setCall] = useState({});
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState(
-    JSON.parse(localStorage.getItem("auth")).userName
-  );
   const myVideo = useRef(null);
   const userVideo = useRef();
   const connectionRef = useRef();
@@ -40,23 +32,23 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
   };
   const onConnected = () => {
     getUserMedia();
+    stompClient.subscribe(
+      "/user/" + me + "/private/video/call/leave",
+      leaveCallAnother
+    );
     if (!appelEntrant) userJoin();
     else {
-      stompClient.send(
-        "/app/data/callUser",
-        {},
-        JSON.stringify({
-          userToCall: idToCall,
-          signalData: '',
-          from: me,
-          name,
-          lobby: JSON.parse(localStorage.getItem("info")).info.id,
-        })
-      );
-
-      stompClient.subscribe("/chat/data/callUser", onMessageReceivedCall);
+      if (appelEntrant && firstload) {
+        stompClient.subscribe("/user/" + me + "/private/video", lastInfoVideo);
+      }
     }
   };
+
+  const lastInfoVideo = (payload) => {
+    var payloadData = JSON.parse(payload.body);
+    onMessageReceivedCall(payloadData);
+  };
+
   const registerUser = () => {
     connect();
   };
@@ -78,28 +70,32 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
       console.log(error);
     }
   };
-  const onMessageReceivedCall = (payload) => {
-    var payloadData =
-      payload.body != "" ? JSON.parse(payload.body) : payload.body;
-    console.log("ddddddddddddd  onMessageReceivedCall", payloadData);
+  const onMessageReceivedCall = (payloadData) => {
     setCall({
       isReceivingCall: true,
       from: payloadData.from,
       name: payloadData.name,
+      userToCall: idToCall,
       signal: payloadData.signalData,
       lobby: JSON.parse(localStorage.getItem("info")).info.id,
     });
   };
 
   const answerCall = () => {
+    console.log("123456789 answerCall answerCall answerCall answerCall ", call);
     setCallAccepted(true);
     const peer = new Peer({ initiator: false, trickle: false, stream });
     peer.on("signal", (data) => {
-      console.log("sssssssssssssssssssssssssssssssssssssssss  ", data);
       stompClient.send(
         "/app/answerCall",
         {},
-        JSON.stringify({ signalData: data, from: call.from })
+        JSON.stringify({
+          signalData: data,
+          from: call.from,
+          name: call.name,
+          userToCall: idToCall,
+          lobby: JSON.parse(localStorage.getItem("info")).info.id,
+        })
       );
     });
     peer.on("stream", (currentStream) => {
@@ -110,7 +106,7 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
   };
 
   const callUser = (id) => {
-    peer = new Peer({ initiator: true, trickle: false, stream });
+    const peer = new Peer({ initiator: true, trickle: false, stream });
     peer.on("signal", (data) => {
       stompClient.send(
         "/app/callUser",
@@ -119,7 +115,7 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
           userToCall: id,
           signalData: data,
           from: me,
-          name,
+          name: me,
           lobby: JSON.parse(localStorage.getItem("info")).info.id,
         })
       );
@@ -127,19 +123,22 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
     peer.on("stream", (currentStream) => {
       userVideo.current.srcObject = currentStream;
     });
-    stompClient.subscribe("/chat/callAccepted", onMessageReceivedCallAccepted);
-  };
-
-  const onMessageReceivedCallAccepted = (payload) => {
-    var payloadData = JSON.parse(payload.body);
-    console.log("ddddddddddddd  onMessageReceivedCallAccepted", payloadData);
-
-    setCallAccepted(true);
-    peer.signal(payloadData.signalData);
+    stompClient.subscribe(
+      "/user/" + me + "/private/video/accepted",
+      (payload) => {
+        var payloadData = JSON.parse(payload.body);
+        console.log(
+          "123456789 callAccepted callAccepted callAccepted ",
+          payloadData
+        );
+        setCallAccepted(true);
+        peer.signal(payloadData.signalData);
+      }
+    );
     connectionRef.current = peer;
   };
-  const leaveCall = () => {
-    setCallEnded(true);
+
+  const leaveCallAnother = () => {
     connectionRef.current.destroy();
     window.location.reload();
   };
@@ -154,26 +153,20 @@ const ChatVideoRoom = ({ alreadyStart, appelEntrant }) => {
       }}
     >
       <VideoPlayer
-        name={name}
+        name={me}
         callAccepted={callAccepted}
         myVideo={myVideo}
         userVideo={userVideo}
         callEnded={callEnded}
         stream={stream}
-        call={call}
+        idToCall={idToCall}
       />
       {appelEntrant && (
-        <Options
+        <Notifications
+          call={call}
+          answerCall={answerCall}
           callAccepted={callAccepted}
-          callEnded={callEnded}
-          leaveCall={leaveCall}
-        >
-          <Notifications
-            call={call}
-            answerCall={answerCall}
-            callAccepted={callAccepted}
-          />
-        </Options>
+        />
       )}
     </div>
   );
