@@ -9,14 +9,7 @@ const VideoPlayer = ({
   stream,
   idToCall,
 }) => {
-  useEffect(() => {
-    console.log(
-      "123456789 123456789 123456789 ",
-      callAccepted,
-      callEnded,
-      userVideo
-    );
-  }, [callAccepted]);
+  useEffect(() => {}, [callAccepted]);
   const classes = {
     video: {
       maxWidth: "100%",

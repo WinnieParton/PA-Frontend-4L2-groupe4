@@ -6,17 +6,17 @@ import {
   faPhoneSlash,
   faPlay,
   faVideo,
-  faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
+import Peer from "simple-peer";
+import SockJS from "sockjs-client/dist/sockjs";
+import { over } from "stompjs";
 import { baseURL } from "../../../environnements/environnement";
 import { UploadVoice, readVoices } from "../../service/frontendService";
 import "./../../assets/scss/chat.scss";
 import ChatVideoRoom from "./ChatVideoRoom";
-import SockJS from "sockjs-client/dist/sockjs";
-import { over } from "stompjs";
 
 var stompClient = null;
 var nb = 0;
@@ -46,7 +46,18 @@ const ChatRoom = () => {
   const [alreadyStart, setAlreadyStart] = useState(false);
   const [appelEntrant, setAppelEntrant] = useState(false);
   const [firstload, setFirstload] = useState(true);
-
+  const [call, setCall] = useState({});
+  const [callAccepted, setCallAccepted] = useState(false);
+  const [stream, setStream] = useState(null);
+  const myVideo = useRef(null);
+  const connectionRef = useRef();
+  const userVideo = useRef();
+  const idToCall =
+    JSON.parse(localStorage.getItem("auth")).userid !=
+    JSON.parse(localStorage.getItem("info")).info.participants[0].id
+      ? JSON.parse(localStorage.getItem("info")).info.participants[0]?.name
+      : JSON.parse(localStorage.getItem("info")).info.participants[1]?.name;
+  const me = JSON.parse(localStorage.getItem("auth")).userName;
   useEffect(() => {}, [userData]);
 
   useEffect(() => {
@@ -281,6 +292,85 @@ const ChatRoom = () => {
   /* End Voice
    */
   useEffect(() => {}, [chatMessage]);
+  let nb = 0;
+  const answerCall = () => {
+    let sign = null;
+    if (nb == 0) {
+      setCallAccepted(true);
+      const peer = new Peer({ initiator: false, trickle: false, stream });
+      peer.on("signal", (data) => {
+        console.log("123456789 123456789  123456789 ", data.type, data);
+        if (data.type.includes("answer")) {
+          console.log("123456789 kkkkkkkkkkkkkkkkkkkkk", data.type, data);
+          sign = data;
+          stompClient.send(
+            "/app/answerCall",
+            {},
+            JSON.stringify({
+              signalData: data,
+              from: call.from,
+              name: call.name,
+              userToCall: idToCall,
+              lobby: JSON.parse(localStorage.getItem("info")).info.id,
+            })
+          );
+
+          peer.on("stream", (currentStream) => {
+            userVideo.current.srcObject = currentStream;
+          });
+          // peer.signal(call.signal);
+          peer.signal(data);
+          connectionRef.current = peer;
+        }
+      });
+    }
+    nb += 1;
+  };
+  const getUserMedia = async () => {
+    try {
+      const currentStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setStream(currentStream);
+      myVideo.current.srcObject = currentStream;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const callUser = (id) => {
+    const peer = new Peer({ initiator: true, trickle: false, stream });
+    peer.on("signal", (data) => {
+      console.log("123456789 callUser  peer ", data);
+      stompClient.send(
+        "/app/callUser",
+        {},
+        JSON.stringify({
+          userToCall: id,
+          signalData: data,
+          from: me,
+          name: me,
+          lobby: JSON.parse(localStorage.getItem("info")).info.id,
+        })
+      );
+    });
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
+    stompClient.subscribe(
+      "/user/" + me + "/private/video/accepted",
+      (payload) => {
+        var payloadData = JSON.parse(payload.body);
+        console.log(
+          "123456789 callAccepted callAccepted callAccepted ",
+          payloadData
+        );
+        setCallAccepted(true);
+        peer.signal(payloadData.signalData);
+      }
+    );
+    connectionRef.current = peer;
+  };
   return (
     <div className="tcha-block">
       <div className="chat-content">
@@ -453,6 +543,20 @@ const ChatRoom = () => {
               <ChatVideoRoom
                 firstload={firstload}
                 appelEntrant={appelEntrant}
+                answerCall={answerCall}
+                call={call}
+                setCall={setCall}
+                setCallAccepted={setCallAccepted}
+                callAccepted={callAccepted}
+                getUserMedia={getUserMedia}
+                setStream={setStream}
+                stream={stream}
+                myVideo={myVideo}
+                connectionRef={connectionRef}
+                userVideo={userVideo}
+                idToCall={idToCall}
+                callUser={callUser}
+                me={me}
               />
             )}
           </>
