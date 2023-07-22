@@ -41,6 +41,8 @@ const ChatRoom = () => {
   const [chatMessage, setChatMessage] = useState(true);
   const [clickButton, setClickButton] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [alreadyStart, setAlreadyStart] = useState(false);
+  const [appelEntrant, setAppelEntrant] = useState(false);
 
   useEffect(() => {}, [userData]);
 
@@ -61,8 +63,24 @@ const ChatRoom = () => {
       "/user/" + userData.username + "/private",
       onPrivateMessage
     );
+    stompClient.subscribe(
+      "/user/" + userData.username + "/private/video/call",
+      onCallVideoReceivedPrivate
+    );
     userJoin();
   };
+
+  const onCallVideoReceivedPrivate = (payload) => {
+    var payloadData = JSON.parse(payload.body);
+    setAlreadyStart(payloadData.call);
+    setAppelEntrant(
+      payloadData.call &&
+        payloadData.userConnect !=
+          JSON.parse(localStorage.getItem("auth")).userid
+    );
+    setChatMessage(!payloadData.call);
+  };
+  useEffect(() => {}, [appelEntrant]);
   const handleInputChange = (e) => {
     setMessage(e.target.value);
   };
@@ -181,7 +199,26 @@ const ChatRoom = () => {
         console.error("Error accessing microphone:", error);
       });
   };
+  const startCallVideo = () => {
+    setChatMessage(!chatMessage);
+    stompClient.send(
+      "/app/start/callUser",
+      {},
+      JSON.stringify({
+        call: !alreadyStart,
+        lobby: JSON.parse(localStorage.getItem("info")).info.id,
+        userConnect: JSON.parse(localStorage.getItem("auth")).userid,
+      })
+    );
+    stompClient.subscribe(
+      "/user/" + userData.username + "/private/video/call",
+      onCallVideoReceivedPrivate
+    );
+    setAlreadyStart(!alreadyStart);
 
+    if (!chatMessage) window.location.reload();
+  };
+  useEffect(() => {}, [alreadyStart]);
   // Logic for stopping the recording
   const stopRecording = () => {
     const mediaRecorder = recorderRef.current;
@@ -229,13 +266,11 @@ const ChatRoom = () => {
             >
               <h2>Discussion</h2>
               <button
-                onClick={() => {
-                  setChatMessage(!chatMessage);
-                }}
+                onClick={() => startCallVideo()}
                 style={{ border: "none" }}
               >
                 <FontAwesomeIcon
-                  icon={chatMessage ? faVideo : faVideoSlash}
+                  icon={!appelEntrant && chatMessage ? faVideo : faVideoSlash}
                   style={{
                     color: "#d1a521",
                     fontSize: "2em",
@@ -243,7 +278,7 @@ const ChatRoom = () => {
                 />
               </button>
             </div>
-            {chatMessage ? (
+            {chatMessage && !appelEntrant ? (
               <>
                 <ul className="chat-messages">
                   {privateChats.size > 0 &&
@@ -389,7 +424,10 @@ const ChatRoom = () => {
                 </div>
               </>
             ) : (
-              <ChatVideoRoom />
+              <ChatVideoRoom
+                alreadyStart={alreadyStart}
+                appelEntrant={appelEntrant}
+              />
             )}
           </>
         ) : (
