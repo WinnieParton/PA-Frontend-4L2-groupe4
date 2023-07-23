@@ -24,7 +24,6 @@
     "sass": "^1.64.0",
     "sass-loader": "^13.3.2",
     "simple-peer": "^9.11.1",
-    "socket.io-client": "^4.7.1",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "sweetalert2": "^11.7.18",
