@@ -22,7 +22,7 @@ const Navigation = () => {
                 <Navbar.Brand href="#home">PA-WEB</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ms-auto">
+                    <Nav className="ms-auto bg-light">
                         <Nav.Link
                             href={appRoutes.DASHBOARD_HOME}
                             className="mx-2"
@@ -45,7 +45,7 @@ const Navigation = () => {
                             </Nav.Link>
                         )}
                     </Nav>
-                    <Nav className="ms-auto">
+                    <Nav className="ms-auto bg-primary">
                         <NavDropdown title="Mon compte" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">
                                 Profil
