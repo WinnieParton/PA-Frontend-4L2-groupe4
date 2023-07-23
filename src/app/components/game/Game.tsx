@@ -61,7 +61,8 @@ const Game = (props) => {
             };
             if (call == 0) {
                 call++;
-                handleGame(data, 'received');
+                handleGame(data, 'received')
+                    .catch(error => console.log(error));
             }
         } else setGameData(payloadData);
     };
@@ -69,7 +70,8 @@ const Game = (props) => {
     const onPrivateMessage = (payload) => {
         let payloadData = JSON.parse(payload.body);
         if (gameData != payloadData) {
-            handleResult(payloadData, 'received');
+            handleResult(payloadData, 'received')
+                .catch(error => console.log(error));
         }
     };
 
@@ -88,6 +90,7 @@ const Game = (props) => {
             const results = await runEngine(idLobby, data);
             return handleResult(results, action);
         } catch (error) {
+            console.log(error);
         }
     };
 
@@ -114,78 +117,78 @@ const Game = (props) => {
                 },
             ],
         };
-        handleGame(data, 'onclick');
+        handleGame(data, 'onclick')
+            .catch(error => console.log(error));
     };
+
+    const handleEndGame = async (results, action) => {
+        setClickAction(true);
+        setGameOver(true);
+
+        let winnerId: number;
+        let lostId: number[];
+
+        if (lobby.participants[results.requested_actions[0].player - 2].id == -1) {
+            winnerId = lobby.participants[0].id;
+        } else {
+            winnerId = lobby.participants[results.requested_actions[0].player - 2].id;
+        }
+        lostId = lobby.participants.filter(user => user.id != winnerId);
+
+        if (authInfo.userid == winnerId) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Gagnant',
+                showCancelButton: true,
+                text: `Félicitation vous avez gagné.`,
+                confirmButtonText: 'Nouvelle partie',
+                cancelButtonText: `Fermer`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    console.log('Dialog closed by cancel button');
+                    handleGameLastState();
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Game Over',
+                showCancelButton: true,
+                text: 'Une revenge?',
+                confirmButtonText: 'Nouvelle partie',
+                cancelButtonText: `Fermer`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    handleGameLastState();
+                }
+            });
+        }
+
+        const newScores: Map<any, number> = new Map();
+        newScores.set(winnerId, 1.0);
+        newScores.set(lostId, 0.0);
+        const datascore = {
+            winnerId: winnerId,
+            scoresByPlayers: JSON.stringify([...newScores]),
+        };
+        if (action != 'onclick')
+            if (!isGameSaved.current) {
+                isGameSaved.current = true;
+                return saveScore(datascore);
+            }
+    }
 
     const handleResult = async (results, action) => {
         if (results.game_state?.game_over) {
-            setClickAction(true);
-            setGameOver(true);
-            let winnerId = 0;
-            let lostId = [];
-            if ((authInfo.userid == lobby.info.creator.id && results.requested_actions[0].player === 2)
-                || authInfo.userid != lobby.creator.id && results.requested_actions[0].player === 1) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Gagnant',
-                    showCancelButton: true,
-                    text: `Félicitation vous avez gagné.`,
-                    confirmButtonText: 'Nouvelle partie',
-                    cancelButtonText: `Fermer`,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.reload();
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        console.log('Dialog closed by cancel button');
-                        handleGameLastState();
-                    }
-                });
-                winnerId = authInfo.userid;
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Game Over',
-                    showCancelButton: true,
-                    text: 'Une revenge?',
-                    confirmButtonText: 'Nouvelle partie',
-                    cancelButtonText: `Fermer`,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.reload();
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        handleGameLastState();
-                    }
-                });
-                if (authInfo.userid == lobby.creator.id && results.requested_actions[0].player === 1) {
-                    winnerId = authInfo.userid != lobby.participants[0].id
-                        ? lobby.participants[0].id
-                        : lobby.participants[1].id;
-                } else
-                    winnerId = lobby.creator.id;
-            }
-            lostId = winnerId != authInfo.userid
-                ? authInfo.userid
-                : winnerId != lobby.participants[0].id
-                    ? lobby.participants[0].id
-                    : lobby.participants[1].id;
-
-            const newScores = new Map();
-            newScores.set(winnerId, 1.0);
-            newScores.set(lostId, 0.0);
-            const datascore = {
-                winnerId: winnerId,
-                scoresByPlayers: JSON.stringify([...newScores]),
-            };
-            if (action != 'onclick')
-                if (!isGameSaved.current) {
-                    isGameSaved.current = true;
-                    return saveScore(datascore);
-                }
+            handleEndGame(results, action)
+                .catch(error => console.log(error));
         }
         setGameData(results);
-        setClickAction(
-            (authInfo.userid == lobby.info.creator.id && results?.requested_actions[0]?.player == 1)
-            || authInfo.userid != lobby.creator.id && results?.requested_actions[0]?.player == 2);
+        setClickAction(lobby.participants[results?.requested_actions[0]?.player - 1]);
     };
 
     const saveScore = async (datascore) => {
@@ -210,6 +213,7 @@ const Game = (props) => {
                                 cx: item?.cx,
                                 cy: item?.cy,
                                 r: item?.r,
+                                src: item.src,
                                 width: item?.width,
                                 height: item?.height,
                                 fill: item?.fill
@@ -220,21 +224,26 @@ const Game = (props) => {
                 }
             </svg>
             {gameData?.requested_actions.map((action, index) => (
-                <div key={index}>
-                    {action.zones.map((zone, zoneIndex) => (
-                        <div
-                            key={zoneIndex}
-                            style={{
-                                position: 'absolute',
-                                top: zone.y,
-                                left: zone.x,
-                                width: zone.width,
-                                height: zone.height,
-                            }}
-                            onClick={() => handleZoneClick(zone)}
-                        ></div>
-                    ))}
-                </div>
+                <>
+                    <p>Action: {action.type}</p>
+                    <p>Player: {lobby.participants[action.player - 1]}</p>
+
+                    <div key={index}>
+                        {action.zones.map((zone, zoneIndex) => (
+                            <div
+                                key={zoneIndex}
+                                style={{
+                                    position: 'absolute',
+                                    top: zone.y,
+                                    left: zone.x,
+                                    width: zone.width,
+                                    height: zone.height,
+                                }}
+                                onClick={() => handleZoneClick(zone)}
+                            ></div>
+                        ))}
+                    </div>
+                </>
             ))}
         </>
     );
