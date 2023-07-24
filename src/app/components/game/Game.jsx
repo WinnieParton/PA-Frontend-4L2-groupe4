@@ -52,8 +52,8 @@ const Game = (props) => {
     };
 
     const onMessageReceived = (payload) => {
-        const payloadData = payload.body != '' ? JSON.parse(payload.body) : payload.body;
-        if (payloadData == '') {
+        const payloadData = payload.body != "" ? JSON.parse(payload.body) : payload.body;
+        if (payloadData == "") {
             const data = {
                 init: {
                     players: lobby.participants.length,
@@ -66,7 +66,8 @@ const Game = (props) => {
             }
         } else {
             setGameData(payloadData);
-            setClickAction()
+            setClickAction(
+                authInfo.userid === lobby.participants[payloadData?.requested_actions[0].player - 1].id);
         }
     };
 
@@ -101,8 +102,10 @@ const Game = (props) => {
         try {
             const results = await getLastStateGame(idLobby);
             setGameData(results);
-            setClickAction(false);
+            setClickAction(
+                authInfo.userid === lobby.participants[results?.requested_actions[0].player - 1].id);
         } catch (error) {
+            console.log(error);
         }
     };
 
@@ -191,7 +194,8 @@ const Game = (props) => {
                 .catch(error => console.log(error));
         }
         setGameData(results);
-        setClickAction(lobby.participants[results?.requested_actions[0]?.player - 1]);
+        setClickAction(
+            authInfo.userid == lobby.participants[results?.requested_actions[0]?.player - 1].id);
     };
 
     const saveScore = async (datascore) => {
