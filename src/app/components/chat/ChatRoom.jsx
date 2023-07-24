@@ -173,7 +173,7 @@ const ChatRoom = () => {
         message: messageVoice != "" ? messageVoice : message,
         senderName: userData.username,
         receiverName: userData.receivername,
-        currentDate: new Date().toLocaleString(),
+        currentDate: new Date().toLocaleDateString("fr-FR"),
         status: "MESSAGE",
       };
       if (privateChats.has(tab) && Array.isArray(privateChats.get(tab))) {
