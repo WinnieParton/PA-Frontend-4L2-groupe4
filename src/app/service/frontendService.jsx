@@ -376,14 +376,16 @@ export const getLastStateGame = async (id) => {
   }
 };
 
-export const lastInfoVideoCall = async (lobbyId) => {
+export const actionMove = async (iuser, status, idmove) => {
   try {
     const tokenString = localStorage.getItem("auth");
     const userToken = JSON.parse(tokenString);
-    const response = await axios.get(`${baseURL}/user/chat/private/video/${lobbyId}`, {
-      headers: { Authorization: `Bearer ${userToken.userToken}` },
-    });
-    return response.data;
+    const response = await axios.get(
+      `${baseURL}/game/rollback/${iuser}/idmove/${idmove}/status/${status}`,
+      {
+        headers: { Authorization: `Bearer ${userToken.userToken}` },
+      }
+    );
   } catch (error) {
     throw error.response?.data;
   }

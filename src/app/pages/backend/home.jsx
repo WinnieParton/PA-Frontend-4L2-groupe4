@@ -85,9 +85,14 @@ const Home = () => {
           </Carousel>
           <div className="container my-5">
             <div className="row">
-              <h1 className="col-12 text-center fw-bold text-primary mb-2" style={{fontSize:"revert"}}>
-                Les classements
-              </h1>
+              {rankingGame.length > 0 && (
+                <h2
+                  className="col-12 text-center fw-bold text-primary mb-2"
+                  style={{ fontSize: "revert" }}
+                >
+                  Les classements
+                </h2>
+              )}
               {rankingGame.length > 0 &&
                 rankingGame.map(
                   (rank, i) =>
@@ -98,26 +103,29 @@ const Home = () => {
                             {" "}
                             <span className="fw-bold">{rank?.game.name}</span>
                           </ListGroup.Item>
-                          {rank?.ranking.globalRanking.map((ranks, ind) => (
-                            <ListGroup.Item
-                              className="d-flex justify-content-between align-items-center"
-                              action
-                              onClick={() => handleShowModal(ranks.user.id)}
-                              key={ind}
-                            >
-                              <div className="user-avata">{ind + 1}</div>
-                              <div className="ms-2 me-auto">
-                                <div className="fw-bold">
-                                  {" "}
-                                  {ranks.user.name}{" "}
-                                </div>
-                                {ranks.user.email}
-                              </div>
-                              <Badge bg="primary" pill>
-                                {ranks.score}
-                              </Badge>
-                            </ListGroup.Item>
-                          ))}
+                          {rank?.ranking.globalRanking.map(
+                            (ranks, ind) =>
+                              ranks.score > 0 && (
+                                <ListGroup.Item
+                                  className="d-flex justify-content-between align-items-center"
+                                  action
+                                  onClick={() => handleShowModal(ranks.user.id)}
+                                  key={ind}
+                                >
+                                  <div className="user-avata">{ind + 1}</div>
+                                  <div className="ms-2 me-auto">
+                                    <div className="fw-bold">
+                                      {" "}
+                                      {ranks.user.name}{" "}
+                                    </div>
+                                    {ranks.user.email}
+                                  </div>
+                                  <Badge bg="primary" pill>
+                                    {ranks.score}
+                                  </Badge>
+                                </ListGroup.Item>
+                              )
+                          )}
                         </ListGroup>
                       </div>
                     )

@@ -11,7 +11,7 @@ import {
 } from "../../service/frontendService";
 
 var stompClient = null;
-const Morpion = () => {
+const Morpion = ({ start }) => {
   const [gameData, setGameData] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [userData, setUserData] = useState({
@@ -91,6 +91,7 @@ const Morpion = () => {
       lobby: userData.lobby,
     };
     stompClient.send("/app/game", {}, JSON.stringify(chatMessage));
+    start();
   };
   const onError = (err) => {
     connect();
@@ -133,7 +134,7 @@ const Morpion = () => {
     handleGame(data, "onclick");
   };
   const handleResult = async (results, action) => {
-    if (results.game_state?.game_over) {
+    if (results?.game_state?.game_over) {
       setClickAction(true);
       setGameOver(true);
       let winnerId = 0;
