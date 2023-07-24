@@ -200,7 +200,7 @@ const Game = (props) => {
             <svg height={gameData?.displays[0].height} width={gameData?.displays[0].width}>
                 {gameData?.displays.flatMap(display => display.content)
                     .map((item, index) => {
-                        createElement(
+                        return createElement(
                             item.tag,
                             {
                                 key: index,
@@ -226,7 +226,7 @@ const Game = (props) => {
             {gameData?.requested_actions.map((action, index) => (
                 <>
                     <p>Action: {action.type}</p>
-                    <p>Player: {lobby.participants[action.player - 1]}</p>
+                    <p>Player: {lobby.participants[action.player - 1].name}</p>
 
                     <div key={index}>
                         {action.zones.map((zone, zoneIndex) => (
