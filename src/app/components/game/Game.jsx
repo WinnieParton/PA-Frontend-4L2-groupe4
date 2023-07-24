@@ -134,7 +134,7 @@ const Game = (props) => {
         let winnerId;
         let lostId;
 
-        if (lobby.participants[results.requested_actions[0].player - 2].id == -1) {
+        if (lobby.participants[results.requested_actions[0].player - 2] == undefined) {
             winnerId = lobby.participants[0].id;
         } else {
             winnerId = lobby.participants[results.requested_actions[0].player - 2].id;
