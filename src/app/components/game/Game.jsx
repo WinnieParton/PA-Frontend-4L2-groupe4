@@ -64,7 +64,10 @@ const Game = (props) => {
                 handleGame(data, 'received')
                     .catch(error => console.log(error));
             }
-        } else setGameData(payloadData);
+        } else {
+            setGameData(payloadData);
+            setClickAction()
+        }
     };
 
     const onPrivateMessage = (payload) => {
@@ -125,8 +128,8 @@ const Game = (props) => {
         setClickAction(true);
         setGameOver(true);
 
-        let winnerId: number;
-        let lostId: number[];
+        let winnerId;
+        let lostId;
 
         if (lobby.participants[results.requested_actions[0].player - 2].id == -1) {
             winnerId = lobby.participants[0].id;
@@ -168,7 +171,7 @@ const Game = (props) => {
             });
         }
 
-        const newScores: Map<any, number> = new Map();
+        const newScores = new Map();
         newScores.set(winnerId, 1.0);
         newScores.set(lostId, 0.0);
         const datascore = {
@@ -196,7 +199,12 @@ const Game = (props) => {
     };
 
     return (
-        <>
+        <div
+            style={{
+                pointerEvents: clickAction ? "initial" : "none",
+            }}
+        >
+
             <svg height={gameData?.displays[0].height} width={gameData?.displays[0].width}>
                 {gameData?.displays.flatMap(display => display.content)
                     .map((item, index) => {
@@ -245,7 +253,7 @@ const Game = (props) => {
                     </div>
                 </>
             ))}
-        </>
+        </div>
     );
 }
 export default Game;

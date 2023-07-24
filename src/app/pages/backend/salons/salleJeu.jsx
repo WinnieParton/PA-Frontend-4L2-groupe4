@@ -8,20 +8,7 @@ import Game from "../../../components/game/Game";
 
 const SalleJeu = () => {
     const navigate = useNavigate();
-    const lobby: {
-        id?: any;
-        name?: string;
-        game?: {
-            miniature?: string;
-            name?: string;
-            maxPlayers?: number;
-            minPlayers?: number;
-            gameFiles?: string;
-        };
-        status?: string;
-        creator?: any;
-        participants?: [{ id?: any; name?: string }];
-    } = JSON.parse(localStorage.getItem('info')).info;
+    const lobby = JSON.parse(localStorage.getItem('info')).info;
     const [startGame, setStartGame] = useState(false);
 
     const handleLoadLobby = async () => {
