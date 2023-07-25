@@ -134,7 +134,7 @@ const ListesSalon = () => {
                     <p>Maximum {el.game.maxPlayers} joueur(s)</p>
                   </Card.Subtitle>
                   <div
-                    className="d-flex w-100 mb-2"
+                    className="mb-2"
                     style={{
                       justifyContent: "space-between",
                     }}
