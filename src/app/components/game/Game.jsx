@@ -237,11 +237,11 @@ const Game = (props) => {
             </svg>
             {gameData?.requested_actions.map((action, index) => (
                 <>
-                    <p>Action: {action.type}</p>
-                    <p>Player: {lobby.participants[action.player - 1].name}</p>
+                    <p>Action: {action?.type}</p>
+                    <p>Player: {lobby?.participants[action.player - 1]?.name}</p>
 
                     <div key={index}>
-                        {action.zones.map((zone, zoneIndex) => (
+                        {action?.zones?.map((zone, zoneIndex) => (
                             <div
                                 key={zoneIndex}
                                 style={{
