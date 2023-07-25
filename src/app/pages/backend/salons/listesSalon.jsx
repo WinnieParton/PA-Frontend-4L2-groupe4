@@ -134,14 +134,14 @@ const ListesSalon = () => {
                     <p>Maximum {el.game.maxPlayers} joueur(s)</p>
                   </Card.Subtitle>
                   <div
-                    className="d-flex w-100 mb-2"
+                    className="mb-2 d-md-flex d-flex"
                     style={{
                       justifyContent: "space-between",
                     }}
                   >
                     <Button
                       variant="primary"
-                      className="col-md-6 col-12"
+                      className="col-md-6 col-12 mb-2 mb-md-0"
                       onClick={() => playGamebutton(el)}
                       style={{ width: "auto", marginLeft: "0px" }}
                     >

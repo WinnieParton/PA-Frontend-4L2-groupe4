@@ -125,20 +125,10 @@ const ChatRoom = () => {
       message: userData.message,
       senderName: userData.username,
       receiverName: userData.receivername,
-      currentDate: new Date().toLocaleString('en-US', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      }),
-      status: "JOIN",
+      currentDate: new Date().toLocaleString(),
     };
     stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
   };
-
   const onMessageReceived = (payload) => {
     var payloadData = JSON.parse(payload.body);
 
@@ -181,7 +171,7 @@ const ChatRoom = () => {
         message: messageVoice != "" ? messageVoice : message,
         senderName: userData.username,
         receiverName: userData.receivername,
-        currentDate: new Date().toLocaleDateString("fr-FR"),
+        currentDate: new Date().toLocaleString(),
         status: "MESSAGE",
       };
       if (privateChats.has(tab) && Array.isArray(privateChats.get(tab))) {

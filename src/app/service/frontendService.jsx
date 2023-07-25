@@ -323,6 +323,7 @@ export const getGame = async (id) => {
 
 export const SaveScore = async (idLobby, data) => {
   try {
+    console.log("dddddddddddddddddd  ", data);
     const tokenString = localStorage.getItem("auth");
     const userToken = JSON.parse(tokenString);
     const response = await axios.post(
@@ -376,11 +377,25 @@ export const getLastStateGame = async (id) => {
   }
 };
 
-export const lastInfoVideoCall = async (lobbyId) => {
+export const actionMove = async (iuser, status, idmove) => {
   try {
     const tokenString = localStorage.getItem("auth");
     const userToken = JSON.parse(tokenString);
-    const response = await axios.get(`${baseURL}/user/chat/private/video/${lobbyId}`, {
+    const response = await axios.get(
+      `${baseURL}/game/rollback/${iuser}/idmove/${idmove}/status/${status}`,
+      {
+        headers: { Authorization: `Bearer ${userToken.userToken}` },
+      }
+    );
+  } catch (error) {
+    throw error.response?.data;
+  }
+};
+export const historyMove = async (lobby) => {
+  try {
+    const tokenString = localStorage.getItem("auth");
+    const userToken = JSON.parse(tokenString);
+    const response = await axios.get(`${baseURL}/move/${lobby}`, {
       headers: { Authorization: `Bearer ${userToken.userToken}` },
     });
     return response.data;
