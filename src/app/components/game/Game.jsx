@@ -140,7 +140,6 @@ const Game = (props) => {
             winnerId = lobby.participants[results.requested_actions[0].player - 2].id;
         }
         lostId = lobby.participants.filter(user => user.id != winnerId);
-
         if (authInfo.userid == winnerId) {
             Swal.fire({
                 icon: 'success',
@@ -176,7 +175,7 @@ const Game = (props) => {
 
         const newScores = new Map();
         newScores.set(winnerId, 1.0);
-        newScores.set(lostId, 0.0);
+        lostId.forEach(user => newScores.set(user.id, 0.0));
         const datascore = {
             winnerId: winnerId,
             scoresByPlayers: JSON.stringify([...newScores]),
@@ -210,7 +209,7 @@ const Game = (props) => {
         >
 
             <svg height={gameData?.displays[0].height} width={gameData?.displays[0].width}>
-                {gameData?.displays.flatMap(display => display.content)
+                {gameData?.displays?.flatMap(display => display.content)
                     .map((item, index) => {
                         return createElement(
                             item.tag,
@@ -225,7 +224,7 @@ const Game = (props) => {
                                 cx: item?.cx,
                                 cy: item?.cy,
                                 r: item?.r,
-                                src: item.src,
+                                href: item?.href,
                                 width: item?.width,
                                 height: item?.height,
                                 fill: item?.fill
