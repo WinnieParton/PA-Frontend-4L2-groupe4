@@ -76,7 +76,9 @@ const ListesAmis = () => {
   };
   useEffect(() => {}, [userData]);
   useEffect(() => {}, [chatMessage]);
-  useEffect(() => {}, [privateChats]);
+  useEffect(() => {
+    console.log("rrrrrrrrr  ", privateChats);
+  }, [privateChats]);
 
   const onConnected = (userReceive) => {
     stompClient.subscribe("/chat/message-friend", onMessageReceived);
@@ -119,13 +121,14 @@ const ListesAmis = () => {
   const onMessageReceived = (payload) => {
     const payloadData = JSON.parse(payload.body);
     if (payloadData && payloadData.length > 0) {
-      setPrivateChats([]);
       setPrivateChats([...new Set(payloadData)]);
     } else {
-      setPrivateChats((prevChats) => {
-        const updatedChats = [...prevChats, payloadData];
-        return updatedChats;
-      });
+      if (payloadData && payloadData.senderName) {
+        setPrivateChats((prevChats) => {
+          const updatedChats = [...prevChats, payloadData];
+          return updatedChats;
+        });
+      }
     }
   };
 
@@ -133,13 +136,14 @@ const ListesAmis = () => {
     var payloadData = JSON.parse(payload.body);
 
     if (payloadData && payloadData.length > 0) {
-      setPrivateChats([]);
       setPrivateChats([...new Set(payloadData)]);
     } else {
-      setPrivateChats((prevChats) => {
-        const updatedChats = [...prevChats, payloadData];
-        return updatedChats;
-      });
+      if (payloadData && payloadData.senderName) {
+        setPrivateChats((prevChats) => {
+          const updatedChats = [...prevChats, payloadData];
+          return updatedChats;
+        });
+      }
     }
   };
 
@@ -502,8 +506,10 @@ const ListesAmis = () => {
           <div className="chat-content">
             {chatMessage ? (
               <>
+                <h1>{privateChats && privateChats.length > 0}</h1>
+
                 <ul className="chat-messages">
-                  {privateChats.length > 0 &&
+                  {privateChats && privateChats.length > 0 ? (
                     privateChats.map((chat, index) => (
                       <li
                         className={`message ${
@@ -557,15 +563,18 @@ const ListesAmis = () => {
                             </span>
                           </span>
                         </div>
-                        {chat.senderName === userData.senderName && (
+                        {chat?.senderName === userData.senderName && (
                           <div className="avatar self">
                             <span>
-                              {chat.senderName.substring(2, 0).toUpperCase()}
+                              {chat?.senderName.substring(2, 0).toUpperCase()}
                             </span>
                           </div>
                         )}
                       </li>
-                    ))}
+                    ))
+                  ) : (
+                    <></>
+                  )}
                 </ul>
                 <div className="send-message">
                   <div
