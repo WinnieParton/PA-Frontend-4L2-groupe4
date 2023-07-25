@@ -6,6 +6,7 @@ import { signup } from '../../service/frontendService';
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('');
     const [password, setPassword] = useState('');
     const [password_confirm, setPasswordConfirm] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -27,6 +28,10 @@ const Register = () => {
             formIsValid = false;
             newErrors.name = 'Username is required';
         }
+        if (!role) {
+            formIsValid = false;
+            newErrors.role = 'Role is required';
+        }
         if (password && password != password_confirm) {
             formIsValid = false;
             newErrors.password = 'Password must match with confirm password';
@@ -44,7 +49,7 @@ const Register = () => {
                     email,
                     password,
                     password_confirm,
-                    role: 'PLAYER',
+                    role
                 });
 
                 if (user) {
@@ -70,13 +75,14 @@ const Register = () => {
                         <label htmlFor="name" className="auth-form-label">
                             Nom d'utilisateur
                         </label>
-                        <div className="auth-form-content-input">
+                        <div >
                             <i className="fa-regular fa-user custom-app-icon"></i>
                             <input
                                 type="text"
                                 placeholder="Votre nom d'utilisateur"
                                 id="name"
                                 name="name"
+                                className='form-control'
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
@@ -93,13 +99,14 @@ const Register = () => {
                         <label htmlFor="email" className="auth-form-label">
                             Email
                         </label>
-                        <div className="auth-form-content-input">
+                        <div >
                             <i className="fa-regular fa-user custom-app-icon"></i>
                             <input
                                 type="email"
                                 placeholder="Votre adresse mail"
                                 id="email"
                                 name="email"
+                                className='form-control'
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
@@ -114,15 +121,36 @@ const Register = () => {
                     </div>
 
                     <div className="auth-form-content">
+                        <label htmlFor="email" className="auth-form-label">
+                            Rôle
+                        </label>
+                        <div >
+                           <select name="role" id="role"  onChange={(e) => setRole(e.target.value)} className='form-control'>
+                            <option value="PLAYER">Joueur</option>
+                            <option value="DEVELOPPER">Développeur</option>
+                           </select>
+                        </div>
+                        {errors.role && (
+                            <span
+                                className="text-danger"
+                                style={{ fontSize: '13px' }}
+                            >
+                                {errors.role}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="auth-form-content">
                         <label htmlFor="password" className="auth-form-label">
                             Mot de passe
                         </label>
-                        <div className="auth-form-content-input">
+                        <div >
                             <i className="fa-solid fa-lock custom-app-icon"></i>
                             <input
                                 type="password"
                                 placeholder="Votre mot de passe"
                                 id="password"
+                                className='form-control'
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
@@ -143,13 +171,14 @@ const Register = () => {
                         >
                             Confirmez le mot de passe
                         </label>
-                        <div className="auth-form-content-input">
+                        <div>
                             <i className="fa-solid fa-lock custom-app-icon"></i>
                             <input
                                 type="password"
                                 placeholder="Votre mot de passe"
                                 id="password_confirm"
                                 name="password_confirm"
+                                className='form-control'
                                 onChange={(e) =>
                                     setPasswordConfirm(e.target.value)
                                 }
