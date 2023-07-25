@@ -10,6 +10,7 @@ import appRoutes from "../../../routes/routes";
 import { actionMove, historyMove } from "../../../service/frontendService";
 import { baseURL } from "../../../../environnements/environnement";
 import { over } from "stompjs";
+import Game from "../../../components/game/Game";
 
 var stompClient = null;
 var nbstart = 0;
@@ -217,7 +218,8 @@ const SalleJeu = () => {
             >
               {startGame ? (
                 <div className="mt-4 mb-4" style={{ position: "absolute" }}>
-                  {lobby.game.gameFiles.includes("morpion") ? (
+                  <Game setStart={setStart} lobby={lobby} />
+                  {/* {lobby.game.gameFiles.includes("morpion") ? (
                     <Morpion setStart={setStart} />
                   ) : lobby.game.gameFiles.includes("Guessing") ? (
                     <GuessingGame />
@@ -225,7 +227,7 @@ const SalleJeu = () => {
                     <PierrePapierCiseaux />
                   ) : (
                     <Morpion setStart={setStart} />
-                  )}
+                  )} */}
                 </div>
               ) : (
                 <Button variant="primary" onClick={handleStart}>
