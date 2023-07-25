@@ -323,6 +323,7 @@ export const getGame = async (id) => {
 
 export const SaveScore = async (idLobby, data) => {
   try {
+    console.log("dddddddddddddddddd  ", data);
     const tokenString = localStorage.getItem("auth");
     const userToken = JSON.parse(tokenString);
     const response = await axios.post(
@@ -386,6 +387,18 @@ export const actionMove = async (iuser, status, idmove) => {
         headers: { Authorization: `Bearer ${userToken.userToken}` },
       }
     );
+  } catch (error) {
+    throw error.response?.data;
+  }
+};
+export const historyMove = async (lobby) => {
+  try {
+    const tokenString = localStorage.getItem("auth");
+    const userToken = JSON.parse(tokenString);
+    const response = await axios.get(`${baseURL}/move/${lobby}`, {
+      headers: { Authorization: `Bearer ${userToken.userToken}` },
+    });
+    return response.data;
   } catch (error) {
     throw error.response?.data;
   }

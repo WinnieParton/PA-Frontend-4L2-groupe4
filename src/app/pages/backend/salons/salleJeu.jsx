@@ -7,18 +7,19 @@ import GuessingGame from "../../../components/game/GuessingGame";
 import Morpion from "../../../components/game/Morpion";
 import PierrePapierCiseaux from "../../../components/game/PierrePapierCiseaux";
 import appRoutes from "../../../routes/routes";
-import { actionMove } from "../../../service/frontendService";
+import { actionMove, historyMove } from "../../../service/frontendService";
 import { baseURL } from "../../../../environnements/environnement";
 import { over } from "stompjs";
 
 var stompClient = null;
+var nbstart = 0;
 const SalleJeu = () => {
   const navigate = useNavigate();
   const lobby = JSON.parse(localStorage.getItem("info")).info;
   const [startGame, setStartGame] = useState(false);
   const [historic, setHistoric] = useState([]);
   const [notifCallBack, setNotifCallBack] = useState({});
-
+  const [start, setStart] = useState(false);
   const handleLoadLobby = async () => {
     return navigate(appRoutes.SALONS);
   };
@@ -73,8 +74,31 @@ const SalleJeu = () => {
   const onError = (err) => {
     register();
   };
-  const start = () => {
-    onConnected();
+  useEffect(() => {
+    if (nbstart == 0) {
+      handleLoadMove();
+    }
+    nbstart += 1;
+    console.log("nbstart ", nbstart);
+  }, [start]);
+  const handleLoadMove = async () => {
+    const results = await historyMove(
+      JSON.parse(localStorage.getItem("info")).info.id
+    );
+    setHistoric([]);
+    let data = [];
+    results.moves.forEach((el) => {
+      const gameState = JSON.parse(el.gameState);
+      if (gameState?.actions && gameState?.actions.length > 0)
+        data.push({
+          ...el,
+          action: {
+            type: gameState?.actions[0].type,
+            player: gameState?.actions[0].player,
+          },
+        });
+    });
+    setHistoric(data);
   };
   const onConnected = () => {
     stompClient.subscribe(
@@ -194,13 +218,13 @@ const SalleJeu = () => {
               {startGame ? (
                 <div className="mt-4 mb-4" style={{ position: "absolute" }}>
                   {lobby.game.gameFiles.includes("morpion") ? (
-                    <Morpion start={start} />
+                    <Morpion setStart={setStart} />
                   ) : lobby.game.gameFiles.includes("Guessing") ? (
                     <GuessingGame />
                   ) : lobby.game.gameFiles.includes("PierrePapier") ? (
                     <PierrePapierCiseaux />
                   ) : (
-                    <Morpion start={start} />
+                    <Morpion setStart={setStart} />
                   )}
                 </div>
               ) : (

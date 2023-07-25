@@ -11,7 +11,7 @@ import {
 } from "../../service/frontendService";
 
 var stompClient = null;
-const Morpion = ({ start }) => {
+const Morpion = ({ setStart }) => {
   const [gameData, setGameData] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [userData, setUserData] = useState({
@@ -91,7 +91,7 @@ const Morpion = ({ start }) => {
       lobby: userData.lobby,
     };
     stompClient.send("/app/game", {}, JSON.stringify(chatMessage));
-    start();
+    setStart(true);
   };
   const onError = (err) => {
     connect();
@@ -207,6 +207,7 @@ const Morpion = ({ start }) => {
         winnerId: winnerId,
         scoresByPlayers: JSON.stringify([...newScores]),
       };
+      console.log("action action action");
       if (action != "onclick")
         if (!isGameSaved.current) {
           isGameSaved.current = true; // Set the flag to true to indicate the game is saved
