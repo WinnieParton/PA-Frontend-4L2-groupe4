@@ -207,7 +207,7 @@ const Morpion = ({ setStart }) => {
         winnerId: winnerId,
         scoresByPlayers: JSON.stringify([...newScores]),
       };
-      console.log("action action action");
+      console.log("action action action",action);
       if (action != "onclick")
         if (!isGameSaved.current) {
           isGameSaved.current = true; // Set the flag to true to indicate the game is saved

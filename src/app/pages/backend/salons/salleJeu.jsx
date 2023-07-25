@@ -58,6 +58,7 @@ const SalleJeu = () => {
   };
 
   useEffect(() => {
+    nbstart = 0;
     register();
   }, []);
   useEffect(() => {}, [historic]);
@@ -79,7 +80,6 @@ const SalleJeu = () => {
       handleLoadMove();
     }
     nbstart += 1;
-    console.log("nbstart ", nbstart);
   }, [start]);
   const handleLoadMove = async () => {
     const results = await historyMove(
