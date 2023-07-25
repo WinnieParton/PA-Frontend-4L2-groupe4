@@ -34,16 +34,12 @@ const Navigation = () => {
                                 Jeux
                             </Nav.Link>
                         )}
-                        {getAuthRole() == 'PLAYER' && (
-                            <Nav.Link href={appRoutes.SALONS} className="mx-2">
-                                Salons
-                            </Nav.Link>
-                        )}
-                        {getAuthRole() == 'PLAYER' && (
-                            <Nav.Link href={appRoutes.AMIS} className="mx-2">
-                                Amis
-                            </Nav.Link>
-                        )}
+                        <Nav.Link href={appRoutes.SALONS} className="mx-2">
+                            Salons
+                        </Nav.Link>
+                        <Nav.Link href={appRoutes.AMIS} className="mx-2">
+                            Amis
+                        </Nav.Link>
                     </Nav>
                     <Nav className="ms-auto bg-primary">
                         <NavDropdown title="Mon compte" id="basic-nav-dropdown">

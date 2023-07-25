@@ -70,8 +70,8 @@ const Game = (props) => {
     } else {
       setGameData(payloadData);
       setClickAction(
-        authInfo.userid ===
-          lobby.participants[payloadData?.requested_actions[0].player - 1].id
+        authInfo?.userid ===
+          lobby?.participants[payloadData?.requested_actions[0].player - 1].id
       );
     }
   };
@@ -143,11 +143,11 @@ const Game = (props) => {
     let lostId;
 
     if (
-      lobby.participants[results.requested_actions[0].player - 2] == undefined
+      lobby.participants[results?.requested_actions[0].player - 2] == undefined
     ) {
-      winnerId = lobby.participants[0].id;
+      winnerId = lobby?.participants[0].id;
     } else {
-      winnerId = lobby.participants[results.requested_actions[0].player - 2].id;
+      winnerId = lobby?.participants[results.requested_actions[0].player - 2].id;
     }
     lostId = lobby.participants.filter((user) => user.id != winnerId);
     if (authInfo.userid == winnerId) {
@@ -203,8 +203,8 @@ const Game = (props) => {
     }
     setGameData(results);
     setClickAction(
-      authInfo.userid ==
-        lobby.participants[results?.requested_actions[0]?.player - 1].id
+      authInfo?.userid ==
+        lobby?.participants[results?.requested_actions[0]?.player - 1].id
     );
   };
 
@@ -213,63 +213,71 @@ const Game = (props) => {
   };
 
   return (
-    <div
-      style={{
-        pointerEvents: clickAction ? "initial" : "none",
-      }}
-    >
-      <svg
-        height={gameData?.displays[0].height}
-        width={gameData?.displays[0].width}
-      >
-        {gameData?.displays
-          ?.flatMap((display) => display.content)
-          .map((item, index) => {
-            return createElement(
-              item.tag,
-              {
-                key: index,
-                x: item?.x,
-                x1: item?.x1,
-                x2: item?.x2,
-                y: item?.y,
-                y1: item?.y1,
-                y2: item?.y2,
-                cx: item?.cx,
-                cy: item?.cy,
-                r: item?.r,
-                href: item?.href,
-                width: item?.width,
-                height: item?.height,
-                fill: item?.fill,
-              },
-              item?.content
-            );
-          })}
-      </svg>
-      {gameData?.requested_actions.map((action, index) => (
-        <div key={index}>
-          <p>Action: {action?.type}</p>
-          <p>Player: {lobby?.participants[action.player - 1]?.name}</p>
+    <>
+      {gameData &&
+      gameData.displays != undefined &&
+      gameData.displays.length > 0 ? (
+        <div
+          style={{
+            pointerEvents: clickAction ? "initial" : "none",
+          }}
+        >
+          <svg
+            height={gameData?.displays[0].height}
+            width={gameData?.displays[0].width}
+          >
+            {gameData?.displays
+              ?.flatMap((display) => display.content)
+              .map((item, index) => {
+                return createElement(
+                  item.tag,
+                  {
+                    key: index,
+                    x: item?.x,
+                    x1: item?.x1,
+                    x2: item?.x2,
+                    y: item?.y,
+                    y1: item?.y1,
+                    y2: item?.y2,
+                    cx: item?.cx,
+                    cy: item?.cy,
+                    r: item?.r,
+                    href: item?.href,
+                    width: item?.width,
+                    height: item?.height,
+                    fill: item?.fill,
+                  },
+                  item?.content
+                );
+              })}
+          </svg>
+          {gameData?.requested_actions.map((action, index) => (
+            <div key={index}>
+              <p>Action: {action?.type}</p>
+              <p>Player: {lobby?.participants[action.player - 1]?.name}</p>
 
-          <div key={index}>
-            {action?.zones?.map((zone, zoneIndex) => (
-              <div
-                key={zoneIndex}
-                style={{
-                  position: "absolute",
-                  top: zone.y,
-                  left: zone.x,
-                  width: zone.width,
-                  height: zone.height,
-                }}
-                onClick={() => handleZoneClick(zone)}
-              ></div>
-            ))}
-          </div>
+              <div key={index}>
+                {action?.zones?.map((zone, zoneIndex) => (
+                  <div
+                    key={zoneIndex}
+                    style={{
+                      position: "absolute",
+                      top: zone.y,
+                      left: zone.x,
+                      width: zone.width,
+                      height: zone.height,
+                    }}
+                    onClick={() => handleZoneClick(zone)}
+                  ></div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 export default Game;
