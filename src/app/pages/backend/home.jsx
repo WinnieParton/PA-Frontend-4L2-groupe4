@@ -66,13 +66,8 @@ const Home = () => {
           <Carousel>
             {games.length > 0 ? (
               games.map((el, index) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="d-block w-100"
-                    style={{ height: "500px" }}
-                    src={el.miniature}
-                    alt={el.name}
-                  />
+                <Carousel.Item key={index} style={{ backgroundImage: `linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(117, 19, 93, 0.73)), url(${el.miniature})`, height: "550px", width:"100%", backgroundSize : "cover", backgroundPosition : "center" }}>
+                 
                   <Carousel.Caption>
                     <h3>{el.name}</h3>
                     <p>{el.description}</p>

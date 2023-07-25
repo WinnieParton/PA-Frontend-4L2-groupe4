@@ -18,9 +18,9 @@ const Notifications = ({ call, answerCall, callAccepted }) => {
       {call.isReceivingCall && !callAccepted && (
         <div className="container" style={classes.container}>
           <div style={classes.paper}>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className="d-flex align-items-center justify-content-center">
               <h1>{call.name} is calling: </h1>
-              <button className="primary" onClick={answerCall}>
+              <button className="btn btn-primary" onClick={answerCall}>
                 Answer
               </button>
             </div>
