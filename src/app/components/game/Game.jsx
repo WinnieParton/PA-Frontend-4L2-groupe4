@@ -49,6 +49,7 @@ const Game = (props) => {
             onPrivateMessage
         );
         userJoin();
+
     };
 
     const onMessageReceived = (payload) => {
@@ -82,6 +83,7 @@ const Game = (props) => {
     const userJoin = () => {
         let chatMessage = {lobby: userData.lobby};
         stompClient.send('/app/game', {}, JSON.stringify(chatMessage));
+        props.setStart(true);
     };
 
     const onError = (err) => {
@@ -235,7 +237,7 @@ const Game = (props) => {
                 }
             </svg>
             {gameData?.requested_actions.map((action, index) => (
-                <>
+                <div key={index}>
                     <p>Action: {action?.type}</p>
                     <p>Player: {lobby?.participants[action.player - 1]?.name}</p>
 
@@ -254,7 +256,7 @@ const Game = (props) => {
                             ></div>
                         ))}
                     </div>
-                </>
+                </div>
             ))}
         </div>
     );

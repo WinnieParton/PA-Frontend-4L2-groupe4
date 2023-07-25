@@ -3,9 +3,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import ChatRoom from "../../../components/chat/ChatRoom";
-import GuessingGame from "../../../components/game/GuessingGame";
-import Morpion from "../../../components/game/Morpion";
-import PierrePapierCiseaux from "../../../components/game/PierrePapierCiseaux";
+import Game from "../../../components/game/Game";
 import appRoutes from "../../../routes/routes";
 import { actionMove, historyMove } from "../../../service/frontendService";
 import { baseURL } from "../../../../environnements/environnement";
@@ -217,15 +215,7 @@ const SalleJeu = () => {
             >
               {startGame ? (
                 <div className="mt-4 mb-4" style={{ position: "absolute" }}>
-                  {lobby.game.gameFiles.includes("morpion") ? (
-                    <Morpion setStart={setStart} />
-                  ) : lobby.game.gameFiles.includes("Guessing") ? (
-                    <GuessingGame />
-                  ) : lobby.game.gameFiles.includes("PierrePapier") ? (
-                    <PierrePapierCiseaux />
-                  ) : (
-                    <Morpion setStart={setStart} />
-                  )}
+                  <Game setStart={setStart} lobby={lobby} />
                 </div>
               ) : (
                 <Button variant="primary" onClick={handleStart}>
